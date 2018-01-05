@@ -1,0 +1,13 @@
+Package: cure4insect
+Type: Package
+Title: Custom Reporting for Intactness and Sector Effects
+Version: 0.0-1
+Date: 2018-01-05
+Author: Peter Solymos [cre, aut]
+Maintainer: Peter Solymos <solymos@ualberta.ca>
+Description: Custom reporting for intactness and sector effects.
+URL: https://github.com/ABbiodiversity/cure4insect
+BugReports: https://github.com/ABbiodiversity/cure4insect/issues
+License: MIT + file LICENSE
+LazyLoad: yes
+LazyData: true
