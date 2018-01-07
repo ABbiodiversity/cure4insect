@@ -8,7 +8,8 @@ export(
     calculate_results,
     flatten_results,
     report_all,
-    custom_report)
+    custom_report,
+    set_options)
 importFrom("intrval", "%)(%")
 importFrom("Matrix", "colSums")
 importFrom("sendmailR", "sendmail", "mime_part")

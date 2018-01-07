@@ -1,18 +1,19 @@
 # cure4insect: Custom Reporting for Intactness and Sector Effects
 
-Install:
+## Install
 
 ```R
 devtools::install_github("ABbiodiversity/cure4insect")
 ```
 
-Examples:
+## Examples
 
 ```R
 library(cure4insect)
 
 ## the workflow with 1 species
-
+## ID is a vector of Row_Col IDs of 1km pixels
+## species is a vector if species IDs
 load_common_data()
 Spp <- "Ovenbird"
 ID <- c("182_362", "182_363", "182_364", "182_365", "182_366", "182_367",
@@ -31,5 +32,17 @@ z <- custom_report(id=ID,
     species=c("AlderFlycatcher", "Achillea.millefolium"),
     address=NULL)
 z
+
+## working with a local copy of the results is much faster
+## set path via function arguments or the options:
+(opar <- set_options())
+set_options(baseurl = "/your/path/to/local/copy")
+(set_options(opar)) # reset options
 ```
 
+## Todo
+
+* provide species table and kgrid as data, so that folks can subset
+* provide downloadable zip of results so that folks can work from local drive
+* refine interface to accept GeoJSON polygons
+* deveop web interface

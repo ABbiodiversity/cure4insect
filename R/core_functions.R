@@ -280,6 +280,24 @@ address=NULL, sender=NULL, boot=TRUE, level=0.9)
     rval
 }
 
+set_options <-
+function(...)
+{
+    opar <- getOption("cure4insect")
+    args <- list(...)
+    if (length(args)) {
+        if (length(args) == 1 && is.list(args[[1]])) {
+            npar <- args[[1]]
+        }
+        else {
+            npar <- opar
+            npar[match(names(args), names(npar))] <- args
+        }
+        options(cure4insect = npar)
+    }
+    invisible(opar)
+}
+
 if (FALSE) {
 load_common_data()
 SPP <- "Ovenbird"
