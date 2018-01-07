@@ -38,6 +38,9 @@ z
 (opar <- set_options())
 set_options(baseurl = "/your/path/to/local/copy")
 (set_options(opar)) # reset options
+
+## change configs in this file:
+system.file("config/defaults.conf", package="cure4insect")
 ```
 
 ## Web API
