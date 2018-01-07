@@ -5,7 +5,8 @@
     if (is.null(getOption("cure4insect")))
         options("cure4insect" = list(
             baseurl = "http://ftp.public.abmi.ca/species.abmi.ca/reports",
-            version = "2017")
+            version = "2017",
+            sender = sprintf("x@\\%s", Sys.info()[4]))
         )
     invisible(NULL)
 }

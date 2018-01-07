@@ -1,3 +1,4 @@
+if (FALSE) {
 library(intrval)
 #library(mefa4)
 #library(rgdal)
@@ -9,7 +10,8 @@ library(sendmailR)
 options("cure4insect" = list(
     baseurl = "http://ftp.public.abmi.ca/species.abmi.ca/reports",
     version = "2017",
-    sender = sprintf("<x@\\%s>", Sys.info()[4])))
+    sender = sprintf("x@\\%s", Sys.info()[4])))
+}
 
 ## store object for full grid and species
 .c4if <- new.env(parent=emptyenv())
@@ -226,8 +228,8 @@ function(x)
     df
 }
 
-custom_report <-
-function(address=NULL, level=0.9)
+report_all <-
+function(species, boot=TRUE, path=NULL, version=NULL, level=0.9)
 {
     SPP <- rownames(.c4is$SPsub)
     OUT <- list()
@@ -236,24 +238,37 @@ function(address=NULL, level=0.9)
             cat(SPP[i], i, "/", length(SPP), "\n")
             flush.console()
         }
-        load_species_data(SPP[i])
+        load_species_data(SPP[i], boot=boot, path=path, version=version)
         OUT[[i]] <- calculate_results(level=level)
     }
-    rval <- do.call(rbind, lapply(OUT, flatten_results))
+    do.call(rbind, lapply(OUT, flatten_results))
+}
+
+custom_report <-
+function(id=NULL, species="all",
+path=NULL, version=NULL,
+address=NULL, sender=NULL, level=0.9)
+{
+    load_common_data(path=path, version=version)
+    subset_common_data(id=id, species=species)
+    rval <- report_all(species, boot=boot, path=path, version=version, level=level)
     if (!is.null(address)) {
-        from <- getOption("cure4insect")$sender
+        if (is.null(sender))
+            sender <- getOption("cure4insect")$sender
         subject <- "Custom Report"
-        ## change iris to the zip file
         body <- list("Hi,\n\nYour custom report results are attached.\n\nWith regards,\n\nthe ABMI Science",
             mime_part(rval, paste0("Custom_Report_", Sys.Date())))
-        try(sent <- sendmail(from, sprintf("<%s>", address), subject, body,
-                 control=list(smtpServer="ASPMX.L.GOOGLE.COM")))
+        try(sent <- sendmail(sprintf("<%s>", sender),
+            sprintf("<%s>", address),
+            subject, body,
+            control=list(smtpServer="ASPMX.L.GOOGLE.COM")))
         if (!inherits(sent, "try-error"))
             cat("email sent to", address, "\n")
     }
     rval
 }
 
+if (FALSE) {
 load_common_data()
 SPP <- "Ovenbird"
 PIX <- c("182_362", "182_363", "182_364", "182_365", "182_366", "182_367",
@@ -270,19 +285,4 @@ calculate_results()
 SPP <- c("AlderFlycatcher", "Achillea.millefolium")
 subset_common_data(id=PIX, species=SPP)
 custom_report(address="psolymos@gmail.com")
-## todo:
-## OK - function which detrends the results (1-liner)
-## OK - write function that loops over species and makes the output
-## - send email
-
-sprintf("<%s>", address)
-
-library(sendmailR)
-from <- sprintf("<ABMI_Science@\\%s>", Sys.info()[4])
-#from <- "<solymos@ualberta.ca>"
-to <- "<psolymos@gmail.com>"
-subject <- "Your intactness results are ready"
-## change iris to the zip file
-body <- list("Hi,\n\nYour custom report results are attached.\n\nWith regards,\n\nthe ABMI Science", mime_part(iris))
-sendmail(from, to, subject, body,
-         control=list(smtpServer="ASPMX.L.GOOGLE.COM"))
+}
