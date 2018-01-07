@@ -45,7 +45,7 @@ set_options(baseurl = "/your/path/to/local/copy")
 ```
 curl http://sc-dev.abmi.ca/ocpu/library/cure4insect/R/custom_report/json \
 -H "Content-Type: application/json" -d \
-'{"id":["182_362", "182_363"], "species":["AlderFlycatcher", "Achillea.millefolium"], "address":"psolymos@gmail.com"}'
+'{"id":["182_362", "182_363"], "species":["AlderFlycatcher", "Achillea.millefolium"]}'
 ```
 
 ## Todo
