@@ -59,6 +59,7 @@ function(id=NULL, species="all")
 {
     clear_subset_data()
     #requireNamespace("Matrix")
+    tmp <- Matrix() # trigger Matrix
 
     vals <- c("all","birds","lichens","mammals","mites","mosses","vplants")
     x <- .c4if$SP
@@ -244,9 +245,11 @@ function(address=NULL, level=0.9)
         subject <- "Custom Report"
         ## change iris to the zip file
         body <- list("Hi,\n\nYour custom report results are attached.\n\nWith regards,\n\nthe ABMI Science",
-            mime_part(rval))
-        try(sendmail(from, sprintf("<%s>", address), subject, body,
+            mime_part(rval, paste0("Custom_Report_", Sys.Date())))
+        try(sent <- sendmail(from, sprintf("<%s>", address), subject, body,
                  control=list(smtpServer="ASPMX.L.GOOGLE.COM")))
+        if (!inherits(sent, "try-error"))
+            cat("email sent to", address, "\n")
     }
     rval
 }
@@ -257,18 +260,16 @@ PIX <- c("182_362", "182_363", "182_364", "182_365", "182_366", "182_367",
     "182_368", "182_369", "182_370", "182_371", "182_372")
 subset_common_data(id=PIX, species=SPP)
 load_species_data("Ovenbird")
-calculate_results()
+x <- calculate_results()
+x
+flatten_results(x)
 
 load_species_data("Ovenbird", boot=FALSE)
 calculate_results()
 
 SPP <- c("AlderFlycatcher", "Achillea.millefolium")
 subset_common_data(id=PIX, species=SPP)
-
-load_species_data("Achillea.millefolium", boot=FALSE)
-x <- calculate_results()
-flatten_results(x)
-
+custom_report(address="psolymos@gmail.com")
 ## todo:
 ## OK - function which detrends the results (1-liner)
 ## OK - write function that loops over species and makes the output
