@@ -28,7 +28,7 @@ flatten_results(x)
 ## species="all" runs all species
 ## species="mites" runs all mite species
 ## sender=you@example.org will send an email with the results attached
-z <- custom_report(id=c("182_362", "182_363"), 
+z <- custom_report(id=ID, 
     species=c("AlderFlycatcher", "Achillea.millefolium"),
     address=NULL)
 z
@@ -45,8 +45,7 @@ set_options(baseurl = "/your/path/to/local/copy")
 ```
 curl http://sc-dev.abmi.ca/ocpu/library/cure4insect/R/custom_report/json \
 -H "Content-Type: application/json" -d \
-'{"id":["182_362", "182_363"], "species":["AlderFlycatcher", "Achillea.millefolium"]}'
-
+'{"id":["182_362", "182_363"], "species":["AlderFlycatcher", "Achillea.millefolium"], "address":"psolymos@gmail.com"}'
 ```
 
 ## Todo
@@ -54,4 +53,5 @@ curl http://sc-dev.abmi.ca/ocpu/library/cure4insect/R/custom_report/json \
 * provide species table and kgrid as data, so that folks can subset
 * provide downloadable zip of results so that folks can work from local drive
 * refine interface to accept GeoJSON polygons
-* deveop web interface
+* deveop fully fledged web interface
+* allow options to be modified by settings file in pkg directory (i.e. to set sender email)
