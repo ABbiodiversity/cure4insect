@@ -45,8 +45,10 @@ system.file("config/defaults.conf", package="cure4insect")
 
 ## Web API
 
-```
-curl http://sc-dev.abmi.ca/ocpu/library/cure4insect/R/custom_report/json \
+Get results in csv format (for other formats see [here](https://www.opencpu.org/api.html#api-formats))
+
+```shell
+curl http://sc-dev.abmi.ca/ocpu/library/cure4insect/R/custom_report/csv \
 -H "Content-Type: application/json" -d \
 '{"id":["182_362", "182_363"], "species":["AlderFlycatcher", "Achillea.millefolium"]}'
 ```
