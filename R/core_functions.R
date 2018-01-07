@@ -1,18 +1,3 @@
-if (FALSE) {
-library(intrval)
-#library(mefa4)
-#library(rgdal)
-#library(rgeos)
-#library(sp)
-#library(raster)
-library(Matrix)
-library(sendmailR)
-options("cure4insect" = list(
-    baseurl = "http://ftp.public.abmi.ca/species.abmi.ca/reports",
-    version = "2017",
-    sender = sprintf("x@\\%s", Sys.info()[4])))
-}
-
 ## store object for full grid and species
 .c4if <- new.env(parent=emptyenv())
 ## store object for subset of the grid and species
@@ -26,6 +11,8 @@ if(getRversion() >= "2.15.1")
 ## KT: 10km unit mapping to 1km units
 ## XY: coordinates of 1km units
 ## SP: species lookup table
+clear_common_data <- function()
+    rm(list=ls(envir=.c4if), envir=.c4if)
 load_common_data <-
 function(path=NULL, version=NULL)
 {
@@ -45,13 +32,6 @@ function(path=NULL, version=NULL)
     }
     invisible(NULL)
 }
-clear_common_data <- function()
-    rm(list=ls(envir=.c4if), envir=.c4if)
-#names(.c4if)
-#load_common_data()
-#names(.c4if)
-#clear_common_data()
-#names(.c4if)
 
 ## make a subset
 clear_subset_data <- function()
@@ -123,11 +103,6 @@ function(species, boot=TRUE, path=NULL, version=NULL)
     }
     invisible(NULL)
 }
-#names(.c4i1)
-#load_species_data("Ovenbird")
-#names(.c4i1)
-#clear_species_data()
-#names(.c4i1)
 
 calculate_results <-
 function(level=0.9)
@@ -296,23 +271,4 @@ function(...)
         options(cure4insect = npar)
     }
     invisible(opar)
-}
-
-if (FALSE) {
-load_common_data()
-SPP <- "Ovenbird"
-PIX <- c("182_362", "182_363", "182_364", "182_365", "182_366", "182_367",
-    "182_368", "182_369", "182_370", "182_371", "182_372")
-subset_common_data(id=PIX, species=SPP)
-load_species_data("Ovenbird")
-x <- calculate_results()
-x
-flatten_results(x)
-
-load_species_data("Ovenbird", boot=FALSE)
-calculate_results()
-
-SPP <- c("AlderFlycatcher", "Achillea.millefolium")
-subset_common_data(id=PIX, species=SPP)
-custom_report(address="psolymos@gmail.com")
 }
