@@ -61,7 +61,7 @@ function(id=NULL, species="all")
 {
     clear_subset_data()
     #requireNamespace("Matrix")
-    tmp <- Matrix() # trigger Matrix
+    #tmp <- Matrix() # trigger Matrix
 
     vals <- c("all","birds","lichens","mammals","mites","mosses","vplants")
     x <- .c4if$SP
@@ -71,16 +71,20 @@ function(id=NULL, species="all")
     } else {
         SPPfull <- species
     }
-    assign("SPsub", x[rownames(x) %in% SPPfull,,drop=FALSE], envir=.c4is)
+    assign("SPsub", x[rownames(x) %in% SPPfull,,drop=FALSE],
+        envir=.c4is)
 
     if (is.null(id))
         id <- rownames(.c4if$KT)
     id <- id[id %in% rownames(.c4if$KT)]
     id <- sort(id)
     id10 <- sort(unique(as.character(.c4if$KT[id, "Row10_Col10"])))
-    assign("KTsub", .c4if$KT[id,,drop=FALSE], envir=.c4is)
-    assign("A_2012", colSums(.c4if$KA_2012[id,,drop=FALSE]), envir=.c4is)
-    assign("A_2014", colSums(.c4if$KA_2014[id,,drop=FALSE]), envir=.c4is)
+    assign("KTsub", .c4if$KT[id,,drop=FALSE],
+        envir=.c4is)
+    assign("A_2012", Matrix::colSums(.c4if$KA_2012[id,,drop=FALSE]),
+        envir=.c4is)
+    assign("A_2014", Matrix::colSums(.c4if$KA_2014[id,,drop=FALSE]),
+        envir=.c4is)
 
     invisible(NULL)
 }
@@ -235,7 +239,7 @@ function(species, boot=TRUE, path=NULL, version=NULL, level=0.9)
     OUT <- list()
     for (i in seq_along(SPP)) {
         if (interactive()) {
-            cat(SPP[i], i, "/", length(SPP), "\n")
+            cat("processing species:", SPP[i], i, "/", length(SPP), "\n")
             flush.console()
         }
         load_species_data(SPP[i], boot=boot, path=path, version=version)
@@ -249,7 +253,15 @@ function(id=NULL, species="all",
 path=NULL, version=NULL,
 address=NULL, sender=NULL, boot=TRUE, level=0.9)
 {
+    if (interactive()) {
+        cat("loading common data\n")
+        flush.console()
+    }
     load_common_data(path=path, version=version)
+    if (interactive()) {
+        cat("arranging subsets\n")
+        flush.console()
+    }
     subset_common_data(id=id, species=species)
     rval <- report_all(species, boot=boot, path=path, version=version, level=level)
     if (!is.null(address)) {
