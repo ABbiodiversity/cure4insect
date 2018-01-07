@@ -247,7 +247,7 @@ function(species, boot=TRUE, path=NULL, version=NULL, level=0.9)
 custom_report <-
 function(id=NULL, species="all",
 path=NULL, version=NULL,
-address=NULL, sender=NULL, level=0.9)
+address=NULL, sender=NULL, boot=TRUE, level=0.9)
 {
     load_common_data(path=path, version=version)
     subset_common_data(id=id, species=species)

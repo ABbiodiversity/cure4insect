@@ -9,3 +9,8 @@ export(
     flatten_results,
     report_all,
     custom_report)
+importFrom("intrval", "%)(%")
+importFrom("Matrix", "Matrix")
+importFrom("sendmailR", "sendmail", "mime_part")
+importFrom("stats", "quantile")
+importFrom("utils", "flush.console")
