@@ -28,7 +28,7 @@ flatten_results(x)
 ## species="all" runs all species
 ## species="mites" runs all mite species
 ## sender=you@example.org will send an email with the results attached
-z <- custom_report(id=ID, 
+z <- custom_report(id=c("182_362", "182_363"), 
     species=c("AlderFlycatcher", "Achillea.millefolium"),
     address=NULL)
 z
@@ -38,6 +38,15 @@ z
 (opar <- set_options())
 set_options(baseurl = "/your/path/to/local/copy")
 (set_options(opar)) # reset options
+```
+
+## Web API
+
+```
+curl http://sc-dev.abmi.ca/ocpu/library/cure4insect/R/custom_report/json \
+-H "Content-Type: application/json" -d \
+'{"id":["182_362", "182_363"], "species":["AlderFlycatcher", "Achillea.millefolium"]}'
+
 ```
 
 ## Todo

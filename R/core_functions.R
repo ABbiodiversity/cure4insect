@@ -146,8 +146,8 @@ function(level=0.9)
     NR <- sum(RS)
     SI <- 100 * min(NC, NR) / max(NC, NR)
     if (.c4i1$boot) {
-        Curr.Boot <- .c4i1$Curr.Boot[PIX10,]
-        Ref.Boot <- .c4i1$Ref.Boot[PIX10,]
+        Curr.Boot <- .c4i1$Curr.Boot[PIX10,,drop=FALSE]
+        Ref.Boot <- .c4i1$Ref.Boot[PIX10,,drop=FALSE]
         Curr.Boot <- Curr.Boot[match(.c4is$KTsub$Row10_Col10, rownames(Curr.Boot)),]
         Ref.Boot <- Ref.Boot[match(.c4is$KTsub$Row10_Col10, rownames(Ref.Boot)),]
         CB <- colSums(Curr.Boot)
