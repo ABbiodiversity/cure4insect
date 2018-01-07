@@ -39,7 +39,7 @@ z
 set_options(baseurl = "/your/path/to/local/copy")
 (set_options(opar)) # reset options
 
-## change configs in this file:
+## change configs in this file to make it permanent for a given installation
 system.file("config/defaults.conf", package="cure4insect")
 ```
 
@@ -57,4 +57,3 @@ curl http://sc-dev.abmi.ca/ocpu/library/cure4insect/R/custom_report/json \
 * provide downloadable zip of results so that folks can work from local drive
 * refine interface to accept GeoJSON polygons
 * deveop fully fledged web interface
-* allow options to be modified by settings file in pkg directory (i.e. to set sender email)
