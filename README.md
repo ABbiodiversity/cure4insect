@@ -45,7 +45,7 @@ do.call(rbind, lapply(xx, flatten_results))
 ## wrapper function ----------------------
 ## species="all" runs all species
 ## species="mites" runs all mite species
-## sender=you@example.org will send an email with the results attached
+## sender="you@example.org" will send an email with the results attached
 z <- custom_report(id=ID,
     species=c("AlderFlycatcher", "Achillea.millefolium"),
     address=NULL)

@@ -17,4 +17,4 @@ importFrom("stats", "quantile")
 importFrom("utils", "flush.console")
 importFrom("sp", "identicalCRS", "over", "spTransform", "coordinates",
     "proj4string")
-
+importFrom("rgdal", "readOGR")

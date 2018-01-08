@@ -258,7 +258,8 @@ custom_report <-
 function(id=NULL, species="all",
 path=NULL, version=NULL,
 address=NULL, sender=NULL, boot=TRUE,
-level=0.9, raw_boot=FALSE)
+level=0.9, raw_boot=FALSE,
+geojson=FALSE)
 {
     if (interactive()) {
         cat("loading common data\n")
@@ -268,6 +269,13 @@ level=0.9, raw_boot=FALSE)
     if (interactive()) {
         cat("arranging subsets\n")
         flush.console()
+    }
+    if (geojson) {
+        if (interactive()) {
+            cat("reading GeoJSON\n")
+            flush.console()
+        }
+        id <- readOGR(dsn=id, layer = "OGRGeoJSON")
     }
     subset_common_data(id=id, species=species)
     OUT <- report_all(boot=boot, path=path, version=version, level=level)
