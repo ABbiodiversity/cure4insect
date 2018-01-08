@@ -328,3 +328,26 @@ function(ply)
     rownames(coordinates(XY))[!is.na(o)]
 }
 
+get_all_id <- function() {
+    if (!exists("XY", envir=.c4if))
+        stop("use `load_common_data()` first")
+    rownames(coordinates(.c4if$XY))
+}
+
+get_all_species <- function()  {
+    if (!exists("SP", envir=.c4if))
+        stop("use `load_common_data()` first")
+    rownames(.c4if$SP)
+}
+
+get_id_locations <- function() {
+    if (!exists("XY", envir=.c4if))
+        stop("use `load_common_data()` first")
+    .c4if$XY
+}
+
+get_species_table <- function()  {
+    if (!exists("SP", envir=.c4if))
+        stop("use `load_common_data()` first")
+    .c4if$SP
+}

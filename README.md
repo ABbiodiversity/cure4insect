@@ -19,6 +19,13 @@ library(cure4insect)
 ## ID is a vector of Row_Col IDs of 1km pixels
 ## species is a vector if species IDs
 load_common_data()
+## here is how to inspect all possible spatial and species IDs
+str(get_all_id())
+str(get_all_species())
+plot(xy <- get_id_locations(), pch=".")
+summary(xy)
+str(get_species_table())
+## define spatial and species IDs
 Spp <- "Ovenbird"
 ID <- c("182_362", "182_363", "182_364", "182_365", "182_366", "182_367",
     "182_368", "182_369", "182_370", "182_371", "182_372")
@@ -77,7 +84,6 @@ curl http://sc-dev.abmi.ca/ocpu/library/cure4insect/R/custom_report/csv \
 
 ## Todo
 
-* provide species table and kgrid as data, so that folks can subset
 * provide downloadable zip of results so that folks can work from local drive
 * deveop fully fledged web interface (is/species as csv)
 * decide how to report CI for SI, and if raw boot results are needed

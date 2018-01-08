@@ -12,6 +12,10 @@
 \alias{report_all}
 \alias{custom_report}
 \alias{set_options}
+\alias{get_all_id}
+\alias{get_all_species}
+\alias{get_id_locations}
+\alias{get_species_table}
 \alias{overlay_polygon}
 \title{
 Core Functions for Custom Reporting
@@ -41,6 +45,10 @@ custom_report(id=NULL, species="all",
 
 set_options(...)
 overlay_polygon(ply)
+get_all_id()
+get_all_species()
+get_id_locations()
+get_species_table()
 }
 \arguments{
   \item{path}{
@@ -135,6 +143,12 @@ Returns a data frame, rows representing species (flattened results).
 \code{overlay_polygon} selects spatial IDs based on a SpatialPolygons object.
 
 \code{set_options} sets the options and return previous values invisibly.
+
+\code{get_all_id} and \code{get_all_species} gets all possible spatial and
+species IDs. \code{get_id_locations} gets the SpatialPoints object
+with geographic coordinates of the spatial IDs, \code{get_species_table}
+gets the lookup table for species.
+All these require to run \code{load_common_data()} first.
 }
 \author{
 Peter Solymos <solymos@ualberta.ca>
@@ -145,6 +159,13 @@ Peter Solymos <solymos@ualberta.ca>
 ## ID is a vector of Row_Col IDs of 1km pixels
 ## species is a vector if species IDs
 load_common_data()
+## here is how to inspect all possible spatial and species IDs
+str(get_all_id())
+str(get_all_species())
+plot(xy <- get_id_locations(), pch=".")
+summary(xy)
+str(get_species_table())
+## define spatial and species IDs
 Spp <- "Ovenbird"
 ID <- c("182_362", "182_363", "182_364", "182_365", "182_366", "182_367",
     "182_368", "182_369", "182_370", "182_371", "182_372")
