@@ -118,11 +118,13 @@ function(species, boot=TRUE, path=NULL, version=NULL)
 calculate_results <-
 function(level=0.9)
 {
-    PIX <- rownames(.c4is$KTsub)
-    PIX10 <- unique(as.character(.c4is$KTsub$Row10_Col10))
     cn <- c("Native", "Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")
     a <- c(0.5*(1-level), 1-0.5*(1-level))
     MAX <- max(max(rowSums(.c4i1$SA.Curr)), max(rowSums(.c4i1$SA.Ref)))
+    PIX <- rownames(.c4is$KTsub)
+    ## Rockies and unmodelled regions should be excluded
+    PIX <- PIX[PIX %in% rownames(.c4i1$SA.Curr)]
+    PIX10 <- unique(as.character(.c4is$KTsub$Row10_Col10))
     SA.Curr <- .c4i1$SA.Curr[PIX,cn]
     SA.Ref <- .c4i1$SA.Ref[PIX,cn]
     MEAN <- max(mean(rowSums(SA.Curr)), mean(rowSums(SA.Ref)))
