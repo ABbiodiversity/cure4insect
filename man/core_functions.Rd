@@ -60,6 +60,8 @@ or CSV
 with latitude/longitude in NAD_1983_10TM_AEP_Forest projection
 \url{http://spatialreference.org/ref/epsg/3402/}).
 If \code{id} is a matrix-like object, values of the 1st column are taken.
+\code{id} can be a GeoJSON file for the function \code{custom_report}
+when \code{geojson=TRUE}
 }
   \item{species}{
 A list of species defined by the field SpeciesID in the table
@@ -160,14 +162,16 @@ load_common_data() # use as before
 ## id and species can be defined using text files
 Spp <- read.table(system.file("extdata/species.txt", package="cure4insect"))
 ID <- read.table(system.file("extdata/pixels.txt", package="cure4insect"))
-## ID can also be a SpatialPolygons object based on GeoJSON for example
-#library(rgdal)
-#dsn <- system.file("extdata/polygon.geojson", package="cure4insect")
-#ID <- readOGR(dsn=dsn)
 subset_common_data(id=ID, species=Spp)
 xx <- report_all()
 str(xx)
 do.call(rbind, lapply(xx, flatten_results))
+
+## ID can also be a SpatialPolygons object based on GeoJSON for example
+dsn <- system.file("extdata/polygon.geojson", package="cure4insect")
+ply <- readOGR(dsn=dsn)
+subset_common_data(id=ply, species=Spp)
+xx2 <- report_all()
 
 ## wrapper function ----------------------
 ## species="all" runs all species
@@ -177,6 +181,12 @@ z <- custom_report(id=ID,
     species=c("AlderFlycatcher", "Achillea.millefolium"),
     address=NULL)
 z
+
+## id can be a GeoJSON polygon
+dsn <- system.file("extdata/polygon.geojson", package="cure4insect")
+z2 <- custom_report(id=dsn,
+    species=c("AlderFlycatcher", "Achillea.millefolium"),
+    geojson=TRUE)
 }
 
 ## working with a local copy of the results is much faster
