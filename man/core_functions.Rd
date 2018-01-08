@@ -20,21 +20,21 @@ for custom regions and sets of species.
 }
 \usage{
 load_common_data(path=NULL, version=NULL)
-clear_common_data()
-
 subset_common_data(id=NULL, species="all")
-clear_subset_data()
-
 load_species_data(species, boot=TRUE, path=NULL, version=NULL)
+
+clear_common_data()
+clear_subset_data()
 clear_species_data()
 
 calculate_results(level=0.9)
-flatten_results(x)
+report_all(boot=TRUE, path=NULL, version=NULL, level=0.9)
+flatten_results(x, raw_boot=FALSE)
 
-report_all(species, boot=TRUE, path=NULL, version=NULL, level=0.9)
 custom_report(id=NULL, species="all",
     path=NULL, version=NULL,
-    address=NULL, sender=NULL, boot=TRUE, level=0.9)
+    address=NULL, sender=NULL, boot=TRUE,
+    level=0.9, raw_boot=FALSE)
 
 set_options(...)
 }
@@ -55,10 +55,12 @@ or CSV
 (\url{http: //ftp.public.abmi.ca/species.abmi.ca/gis/Grid1km_working.csv.zip};
 with latitude/longitude in NAD_1983_10TM_AEP_Forest projection
 \url{http://spatialreference.org/ref/epsg/3402/}).
+If \code{id} is a matrix-like object, values of the 1st column are taken.
 }
   \item{species}{
 A list of species defined by the field SpeciesID in the table
 \url{http://ftp.public.abmi.ca/species.abmi.ca/reports/2017/data/species-info.csv}.
+If \code{species} is a matrix-like object, values of the 1st column are taken.
 }
   \item{boot}{
 logical, if confidence intervals for abundance and intactness are desired.
@@ -68,6 +70,9 @@ numeric, level for confidence interval, defaults to 90\%.
 }
   \item{x}{
 and input object from call to \code{calculate_results}.
+}
+  \item{raw_boot}{
+logical, if raw bootstrap abundance results should be returned.
 }
   \item{address}{
 character, optional email address to send finished results to
@@ -109,13 +114,14 @@ single species data in the memory.
 \code{flatten_results} arranges the results from \code{calculate_results}
 into a 1-liner data frame.
 
-\code{report_all} calculate and flattens results based on sequential calls
+\code{report_all} calculate results based on sequential calls
 to \code{load_species_data} for all species defined in the subset.
-Returns a data frame, rows representing species.
+Returns a list output from \code{calculate_results}.
 
 \code{custom_report} wrapper function to load common data,
 subset spatial units and species list, calculate results for all species,
 and optionally send results as attachment of a email.
+Returns a data frame, rows representing species (flattened results).
 
 \code{set_options} sets the options and return previous values invisibly.
 }
@@ -124,7 +130,7 @@ Peter Solymos <solymos@ualberta.ca>
 }
 \examples{
 \dontrun{
-## the workflow with 1 species --------------------
+## workflow with 1 species --------------------
 ## ID is a vector of Row_Col IDs of 1km pixels
 ## species is a vector if species IDs
 load_common_data()
@@ -136,6 +142,15 @@ load_species_data("Ovenbird")
 x <- calculate_results()
 x
 flatten_results(x)
+
+## workflow with multiple species ----------------
+#load_common_data() # use as before
+## id and species can be defined using text files
+Spp <- read.table(system.file("extdata/species.txt", package="cure4insect"))
+ID <- read.table(system.file("extdata/pixels.txt", package="cure4insect"))
+subset_common_data(id=ID, species=Spp)
+xx <- report_all()
+xx
 
 ## wrapper function ----------------------
 ## species="all" runs all species
@@ -157,5 +172,8 @@ set_options(baseurl = "/your/path/to/local/copy")
 ## change configs in this file to make it permanent for a given installation
 as.list(drop(read.dcf(file=system.file("config/defaults.conf",
 package="cure4insect"))))
+
+
+
 }
 \keyword{ utilities }

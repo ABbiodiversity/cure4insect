@@ -43,6 +43,8 @@ function(id=NULL, species="all")
     #requireNamespace("Matrix")
     #tmp <- Matrix() # trigger Matrix
 
+    if (!is.null(dim(species))) # if provided as table, use 1st col
+        species <- as.character(species[,1L])
     vals <- c("all","birds","lichens","mammals","mites","mosses","vplants")
     x <- .c4if$SP
     if (length(species) == 1L && species %in% vals) {
@@ -56,6 +58,8 @@ function(id=NULL, species="all")
 
     if (is.null(id))
         id <- rownames(.c4if$KT)
+    if (!is.null(dim(id))) # if provided as table, use 1st col
+        id <- as.character(id[,1L])
     id <- id[id %in% rownames(.c4if$KT)]
     id <- sort(id)
     id10 <- sort(unique(as.character(.c4if$KT[id, "Row10_Col10"])))
@@ -169,7 +173,7 @@ function(level=0.9)
 }
 
 flatten_results <-
-function(x)
+function(x, raw_boot=FALSE)
 {
     Cm <- list()
     df <- data.frame(SpeciesID=x$species, Taxon=x$taxon)
@@ -212,16 +216,20 @@ function(x)
     z[is.na(z)] <- 0
     fd <- matrix(t(z), 1)
     colnames(fd) <- paste0(rep(rownames(z), each=ncol(z)), "_", colnames(z))
+    df <- cbind(df, fd)
     df$Comments <- paste(unlist(Cm), collapse=" ")
-    cr <- matrix(x$boot_current, 1)
-    colnames(cr) <- paste0("Boot_Curr_", 1:100)
-    rf <- matrix(x$boot_reference, 1)
-    colnames(rf) <- paste0("Boot_Ref_", 1:100)
-    cbind(df, fd, cr, rf)
+    if (raw_boot) {
+        cr <- matrix(x$boot_current, 1)
+        colnames(cr) <- paste0("Boot_Curr_", 1:100)
+        rf <- matrix(x$boot_reference, 1)
+        colnames(rf) <- paste0("Boot_Ref_", 1:100)
+        df <- cbind(df, cr, rf)
+    }
+    df
 }
 
 report_all <-
-function(species, boot=TRUE, path=NULL, version=NULL, level=0.9)
+function(boot=TRUE, path=NULL, version=NULL, level=0.9)
 {
     SPP <- rownames(.c4is$SPsub)
     OUT <- list()
@@ -233,13 +241,14 @@ function(species, boot=TRUE, path=NULL, version=NULL, level=0.9)
         load_species_data(SPP[i], boot=boot, path=path, version=version)
         OUT[[i]] <- calculate_results(level=level)
     }
-    do.call(rbind, lapply(OUT, flatten_results))
+    OUT
 }
 
 custom_report <-
 function(id=NULL, species="all",
 path=NULL, version=NULL,
-address=NULL, sender=NULL, boot=TRUE, level=0.9)
+address=NULL, sender=NULL, boot=TRUE,
+level=0.9, raw_boot=FALSE)
 {
     if (interactive()) {
         cat("loading common data\n")
@@ -251,7 +260,8 @@ address=NULL, sender=NULL, boot=TRUE, level=0.9)
         flush.console()
     }
     subset_common_data(id=id, species=species)
-    rval <- report_all(species, boot=boot, path=path, version=version, level=level)
+    OUT <- report_all(boot=boot, path=path, version=version, level=level)
+    rval <- do.call(rbind, lapply(OUT, flatten_results, raw_boot=raw_boot))
     if (!is.null(address)) {
         if (is.null(sender))
             sender <- getOption("cure4insect")$sender
