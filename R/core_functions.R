@@ -258,8 +258,8 @@ custom_report <-
 function(id=NULL, species="all",
 path=NULL, version=NULL,
 address=NULL, sender=NULL, boot=TRUE,
-level=0.9, raw_boot=FALSE,
-geojson=FALSE)
+level=0.9, raw_boot=FALSE)
+#geojson=FALSE)
 {
     if (interactive()) {
         cat("loading common data\n")
@@ -270,13 +270,13 @@ geojson=FALSE)
         cat("arranging subsets\n")
         flush.console()
     }
-    if (geojson) {
-        if (interactive()) {
-            cat("reading GeoJSON\n")
-            flush.console()
-        }
-        id <- readOGR(dsn=id)
-    }
+#    if (geojson) {
+#        if (interactive()) {
+#            cat("reading GeoJSON\n")
+#            flush.console()
+#        }
+#        id <- readOGR(dsn=id)
+#    }
     subset_common_data(id=id, species=species)
     OUT <- report_all(boot=boot, path=path, version=version, level=level)
     rval <- do.call(rbind, lapply(OUT, flatten_results, raw_boot=raw_boot))
@@ -328,28 +328,3 @@ function(ply)
     rownames(coordinates(XY))[!is.na(o)]
 }
 
-
-
-
-if (FALSE) {
-library(rgdal)
-library(sp)
-
-
-XY <- .c4if$XY
-fn <- "/Users/Peter/repos/cure4insect/inst/extdata/polygon.geojson"
-ply <- readOGR(dsn = fn, layer = "OGRGeoJSON")
-inherits(ply, "SpatialPolygons")
-identicalCRS(XY, ply)
-ply <- spTransform(ply, proj4string(XY))
-o <- over(XY, ply)
-rownames(coordinates(XY))[!is.na(o)]
-
-plot(XY, pch=".")
-plot(XY[!is.na(o),], pch=".", col=2, add=TRUE)
-plot(ply, add=TRUE, col=NA, border=4)
-
-ID <- overlay_polygon(ply)
-ID <- overlay_geojson(fn)
-
-}

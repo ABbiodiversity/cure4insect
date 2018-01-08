@@ -53,12 +53,6 @@ z <- custom_report(id=ID,
     address=NULL)
 z
 
-## id can be a GeoJSON polygon
-dsn <- system.file("extdata/polygon.geojson", package="cure4insect")
-z2 <- custom_report(id=dsn,
-    species=c("AlderFlycatcher", "Achillea.millefolium"),
-    geojson=TRUE)
-
 ## working with a local copy of the results is much faster
 ## set path via function arguments or the options:
 getOption("cure4insect")

@@ -37,7 +37,7 @@ flatten_results(x, raw_boot=FALSE)
 custom_report(id=NULL, species="all",
     path=NULL, version=NULL,
     address=NULL, sender=NULL, boot=TRUE,
-    level=0.9, raw_boot=FALSE, geojson)
+    level=0.9, raw_boot=FALSE)
 
 set_options(...)
 overlay_polygon(ply)
@@ -79,9 +79,6 @@ and input object from call to \code{calculate_results}.
 }
   \item{raw_boot}{
 logical, if raw bootstrap abundance results should be returned.
-}
-  \item{geojson}{
-logical, if \code{id} is provided in GeoJSON format.
 }
   \item{address}{
 character, optional email address to send finished results to
@@ -181,12 +178,6 @@ z <- custom_report(id=ID,
     species=c("AlderFlycatcher", "Achillea.millefolium"),
     address=NULL)
 z
-
-## id can be a GeoJSON polygon
-dsn <- system.file("extdata/polygon.geojson", package="cure4insect")
-z2 <- custom_report(id=dsn,
-    species=c("AlderFlycatcher", "Achillea.millefolium"),
-    geojson=TRUE)
 }
 
 ## working with a local copy of the results is much faster
