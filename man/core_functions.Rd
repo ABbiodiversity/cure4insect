@@ -1,4 +1,6 @@
 \name{custom_report}
+\alias{cure4string}
+\alias{cure4string-package}
 \alias{load_common_data}
 \alias{subset_common_data}
 \alias{load_species_data}
@@ -127,6 +129,8 @@ Returns a list output from \code{calculate_results}.
 subset spatial units and species list, calculate results for all species,
 and optionally send results as attachment of a email.
 Returns a data frame, rows representing species (flattened results).
+
+\code{overlay_polygon} selects spatial IDs based on a SpatialPolygons object.
 
 \code{set_options} sets the options and return previous values invisibly.
 }
