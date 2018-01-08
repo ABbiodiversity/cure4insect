@@ -120,6 +120,7 @@ function(level=0.9)
     NC <- sum(CS)
     NR <- sum(RS)
     SI <- 100 * min(NC, NR) / max(NC, NR)
+    SI2 <- if (NC <= NR) SI else 200 - SI
     if (.c4i1$boot) {
         Curr.Boot <- .c4i1$Curr.Boot[PIX10,,drop=FALSE]
         Ref.Boot <- .c4i1$Ref.Boot[PIX10,,drop=FALSE]
@@ -127,13 +128,17 @@ function(level=0.9)
         Ref.Boot <- Ref.Boot[match(.c4is$KTsub$Row10_Col10, rownames(Ref.Boot)),]
         CB <- colSums(Curr.Boot)
         RB <- colSums(Ref.Boot)
+        SIB <- 100 * pmin(CB, RB) / pmax(CB, RB)
+        SI2B <- ifelse(CB <= RB, SIB, 200 - SIB)
         NC_CI <- quantile(CB, a)
         NR_CI <- quantile(RB, a)
-        SI_CI <- quantile(100 * pmin(CB, RB) / pmax(CB, RB), a)
+        SI_CI <- quantile(SIB, a)
+        SI2_CI <- quantile(SI2B, a)
     } else {
+        CB <- RB <- rep(NA, 100)
         NC_CI <- c(NA, NA)
         names(NC_CI) <- paste0(100*a, "%")
-        NR_CI <- SI_CI <- NC_CI
+        NR_CI <- SI_CI <- SI2_CI <- NC_CI
     }
     Sector_Total <- (100 * (CS - RS) / NR)[-1]
     Sector_UnderHF <- (100 * (CS - RS) / RS)[-1]
@@ -147,10 +152,13 @@ function(level=0.9)
         mean=MEAN,
         level=level,
         boot=.c4i1$boot,
+        boot_current=CB,
+        boot_reference=RB,
         intactness=rbind(
             Current=c(Estimate=NC, NC_CI),
             Reference=c(Estimate=NR, NR_CI),
-            Intactness=c(Estimate=SI, SI_CI)),
+            Intactness=c(Estimate=SI, SI_CI),
+            Intactness2=c(Estimate=SI2, SI2_CI)),
         sector=rbind(
             Current=CS[-1],
             Reference=RS[-1],
@@ -182,10 +190,11 @@ function(x)
         if (x$boot && x$intactness["Reference",1] %)(% x$intactness["Reference",2:3])
             Cm[[length(Cm)+1]] <- "Reference abundance estimate is outside of CI: region probably too small."
         df$SI_Est <- x$intactness["Intactness", 1]
-        df$SI_LCL <- x$intactness["Intactness", 2]
-        df$SI_UCL <- x$intactness["Intactness", 3]
-        if (x$boot && x$intactness["Intactness",1] %)(% x$intactness["Intactness",2:3])
-            Cm[[length(Cm)+1]] <- "Intactness estimate is outside of CI."
+        df$SI2_Est <- x$intactness["Intactness2", 1]
+        df$SI2_LCL <- x$intactness["Intactness2", 2]
+        df$SI2_UCL <- x$intactness["Intactness2", 3]
+        if (x$boot && x$intactness["Intactness2",1] %)(% x$intactness["Intactness2",2:3])
+            Cm[[length(Cm)+1]] <- "Two-sided intactness estimate is outside of CI."
     } else {
         df$Abund_Curr_Est <- NA
         df$Abund_Curr_LCL <- NA
@@ -194,17 +203,21 @@ function(x)
         df$Abund_Ref_LCL <- NA
         df$Abund_Ref_UCL <- NA
         df$SI_Est <- NA
-        df$SI_LCL <- NA
-        df$SI_UCL <- NA
+        df$SI2_Est <- NA
+        df$SI2_LCL <- NA
+        df$SI2_UCL <- NA
         Cm[[length(Cm)+1]] <- "Abundance did not reach the 1% threshold in the region."
     }
     z <- x$sector
     z[is.na(z)] <- 0
     fd <- matrix(t(z), 1)
     colnames(fd) <- paste0(rep(rownames(z), each=ncol(z)), "_", colnames(z))
-    df <- cbind(df, fd)
     df$Comments <- paste(unlist(Cm), collapse=" ")
-    df
+    cr <- matrix(x$boot_current, 1)
+    colnames(cr) <- paste0("Boot_Curr_", 1:100)
+    rf <- matrix(x$boot_reference, 1)
+    colnames(rf) <- paste0("Boot_Ref_", 1:100)
+    cbind(df, fd, cr, rf)
 }
 
 report_all <-
