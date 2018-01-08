@@ -1,4 +1,8 @@
-# cure4insect: Custom Reporting for Intactness and Sector Effects
+# cure4insect
+
+> Custom Reporting for Intactness and Sector Effects
+
+[![Linux build status](https://travis-ci.org/ABbiodiversity/cure4insect.svg?branch=master)](https://travis-ci.org/ABbiodiversity/cure4insect)
 
 ## Install
 
