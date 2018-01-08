@@ -275,7 +275,7 @@ geojson=FALSE)
             cat("reading GeoJSON\n")
             flush.console()
         }
-        id <- readOGR(dsn=id, layer = "OGRGeoJSON")
+        id <- readOGR(dsn=id)
     }
     subset_common_data(id=id, species=species)
     OUT <- report_all(boot=boot, path=path, version=version, level=level)

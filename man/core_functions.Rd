@@ -37,7 +37,7 @@ flatten_results(x, raw_boot=FALSE)
 custom_report(id=NULL, species="all",
     path=NULL, version=NULL,
     address=NULL, sender=NULL, boot=TRUE,
-    level=0.9, raw_boot=FALSE)
+    level=0.9, raw_boot=FALSE, geojson)
 
 set_options(...)
 overlay_polygon(ply)
@@ -78,14 +78,17 @@ and input object from call to \code{calculate_results}.
   \item{raw_boot}{
 logical, if raw bootstrap abundance results should be returned.
 }
+  \item{geojson}{
+logical, if \code{id} is provided in GeoJSON format.
+}
   \item{address}{
 character, optional email address to send finished results to
-in the format \code{name@domain.org}.
+in the format \code{"name@domain.org"}.
 The default (\code{NULL}) is not to send an email.
 }
   \item{sender}{
 character, optional email address to send finished results to
-in the format \code{name@domain.org}.
+in the format \code{"name@domain.org"}.
 The default (\code{NULL}) is not to use
 \code{getOption("cure4insect")$sender}.
 }
@@ -160,7 +163,7 @@ ID <- read.table(system.file("extdata/pixels.txt", package="cure4insect"))
 ## ID can also be a SpatialPolygons object based on GeoJSON for example
 #library(rgdal)
 #dsn <- system.file("extdata/polygon.geojson", package="cure4insect")
-#ID <- readOGR(dsn=dsn, layer="OGRGeoJSON")
+#ID <- readOGR(dsn=dsn)
 subset_common_data(id=ID, species=Spp)
 xx <- report_all()
 str(xx)
@@ -169,7 +172,7 @@ do.call(rbind, lapply(xx, flatten_results))
 ## wrapper function ----------------------
 ## species="all" runs all species
 ## species="mites" runs all mite species
-## sender=you@example.org will send an email with the results attached
+## sender="you@example.org" will send an email with the results attached
 z <- custom_report(id=ID,
     species=c("AlderFlycatcher", "Achillea.millefolium"),
     address=NULL)

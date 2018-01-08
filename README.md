@@ -36,7 +36,7 @@ ID <- read.table(system.file("extdata/pixels.txt", package="cure4insect"))
 ## ID can also be a SpatialPolygons object based on GeoJSON for example
 #library(rgdal)
 #dsn <- system.file("extdata/polygon.geojson", package="cure4insect")
-#ID <- readOGR(dsn=dsn, layer="OGRGeoJSON")
+#ID <- readOGR(dsn=dsn)
 subset_common_data(id=ID, species=Spp)
 xx <- report_all()
 str(xx)
