@@ -15,3 +15,6 @@ importFrom("Matrix", "colSums")
 importFrom("sendmailR", "sendmail", "mime_part")
 importFrom("stats", "quantile")
 importFrom("utils", "flush.console")
+importFrom("sp", "identicalCRS", "over", "spTransform", "coordinates",
+    "proj4string")
+

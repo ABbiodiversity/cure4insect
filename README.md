@@ -11,7 +11,7 @@ devtools::install_github("ABbiodiversity/cure4insect")
 ```R
 library(cure4insect)
 
-## the workflow with 1 species
+## workflow with 1 species --------------------
 ## ID is a vector of Row_Col IDs of 1km pixels
 ## species is a vector if species IDs
 load_common_data()
@@ -24,23 +24,38 @@ x <- calculate_results()
 x
 flatten_results(x)
 
-## wrapper function
+## workflow with multiple species ----------------
+load_common_data() # use as before
+## id and species can be defined using text files
+Spp <- read.table(system.file("extdata/species.txt", package="cure4insect"))
+ID <- read.table(system.file("extdata/pixels.txt", package="cure4insect"))
+## ID can also be a SpatialPolygons object based on GeoJSON for example
+#dsn <- system.file("extdata/polygon.geojson", package="cure4insect")
+#ID <- readOGR(dsn=dsn, layer="OGRGeoJSON")
+subset_common_data(id=ID, species=Spp)
+xx <- report_all()
+str(xx)
+do.call(rbind, lapply(xx, flatten_results))
+
+## wrapper function ----------------------
 ## species="all" runs all species
 ## species="mites" runs all mite species
 ## sender=you@example.org will send an email with the results attached
-z <- custom_report(id=ID, 
+z <- custom_report(id=ID,
     species=c("AlderFlycatcher", "Achillea.millefolium"),
     address=NULL)
 z
 
 ## working with a local copy of the results is much faster
 ## set path via function arguments or the options:
+getOption("cure4insect")
 (opar <- set_options())
 set_options(baseurl = "/your/path/to/local/copy")
 (set_options(opar)) # reset options
 
 ## change configs in this file to make it permanent for a given installation
-system.file("config/defaults.conf", package="cure4insect")
+as.list(drop(read.dcf(file=system.file("config/defaults.conf",
+package="cure4insect"))))
 ```
 
 ## Web API

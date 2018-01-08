@@ -11,4 +11,4 @@ BugReports: https://github.com/ABbiodiversity/cure4insect/issues
 License: MIT + file LICENSE
 LazyLoad: yes
 LazyData: true
-Depends: Matrix, intrval, sendmailR
+Depends: Matrix, intrval, sendmailR, sp

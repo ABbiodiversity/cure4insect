@@ -10,6 +10,7 @@
 \alias{report_all}
 \alias{custom_report}
 \alias{set_options}
+\alias{overlay_polygon}
 \title{
 Core Functions for Custom Reporting
 }
@@ -37,6 +38,7 @@ custom_report(id=NULL, species="all",
     level=0.9, raw_boot=FALSE)
 
 set_options(...)
+overlay_polygon(ply)
 }
 \arguments{
   \item{path}{
@@ -52,7 +54,7 @@ IDs of the 1km x 1km spatial pixel units to be used for the custom summaries.
 The Row_Col field defines the IDs and links the raster cells in the geodatabase
 (\url{http://ftp.public.abmi.ca/species.abmi.ca/gis/Grid1km_working.gdb.zip})
 or CSV
-(\url{http: //ftp.public.abmi.ca/species.abmi.ca/gis/Grid1km_working.csv.zip};
+(\url{http://ftp.public.abmi.ca/species.abmi.ca/gis/Grid1km_working.csv.zip};
 with latitude/longitude in NAD_1983_10TM_AEP_Forest projection
 \url{http://spatialreference.org/ref/epsg/3402/}).
 If \code{id} is a matrix-like object, values of the 1st column are taken.
@@ -84,6 +86,9 @@ character, optional email address to send finished results to
 in the format \code{name@domain.org}.
 The default (\code{NULL}) is not to use
 \code{getOption("cure4insect")$sender}.
+}
+  \item{ply}{
+an object of class SpatialPolygons defined by the 'sp' package.
 }
   \item{\dots}{
 Arguments in \code{tag = value} form, or a list of tagged values.
@@ -144,13 +149,17 @@ x
 flatten_results(x)
 
 ## workflow with multiple species ----------------
-#load_common_data() # use as before
+load_common_data() # use as before
 ## id and species can be defined using text files
 Spp <- read.table(system.file("extdata/species.txt", package="cure4insect"))
 ID <- read.table(system.file("extdata/pixels.txt", package="cure4insect"))
+## ID can also be a SpatialPolygons object based on GeoJSON for example
+#dsn <- system.file("extdata/polygon.geojson", package="cure4insect")
+#ID <- readOGR(dsn=dsn, layer="OGRGeoJSON")
 subset_common_data(id=ID, species=Spp)
 xx <- report_all()
-xx
+str(xx)
+do.call(rbind, lapply(xx, flatten_results))
 
 ## wrapper function ----------------------
 ## species="all" runs all species
@@ -172,8 +181,5 @@ set_options(baseurl = "/your/path/to/local/copy")
 ## change configs in this file to make it permanent for a given installation
 as.list(drop(read.dcf(file=system.file("config/defaults.conf",
 package="cure4insect"))))
-
-
-
 }
 \keyword{ utilities }

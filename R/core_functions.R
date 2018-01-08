@@ -53,15 +53,22 @@ function(id=NULL, species="all")
     } else {
         SPPfull <- species
     }
-    assign("SPsub", x[rownames(x) %in% SPPfull,,drop=FALSE],
+    SPPfull <- rownames(x)[rownames(x) %in% SPPfull]
+    if (length(SPPfull) <= 0)
+        stop("no species selected")
+    assign("SPsub", x[SPPfull,,drop=FALSE],
         envir=.c4is)
 
     if (is.null(id))
         id <- rownames(.c4if$KT)
+    if (inherits(id, "SpatialPolygons"))
+        id <- overlay_polygon(id)
     if (!is.null(dim(id))) # if provided as table, use 1st col
         id <- as.character(id[,1L])
     id <- id[id %in% rownames(.c4if$KT)]
     id <- sort(id)
+    if (length(id) <= 0)
+        stop("no spatial IDs selected")
     id10 <- sort(unique(as.character(.c4if$KT[id, "Row10_Col10"])))
     assign("KTsub", .c4if$KT[id,,drop=FALSE],
         envir=.c4is)
@@ -241,6 +248,7 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9)
         load_species_data(SPP[i], boot=boot, path=path, version=version)
         OUT[[i]] <- calculate_results(level=level)
     }
+    names(OUT) <- SPP
     OUT
 }
 
@@ -294,4 +302,44 @@ function(...)
         options(cure4insect = npar)
     }
     invisible(opar)
+}
+
+overlay_polygon <-
+function(ply)
+{
+    if (!inherits(ply, "SpatialPolygons"))
+        stop("must inherit from class SpatialPolygons")
+    if (interactive())
+        cat("running spatial overlay\n")
+    XY <- .c4if$XY
+    if (!identicalCRS(XY, ply))
+        ply <- spTransform(ply, proj4string(XY))
+    o <- over(XY, ply)
+    rownames(coordinates(XY))[!is.na(o)]
+}
+
+
+
+
+if (FALSE) {
+library(rgdal)
+library(sp)
+
+
+XY <- .c4if$XY
+fn <- "/Users/Peter/repos/cure4insect/inst/extdata/polygon.geojson"
+ply <- readOGR(dsn = fn, layer = "OGRGeoJSON")
+inherits(ply, "SpatialPolygons")
+identicalCRS(XY, ply)
+ply <- spTransform(ply, proj4string(XY))
+o <- over(XY, ply)
+rownames(coordinates(XY))[!is.na(o)]
+
+plot(XY, pch=".")
+plot(XY[!is.na(o),], pch=".", col=2, add=TRUE)
+plot(ply, add=TRUE, col=NA, border=4)
+
+ID <- overlay_polygon(ply)
+ID <- overlay_geojson(fn)
+
 }
