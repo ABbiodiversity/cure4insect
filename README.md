@@ -58,4 +58,5 @@ curl http://sc-dev.abmi.ca/ocpu/library/cure4insect/R/custom_report/csv \
 * provide species table and kgrid as data, so that folks can subset
 * provide downloadable zip of results so that folks can work from local drive
 * refine interface to accept GeoJSON polygons
-* deveop fully fledged web interface
+* deveop fully fledged web interface (is/species as csv)
+* decide how to report CI for SI, and if raw boot results are needed
