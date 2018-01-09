@@ -36,12 +36,11 @@ clear_species_data()
 
 calculate_results(level=0.9)
 report_all(boot=TRUE, path=NULL, version=NULL, level=0.9)
-flatten_results(x, raw_boot=FALSE)
+flatten_results(x, raw_boot=FALSE, limit=0.01)
 
 custom_report(id=NULL, species="all",
-    path=NULL, version=NULL,
-    address=NULL, sender=NULL, boot=TRUE,
-    level=0.9, raw_boot=FALSE)
+    path=NULL, version=NULL, address=NULL,
+    boot=TRUE, level=0.9, raw_boot=FALSE, limit=0.01)
 
 set_options(...)
 overlay_polygon(ply)
@@ -88,16 +87,15 @@ and input object from call to \code{calculate_results}.
   \item{raw_boot}{
 logical, if raw bootstrap abundance results should be returned.
 }
+  \item{limit}{
+numeric (0-1), species stats in a region are set to \code{NA} when the mean
+abundance of the species is less than 100 * \code{limit} percent of the maximum
+abundance (current and reference combined).
+}
   \item{address}{
 character, optional email address to send finished results to
 in the format \code{"name@domain.org"}.
 The default (\code{NULL}) is not to send an email.
-}
-  \item{sender}{
-character, optional email address to send finished results to
-in the format \code{"name@domain.org"}.
-The default (\code{NULL}) is not to use
-\code{getOption("cure4insect")$sender}.
 }
   \item{ply}{
 an object of class SpatialPolygons defined by the 'sp' package.
@@ -110,7 +108,12 @@ The tags are configuration settings as described below.
 \details{
 Configuration is stored in the file
 \code{system.file("config/defaults.conf", package="cure4insect")}.
-Current options are: \code{baseurl}, \code{version}, and \code{sender}.
+Current options are:
+\code{path} (path to results),
+\code{version} (version of results),
+\code{sender} (email of sender),
+\code{subject} (subject of the email),
+and \code{body} (body of the email).
 }
 \value{
 \code{load_common_data} loads common data to memory of the R session.

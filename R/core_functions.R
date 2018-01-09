@@ -22,7 +22,7 @@ function(path=NULL, version=NULL)
     clear_common_data()
     opts <- getOption("cure4insect")
     if (is.null(path))
-        path <- opts$baseurl
+        path <- opts$path
     if (is.null(version))
         version <- opts$version
     fn <- file.path(path, version, "data", "kgrid_areas_by_sector.RData")
@@ -92,7 +92,7 @@ function(species, boot=TRUE, path=NULL, version=NULL)
     clear_species_data()
     opts <- getOption("cure4insect")
     if (is.null(path))
-        path <- opts$baseurl
+        path <- opts$path
     if (is.null(version))
         version <- opts$version
     taxon <- as.character(.c4if$SP[species, "taxon"])
@@ -187,13 +187,15 @@ function(level=0.9)
 }
 
 flatten_results <-
-function(x, raw_boot=FALSE)
+function(x, raw_boot=FALSE, limit=0.01)
 {
+    if (limit %)(% c(0,1))
+        stop("limit value must be between in [0, 1]")
     Cm <- list()
     df <- data.frame(SpeciesID=x$species, Taxon=x$taxon)
     rownames(df) <- x$species
     df$CI_Level <- x$level
-    KEEP <- x$mean > x$max * 0.01
+    KEEP <- x$mean > x$max * limit
     if (!x$boot)
         Cm[[length(Cm)+1]] <- "Confidence intervals were not requested."
     if (KEEP) {
@@ -224,7 +226,8 @@ function(x, raw_boot=FALSE)
         df$SI2_Est <- NA
         df$SI2_LCL <- NA
         df$SI2_UCL <- NA
-        Cm[[length(Cm)+1]] <- "Abundance did not reach the 1% threshold in the region."
+        Cm[[length(Cm)+1]] <- paste0("Abundance did not reach the ",
+            round(100*limit,2), "% threshold in the region.")
     }
     z <- x$sector
     z[is.na(z)] <- 0
@@ -262,8 +265,8 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9)
 custom_report <-
 function(id=NULL, species="all",
 path=NULL, version=NULL,
-address=NULL, sender=NULL, boot=TRUE,
-level=0.9, raw_boot=FALSE)
+address=NULL, boot=TRUE,
+level=0.9, raw_boot=FALSE, limit=0.01)
 #geojson=FALSE)
 {
     if (interactive()) {
@@ -284,7 +287,8 @@ level=0.9, raw_boot=FALSE)
 #    }
     subset_common_data(id=id, species=species)
     OUT <- report_all(boot=boot, path=path, version=version, level=level)
-    rval <- do.call(rbind, lapply(OUT, flatten_results, raw_boot=raw_boot))
+    rval <- do.call(rbind, lapply(OUT, flatten_results, raw_boot=raw_boot,
+        limit=limit))
     if (!is.null(address)) {
         if (is.null(sender))
             sender <- getOption("cure4insect")$sender
