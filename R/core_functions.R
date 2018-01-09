@@ -128,7 +128,8 @@ function(level=0.9)
     ## Rockies and unmodelled regions should be excluded
     PIX <- PIX[PIX %in% rownames(.c4i1$SA.Curr)]
     #PIX10 <- unique(as.character(.c4is$KTsub$Row10_Col10))
-    PIX10 <- unique(as.character(.c4is$KTsub[PIX,"Row10_Col10"]))
+    KTsubsub <- .c4is$KTsub[PIX,,drop=FALSE]
+    PIX10 <- unique(as.character(KTsubsub$Row10_Col10))
     SA.Curr <- .c4i1$SA.Curr[PIX,cn]
     SA.Ref <- .c4i1$SA.Ref[PIX,cn]
     MEAN <- max(mean(rowSums(SA.Curr)), mean(rowSums(SA.Ref)))
@@ -141,10 +142,10 @@ function(level=0.9)
     if (.c4i1$boot) {
         Curr.Boot <- .c4i1$Curr.Boot[PIX10,,drop=FALSE]
         Ref.Boot <- .c4i1$Ref.Boot[PIX10,,drop=FALSE]
-        Curr.Boot <- Curr.Boot[match(.c4is$KTsub$Row10_Col10, rownames(Curr.Boot)),]
-        Ref.Boot <- Ref.Boot[match(.c4is$KTsub$Row10_Col10, rownames(Ref.Boot)),]
-        CB <- colSums(Curr.Boot, na.rm=TRUE)
-        RB <- colSums(Ref.Boot, na.rm=TRUE)
+        Curr.Boot <- Curr.Boot[match(KTsubsub$Row10_Col10, rownames(Curr.Boot)),]
+        Ref.Boot <- Ref.Boot[match(KTsubsub$Row10_Col10, rownames(Ref.Boot)),]
+        CB <- colSums(Curr.Boot)
+        RB <- colSums(Ref.Boot)
         SIB <- 100 * pmin(CB, RB) / pmax(CB, RB)
         SI2B <- ifelse(CB <= RB, SIB, 200 - SIB)
         NC_CI <- quantile(CB, a)
