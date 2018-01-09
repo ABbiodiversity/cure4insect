@@ -189,10 +189,11 @@ str(xx)
 do.call(rbind, lapply(xx, flatten_results))
 
 ## ID can also be a SpatialPolygons object based on GeoJSON for example
-dsn <- system.file("extdata/polygon.geojson", package="cure4insect")
-ply <- readOGR(dsn=dsn)
-subset_common_data(id=ply, species=Spp)
-xx2 <- report_all()
+#library(rgdal)
+#dsn <- system.file("extdata/polygon.geojson", package="cure4insect")
+#ply <- readOGR(dsn=dsn)
+#subset_common_data(id=ply, species=Spp)
+#xx2 <- report_all()
 
 ## wrapper function ----------------------
 ## species="all" runs all species
