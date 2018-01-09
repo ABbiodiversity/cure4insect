@@ -9,7 +9,12 @@ export(
     flatten_results,
     report_all,
     custom_report,
-    set_options)
+    set_options,
+    overlay_polygon,
+    get_all_id,
+    get_all_species,
+    get_id_locations,
+    get_species_table)
 importFrom("intrval", "%)(%")
 importFrom("Matrix", "colSums")
 importFrom("sendmailR", "sendmail", "mime_part")
