@@ -290,8 +290,7 @@ level=0.9, raw_boot=FALSE, limit=0.01)
     rval <- do.call(rbind, lapply(OUT, flatten_results, raw_boot=raw_boot,
         limit=limit))
     if (!is.null(address)) {
-        if (is.null(sender))
-            sender <- getOption("cure4insect")$sender
+        sender <- getOption("cure4insect")$sender
         subject <- "Custom Report"
         body <- list("Hi,\n\nYour custom report results are attached.\n\nWith regards,\n\nthe ABMI Science",
             mime_part(rval, paste0("Custom_Report_", Sys.Date())))
