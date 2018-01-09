@@ -5,6 +5,9 @@
 .c4i1 <- new.env(parent=emptyenv())
 if(getRversion() >= "2.15.1")
     utils::globalVariables(c(".c4if", ".c4is", ".c4i1"))
+#.c4i1=cure4insect:::.c4i1
+#.c4if=cure4insect:::.c4if
+#.c4is=cure4insect:::.c4is
 
 ## load data set that is common (full grid and species)
 ## KA_2012, KA_2014: sector areas by 1km unit
@@ -124,7 +127,8 @@ function(level=0.9)
     PIX <- rownames(.c4is$KTsub)
     ## Rockies and unmodelled regions should be excluded
     PIX <- PIX[PIX %in% rownames(.c4i1$SA.Curr)]
-    PIX10 <- unique(as.character(.c4is$KTsub$Row10_Col10))
+    #PIX10 <- unique(as.character(.c4is$KTsub$Row10_Col10))
+    PIX10 <- unique(as.character(.c4is$KTsub[PIX,"Row10_Col10"]))
     SA.Curr <- .c4i1$SA.Curr[PIX,cn]
     SA.Ref <- .c4i1$SA.Ref[PIX,cn]
     MEAN <- max(mean(rowSums(SA.Curr)), mean(rowSums(SA.Ref)))
@@ -139,8 +143,8 @@ function(level=0.9)
         Ref.Boot <- .c4i1$Ref.Boot[PIX10,,drop=FALSE]
         Curr.Boot <- Curr.Boot[match(.c4is$KTsub$Row10_Col10, rownames(Curr.Boot)),]
         Ref.Boot <- Ref.Boot[match(.c4is$KTsub$Row10_Col10, rownames(Ref.Boot)),]
-        CB <- colSums(Curr.Boot)
-        RB <- colSums(Ref.Boot)
+        CB <- colSums(Curr.Boot, na.rm=TRUE)
+        RB <- colSums(Ref.Boot, na.rm=TRUE)
         SIB <- 100 * pmin(CB, RB) / pmax(CB, RB)
         SI2B <- ifelse(CB <= RB, SIB, 200 - SIB)
         NC_CI <- quantile(CB, a)
