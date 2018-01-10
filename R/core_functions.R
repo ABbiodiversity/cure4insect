@@ -167,7 +167,7 @@ function(level=0.9)
     KA <- if (.c4i1$taxon == "birds") .c4is$A_2012 else .c4is$A_2014
     Sector_Area <- (100 * KA / sum(KA))[names(Sector_Total)]
     Sector_Unit <- 100 * Sector_Total / Sector_Area
-    list(
+    out <- list(
         taxon=.c4i1$taxon,
         species=.c4i1$species,
         max=MAX,
@@ -188,6 +188,8 @@ function(level=0.9)
             Total=Sector_Total,
             UnderHF=Sector_UnderHF,
             Unit=Sector_Unit))
+    class(out) <- "c4iraw"
+    out
 }
 
 flatten_results <-

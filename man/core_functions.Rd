@@ -209,7 +209,7 @@ z
 ## set path via function arguments or the options:
 getOption("cure4insect")
 (opar <- set_options())
-set_options(baseurl = "/your/path/to/local/copy")
+set_options(path = "/your/path/to/local/copy")
 (set_options(opar)) # reset options
 
 ## change configs in this file to make it permanent for a given installation
