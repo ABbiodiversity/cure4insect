@@ -344,13 +344,13 @@ is_loaded <- function()
     length(names(.c4if)) > 0
 
 get_id_locations <- function() {
-    if (!is_loaded()))
+    if (!is_loaded())
         stop("use `load_common_data()` first")
     .c4if$XY
 }
 
 get_species_table <- function()  {
-    if (!is_loaded()))
+    if (!is_loaded())
         stop("use `load_common_data()` first")
     .c4if$SP
 }
@@ -361,7 +361,7 @@ get_all_id <- function()
 get_all_species <- function()
     rownames(get_species_table())
 
-.verbose() <- function() {
+.verbose <- function() {
     x <- getOption("cure4insect")$verbose
     !is.null(x) && x > 0
 }
