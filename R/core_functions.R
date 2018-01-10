@@ -1,22 +1,3 @@
-if (FALSE) {
-t0 <- proc.time()[3]
-ETA <- NULL
-for (spp in SPP) {
-    i <- which(SPP == spp)
-    out <- list()
-    for (j in 1:B) {
-        cat("Species: ", spp, " (", i, "/", length(SPP), ") - Run: ",
-            j, "/", B, " - ETA: ",
-            pbapply:::getTimeAsString(ETA), "\n", sep="")
-        flush.console()
-        out[[j]] <- try(do_1spec1run(j, spp, mods, CAICalpha = alpha,
-            return_best = j==1))
-        dt <- proc.time()[3] - t0
-        ETA <- ((B*length(SPP)) - ((i-1)*B+j)) * dt / ((i-1)*B+j)
-    }
-    save(out, file=paste0("e:/peter/bam/bcr4/results/", spp, ".RData"))
-}
-}
 ## store object for full grid and species
 .c4if <- new.env(parent=emptyenv())
 ## store object for subset of the grid and species
@@ -274,14 +255,21 @@ report_all <-
 function(boot=TRUE, path=NULL, version=NULL, level=0.9)
 {
     SPP <- rownames(.c4is$SPsub)
+    n <- length(SPP)
     OUT <- list()
-    for (i in seq_along(SPP)) {
+    ETA <- NULL
+    t0 <- proc.time()[3]
+    for (i in seq_len(n)) {
         if (interactive()) {
-            cat("processing species:", SPP[i], i, "/", length(SPP), "\n")
+            cat("* species:", SPP[i], " ", i, "/", length(SPP),
+                ", ETA:", getTimeAsString(ETA), sep="")
             flush.console()
         }
         load_species_data(SPP[i], boot=boot, path=path, version=version)
         OUT[[i]] <- calculate_results(level=level)
+        dt <- proc.time()[3] - t0
+        cat(", elapsed:", getTimeAsString(dt), "\n")
+        ETA <- (n - i) * dt / i
     }
     names(OUT) <- SPP
     OUT
@@ -345,20 +333,6 @@ function(...)
         options(cure4insect = npar)
     }
     invisible(opar)
-}
-
-overlay_polygon <-
-function(ply)
-{
-    if (!inherits(ply, "SpatialPolygons"))
-        stop("must inherit from class SpatialPolygons")
-    if (interactive())
-        cat("running spatial overlay\n")
-    XY <- .c4if$XY
-    if (!identicalCRS(XY, ply))
-        ply <- spTransform(ply, proj4string(XY))
-    o <- over(XY, ply)
-    rownames(coordinates(XY))[!is.na(o)]
 }
 
 get_all_id <- function() {

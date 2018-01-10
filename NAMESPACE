@@ -22,4 +22,5 @@ importFrom("stats", "quantile")
 importFrom("utils", "flush.console")
 importFrom("sp", "identicalCRS", "over", "spTransform", "coordinates",
     "proj4string")
+importFrom("pbapply", "getTimeAsString")
 #importFrom("rgdal", "readOGR")
