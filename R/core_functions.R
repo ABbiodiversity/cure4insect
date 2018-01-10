@@ -258,11 +258,13 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9)
     n <- length(SPP)
     OUT <- list()
     ETA <- NULL
+    if (interactive())
+        cat("processing species:\n")
     t0 <- proc.time()[3]
     for (i in seq_len(n)) {
         if (interactive()) {
-            cat("* species:", SPP[i], " ", i, "/", length(SPP),
-                ", ETA:", getTimeAsString(ETA), sep="")
+            cat("* ", i, "/", length(SPP), " ", SPP[i], ", ETA: ",
+                getTimeAsString(ETA), sep="")
             flush.console()
         }
         load_species_data(SPP[i], boot=boot, path=path, version=version)
