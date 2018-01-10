@@ -108,9 +108,9 @@ ylim=NULL, ylab="Unit effect (%)", xlab="Area (% of region)")
     rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4],
          col = "gray88",border="gray88")
     x.at<-pretty(c(0,sum(Area[sectors])))
-    axis(side=1,tck=1,at=x.at,lab=rep("",length(x.at)),col="grey95")
+    axis(side=1,tck=1,at=x.at,labels=rep("",length(x.at)),col="grey95")
     y.at<-pretty(c(ymin,ymax),n=6)
-    axis(side=2,tck=1,at=y.at,lab=rep("",length(y.at)),col="grey95")
+    axis(side=2,tck=1,at=y.at,labels=rep("",length(y.at)),col="grey95")
     q <- barplot(unit.effect,
         width=Area[sectors],
         space=0,col=c1,border=c1,ylim=c(ymin,ymax),
@@ -120,7 +120,7 @@ ylim=NULL, ylab="Unit effect (%)", xlab="Area (% of region)")
         bty="n",col.axis="grey40",col.lab="grey40",las=2,add=TRUE)
     box(bty="l",col="grey40")
     mtext(side=1,line=2,at=x.at,x.at,col="grey40",cex=1.2)
-    axis(side=1,at=x.at,tcl=0.3,lab=rep("",length(x.at)),col="grey40",
+    axis(side=1,at=x.at,tcl=0.3,labels=rep("",length(x.at)),col="grey40",
         col.axis="grey40",cex.axis=1.2,las=1)
     abline(h=0,lwd=2,col="grey40")
     mtext(side=1,at=q+c(0,0,-1,0,+1),sector.names,col=c1,cex=1.3,
@@ -227,7 +227,7 @@ function(Curr, Ref, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=NULL)
         s <- st$stats
         k[which(!k)[1]] <- TRUE
         if (method == "kde")
-            d <- KernSmooth::bkde(xx[k]) # uses Normal kernel
+            d <- bkde(xx[k]) # uses Normal kernel
         if (method == "fft")
             d <- density(xx[k]) # uses FFT
         if (method == "hist") {

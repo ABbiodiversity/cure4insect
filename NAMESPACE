@@ -27,4 +27,10 @@ importFrom("utils", "flush.console")
 importFrom("sp", "identicalCRS", "over", "spTransform", "coordinates",
     "proj4string")
 importFrom("pbapply", "getTimeAsString")
+importFrom("grDevices", "boxplot.stats")
+importFrom("graphics", "abline", "axis", "barplot", "box", "hist",
+    "lines", "mtext", "par", "plot", "points", "polygon",
+    "rect", "rug", "segments", "text", "title")
+importFrom("stats", "density")
+importFrom("KernSmooth", "bkde")
 #importFrom("rgdal", "readOGR")
