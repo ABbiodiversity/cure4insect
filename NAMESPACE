@@ -25,7 +25,7 @@ importFrom("intrval", "%)(%")
 importFrom("Matrix", "colSums")
 importFrom("sendmailR", "sendmail", "mime_part")
 importFrom("stats", "quantile", "density", "sd")
-importFrom("utils", "flush.console", "stack")
+importFrom("utils", "flush.console", "stack", "write.csv")
 importFrom("sp", "identicalCRS", "over", "spTransform", "coordinates",
     "proj4string")
 importFrom("pbapply", "getTimeAsString")
