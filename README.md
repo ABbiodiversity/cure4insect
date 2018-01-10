@@ -71,6 +71,22 @@ set_options(path = "/your/path/to/local/copy")
 ## change configs in this file to make it permanent for a given installation
 as.list(drop(read.dcf(file=system.file("config/defaults.conf",
 package="cure4insect"))))
+
+## making of the file raw_all.rda
+library(cure4insect)
+opar <- set_options(path = "w:/reports")
+getOption("cure4insect")
+load_common_data()
+SPP <- get_all_species()
+subset_common_data(id=get_all_id(), species=SPP)
+res <- list()
+for (i in 1:length(SPP)) {
+    cat("processing species:", SPP[i], i, "/", length(SPP), "\n")
+    flush.console()
+    load_species_data(SPP[i])
+    res[[i]] <- calculate_results()
+}
+names(res) <- SPP
 ```
 
 ## Web API
@@ -87,57 +103,7 @@ curl http://sc-dev.abmi.ca/ocpu/library/cure4insect/R/custom_report/csv \
 
 * provide downloadable zip of results so that folks can work from local drive
 * deveop fully fledged web interface (is/species as csv)
-* decide how to report CI for SI, and if raw boot results are needed
-
-fix this:
-
-```
-> library(cure4insect)
-Loading required package: Matrix
-Loading required package: intrval
-Loading required package: sendmailR
-Loading required package: sp
-cure4insect 0.0-2        2018-01-08
->
-> ## workflow with 1 species --------------------
-> ## ID is a vector of Row_Col IDs of 1km pixels
-> ## species is a vector if species IDs
-> load_common_data()
-> ## here is how to inspect all possible spatial and species IDs
-> spp=get_all_species()[1:10]
-> ID <- c("182_362", "182_363", "182_364", "182_365", "182_366", "182_367",
-+     "182_368", "182_369", "182_370", "182_371", "182_372")
-> z <- custom_report(id=ID,
-+     species=spp)
-loading common data
-arranging subsets
-processing species: Abies.balsamea 1 / 10
-processing species: Achillea.alpina 2 / 10
-processing species: Achillea.millefolium 3 / 10
-processing species: Actaea.rubra 4 / 10
-processing species: Adoxa.moschatellina 5 / 10
-processing species: Agoseris.glauca 6 / 10
-Error in .c4i1$Curr.Boot[PIX10, , drop = FALSE] : subscript out of bounds
 
 
-
-library(cure4insect)
-opar <- set_options(path = "w:/reports")
-getOption("cure4insect")
-load_common_data()
-SPP <- get_all_species()
-subset_common_data(id=get_all_id(), species=SPP)
-t0 <- proc.time()
-res <- list()
-for (i in 1:length(SPP)) {
-    cat("processing species:", SPP[i], i, "/", length(SPP), "\n")
-    flush.console()
-    load_species_data(SPP[i])
-    res[[i]] <- try(calculate_results())
-}
-(t1 <- proc.time() - t0)
-
-
-```
 
 
