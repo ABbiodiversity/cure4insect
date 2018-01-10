@@ -14,7 +14,11 @@ export(
     get_all_id,
     get_all_species,
     get_id_locations,
-    get_species_table)
+    get_species_table,
+    sector_plot)
+S3method(sector_plot, c4iraw)
+S3method(sector_plot, data.frame)
+
 importFrom("intrval", "%)(%")
 importFrom("Matrix", "colSums")
 importFrom("sendmailR", "sendmail", "mime_part")

@@ -193,8 +193,8 @@ function(Curr, Ref, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=NULL)
 }
 
 ## multi-species plot
-.sector_plot3 <- function(x, ylab="Sector effects (%)", col=NULL, type="kde", ...) {
-    type <- match.arg(type, c("kde", "fft", "hist"))
+.sector_plot3 <- function(x, ylab="Sector effects (%)", col=NULL, method="kde", ...) {
+    method <- match.arg(method, c("kde", "fft", "hist"))
     if (!is.list(x))
         x <- as.data.frame(x)
     sectors <- c("Agriculture","Forestry","Energy","RuralUrban","Transportation")
@@ -226,11 +226,11 @@ function(Curr, Ref, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=NULL)
         st <- boxplot.stats(xx)
         s <- st$stats
         k[which(!k)[1]] <- TRUE
-        if (type == "kde")
+        if (method == "kde")
             d <- KernSmooth::bkde(xx[k]) # uses Normal kernel
-        if (type == "fft")
+        if (method == "fft")
             d <- density(xx[k]) # uses FFT
-        if (type == "hist") {
+        if (method == "hist") {
             h <- hist(xx[k], plot=FALSE)
             xv <- rep(h$breaks, each=2)
             yv <- c(0, rep(h$density, each=2), 0)

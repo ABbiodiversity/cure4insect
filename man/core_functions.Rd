@@ -129,7 +129,7 @@ and \code{clear_species_data} clear the respective environments.
 
 \code{calculate_results} calculates intactness and sector effects
 results based on spatial subset definitions and
-single species data in the memory.
+single species data in the memory. The output is a list of class 'c4iraw'.
 
 \code{flatten_results} arranges the results from \code{calculate_results}
 into a 1-liner data frame.
@@ -155,6 +155,9 @@ All these require to run \code{load_common_data()} first.
 }
 \author{
 Peter Solymos <solymos@ualberta.ca>
+}
+\seealso{
+\code{\link{sector_plot}}
 }
 \examples{
 \dontrun{
