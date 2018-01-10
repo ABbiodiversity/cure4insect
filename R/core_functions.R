@@ -53,6 +53,8 @@ clear_subset_data <- function()
 subset_common_data <-
 function(id=NULL, species="all")
 {
+    if (length(names(.c4if)) < 1)
+        stop("common data needed: use load_common_data")
     if (.verbose()) {
         cat("arranging subsets\n")
         flush.console()
@@ -134,6 +136,10 @@ function(species, boot=TRUE, path=NULL, version=NULL)
 calculate_results <-
 function(level=0.9)
 {
+    if (length(names(.c4is)) < 1)
+        stop("spatial subsets needed: use subset_common_data")
+    if (length(names(.c4i1)) < 1)
+        stop("species data needed: use load_species_data")
     cn <- c("Native", "Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")
     a <- c(0.5*(1-level), 1-0.5*(1-level))
     MAX <- max(max(rowSums(.c4i1$SA.Curr)), max(rowSums(.c4i1$SA.Ref)))
@@ -345,13 +351,13 @@ is_loaded <- function()
 
 get_id_locations <- function() {
     if (!is_loaded())
-        stop("use `load_common_data()` first")
+        stop("common data needed: use load_common_data")
     .c4if$XY
 }
 
 get_species_table <- function()  {
     if (!is_loaded())
-        stop("use `load_common_data()` first")
+        stop("common data needed: use load_common_data")
     .c4if$SP
 }
 
