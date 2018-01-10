@@ -18,6 +18,7 @@
 \alias{get_species_table}
 \alias{is_loaded}
 \alias{overlay_polygon}
+\alias{rasterize_results}
 \title{
 Core Functions for Custom Reporting
 }
@@ -37,6 +38,8 @@ clear_subset_data()
 clear_species_data()
 
 calculate_results(level=0.9)
+rasterize_results()
+
 report_all(boot=TRUE, path=NULL, version=NULL, level=0.9)
 flatten_results(x, raw_boot=FALSE, limit=0.01)
 
@@ -133,7 +136,6 @@ and \code{clear_species_data} clear the respective environments.
 \code{calculate_results} calculates intactness and sector effects
 results based on spatial subset definitions and
 single species data in the memory. The output is a list of class 'c4iraw'.
-
 \code{flatten_results} arranges the results from \code{calculate_results}
 into a 1-liner data frame.
 
@@ -147,6 +149,16 @@ and optionally send results as attachment of a email.
 Returns a data frame, rows representing species (flattened results).
 
 \code{overlay_polygon} selects spatial IDs based on a 'SpatialPolygons' object.
+
+\code{rasterize_results} takes the already loaded single species data
+without any spatial subset. The output is a raster \code{\link[raster]{stack}}
+object with the following layers:
+NC (current abundance),
+NR (reference abundance),
+SI (intactness),
+SI2 (two-sided intactness),
+SE, and CV (bootstrap based standard error and coefficient of variation
+estimates for current abundance).
 
 \code{set_options} sets the options and return previous values invisibly.
 
@@ -210,6 +222,27 @@ z <- custom_report(id=ID,
     species=c("AlderFlycatcher", "Achillea.millefolium"),
     address=NULL)
 z
+
+## making of the file raw_all.rda
+opar <- set_options(path = "w:/reports")
+getOption("cure4insect")
+load_common_data()
+SPP <- get_all_species()
+subset_common_data(id=get_all_id(), species=SPP)
+res <- list()
+for (i in 1:length(SPP)) {
+    cat("processing species:", SPP[i], i, "/", length(SPP), "\n")
+    flush.console()
+    load_species_data(SPP[i])
+    res[[i]] <- calculate_results()
+}
+names(res) <- SPP
+
+## spatial maps
+load_species_data("Ovenbird")
+r <- rasterize_results()
+plot(r, "NC") # current abundance map
+plot(r, "SE") # standadr errors for current abundance
 }
 
 ## working with a local copy of the results is much faster

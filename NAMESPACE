@@ -16,7 +16,8 @@ export(
     get_id_locations,
     get_species_table,
     is_loaded,
-    sector_plot)
+    sector_plot,
+    rasterize_results)
 S3method(sector_plot, c4iraw)
 S3method(sector_plot, data.frame)
 

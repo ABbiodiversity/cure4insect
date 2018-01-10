@@ -13,3 +13,4 @@ LazyLoad: yes
 LazyData: true
 Depends: sendmailR, sp
 Imports: Matrix, intrval, pbapply (>= 1.3-4), KernSmooth
+Suggests: raster, mefa4
