@@ -303,29 +303,31 @@ address=NULL, boot=TRUE,
 level=0.9, raw_boot=FALSE, limit=0.01)
 {
     load_common_data(path=path, version=version)
-
-    if (.verbose()) {
-        cat("arranging subsets\n")
-        flush.console()
-    }
     subset_common_data(id=id, species=species)
-
     OUT <- report_all(boot=boot, path=path, version=version, level=level)
     rval <- do.call(rbind, lapply(OUT, flatten_results, raw_boot=raw_boot,
         limit=limit))
+    .send_email(address, mimepart=rval)
+    rval
+}
+
+.send_email <-
+function(address=NULL, mimepart=NULL)
+{
     if (!is.null(address)) {
         sender <- getOption("cure4insect")$sender
         subject <- "Custom Report"
-        body <- list("Hi,\n\nYour custom report results are attached.\n\nWith regards,\n\nthe ABMI Science",
-            mime_part(rval, paste0("Custom_Report_", Sys.Date())))
+        body <- list("Hi,\n\nYour custom report results are attached.\n\nWith regards,\n\nthe ABMI Science")
+        if (!is.null(mimepart))
+            body[[2]] <- mime_part(mimepart, paste0("Custom_Report_", Sys.Date()))
         try(sent <- sendmail(sprintf("<%s>", sender),
             sprintf("<%s>", address),
             subject, body,
             control=list(smtpServer="ASPMX.L.GOOGLE.COM")))
-        if (!inherits(sent, "try-error"))
+        if (!inherits(sent, "try-error") && .verbose())
             cat("email sent to", address, "\n")
     }
-    rval
+    invisible(NULL)
 }
 
 set_options <-
