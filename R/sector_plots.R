@@ -63,7 +63,11 @@ function(x, type=c("unit", "regional", "underhf"), main, ...)
                 "Unit_Energy", "Unit_Transportation"))
         xx <- x[,cn]
         colnames(xx) <- c("Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")
-        .sector_plot3(xx, ...)
+        ylab <- switch(type,
+            "regional"="Regional sector effects (%)",
+            "underhf"="Under HF sector effects (%)",
+            "unit"="Unit effects (%)")
+        .sector_plot3(xx, ylab=ylab, ...)
     }
 }
 
