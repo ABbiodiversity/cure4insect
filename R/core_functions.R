@@ -284,11 +284,18 @@ address=NULL, boot=TRUE,
 level=0.9, raw_boot=FALSE, limit=0.01)
 #geojson=FALSE)
 {
-    if (interactive()) {
-        cat("loading common data\n")
-        flush.console()
+    if (is_loaded()) {
+        if (interactive()) {
+            cat("common data already loaded\n")
+            flush.console()
+        }
+    } else {
+        if (interactive()) {
+            cat("loading common data\n")
+            flush.console()
+        }
+        load_common_data(path=path, version=version)
     }
-    load_common_data(path=path, version=version)
     if (interactive()) {
         cat("arranging subsets\n")
         flush.console()
@@ -337,26 +344,23 @@ function(...)
     invisible(opar)
 }
 
-get_all_id <- function() {
-    if (!exists("XY", envir=.c4if))
-        stop("use `load_common_data()` first")
-    rownames(coordinates(.c4if$XY))
-}
-
-get_all_species <- function()  {
-    if (!exists("SP", envir=.c4if))
-        stop("use `load_common_data()` first")
-    rownames(.c4if$SP)
-}
+is_loaded <- function()
+    length(names(.c4if)) > 0
 
 get_id_locations <- function() {
-    if (!exists("XY", envir=.c4if))
+    if (!is_loaded()))
         stop("use `load_common_data()` first")
     .c4if$XY
 }
 
 get_species_table <- function()  {
-    if (!exists("SP", envir=.c4if))
+    if (!is_loaded()))
         stop("use `load_common_data()` first")
     .c4if$SP
 }
+
+get_all_id <- function()
+    rownames(coordinates(get_id_locations()))
+
+get_all_species <- function()
+    rownames(get_species_table())

@@ -16,6 +16,7 @@
 \alias{get_all_species}
 \alias{get_id_locations}
 \alias{get_species_table}
+\alias{is_loaded}
 \alias{overlay_polygon}
 \title{
 Core Functions for Custom Reporting
@@ -27,6 +28,7 @@ for custom regions and sets of species.
 }
 \usage{
 load_common_data(path=NULL, version=NULL)
+is_loaded()
 subset_common_data(id=NULL, species="all")
 load_species_data(species, boot=TRUE, path=NULL, version=NULL)
 
@@ -67,8 +69,7 @@ or CSV
 with latitude/longitude in NAD_1983_10TM_AEP_Forest projection
 \url{http://spatialreference.org/ref/epsg/3402/}).
 If \code{id} is a matrix-like object, values of the 1st column are taken.
-\code{id} can be a GeoJSON file for the function \code{custom_report}
-when \code{geojson=TRUE}
+\code{id} can be of class 'SpatialPolygons' defined by the 'sp' package.
 }
   \item{species}{
 A list of species defined by the field SpeciesID in the table
@@ -98,7 +99,7 @@ in the format \code{"name@domain.org"}.
 The default (\code{NULL}) is not to send an email.
 }
   \item{ply}{
-an object of class SpatialPolygons defined by the 'sp' package.
+an object of class 'SpatialPolygons' defined by the 'sp' package.
 }
   \item{\dots}{
 Arguments in \code{tag = value} form, or a list of tagged values.
@@ -117,6 +118,7 @@ and \code{body} (body of the email).
 }
 \value{
 \code{load_common_data} loads common data to memory of the R session.
+\code{is_loaded} check if common data has been loaded previously.
 
 \code{subset_common_data} subsets the common data and makes the information
 available in the R session.
@@ -143,12 +145,12 @@ subset spatial units and species list, calculate results for all species,
 and optionally send results as attachment of a email.
 Returns a data frame, rows representing species (flattened results).
 
-\code{overlay_polygon} selects spatial IDs based on a SpatialPolygons object.
+\code{overlay_polygon} selects spatial IDs based on a 'SpatialPolygons' object.
 
 \code{set_options} sets the options and return previous values invisibly.
 
 \code{get_all_id} and \code{get_all_species} gets all possible spatial and
-species IDs. \code{get_id_locations} gets the SpatialPoints object
+species IDs. \code{get_id_locations} gets the 'SpatialPoints' object
 with geographic coordinates of the spatial IDs, \code{get_species_table}
 gets the lookup table for species.
 All these require to run \code{load_common_data()} first.
@@ -165,6 +167,7 @@ Peter Solymos <solymos@ualberta.ca>
 ## ID is a vector of Row_Col IDs of 1km pixels
 ## species is a vector if species IDs
 load_common_data()
+is_loaded()
 ## here is how to inspect all possible spatial and species IDs
 str(get_all_id())
 str(get_all_species())
