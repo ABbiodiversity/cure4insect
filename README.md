@@ -99,14 +99,6 @@ curl http://sc-dev.abmi.ca/ocpu/library/cure4insect/R/custom_report/csv \
 '{"id":["182_362", "182_363"], "species":["AlderFlycatcher", "Achillea.millefolium"]}'
 ```
 
-## Todo
-
-* deveop fully fledged web interface (is/species as csv)
-* add functions to make different maps (using raster template and Xtabs) [no spatial subsetting]
-* 1k level: curr, ref, SI, SI2/diff
-* 10k level: SD, CoV
-* define color schemes and plotting functionality with default thresholds and some legends
-
 ## Vision
 
 The package can be used to use a local copy of the organized
@@ -118,3 +110,10 @@ with all the data, so that
 it can be deployed as a micro-service (moving things around),
 or use locally through Kitematic
 (faster to download only once and then use the local copy).
+
+## Todo
+
+* deveop fully fledged web interface (is/species as csv)
+* attachment to include: csv, metadata, readme, IDs, batch figures (zipped)
+* make containerized version for local use
+* define color schemes and plotting functionality with default thresholds and some legends?

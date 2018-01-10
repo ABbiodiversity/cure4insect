@@ -24,8 +24,8 @@ S3method(sector_plot, data.frame)
 importFrom("intrval", "%)(%")
 importFrom("Matrix", "colSums")
 importFrom("sendmailR", "sendmail", "mime_part")
-importFrom("stats", "quantile")
-importFrom("utils", "flush.console")
+importFrom("stats", "quantile", "density", "sd")
+importFrom("utils", "flush.console", "stack")
 importFrom("sp", "identicalCRS", "over", "spTransform", "coordinates",
     "proj4string")
 importFrom("pbapply", "getTimeAsString")
@@ -33,6 +33,4 @@ importFrom("grDevices", "boxplot.stats")
 importFrom("graphics", "abline", "axis", "barplot", "box", "hist",
     "lines", "mtext", "par", "plot", "points", "polygon",
     "rect", "rug", "segments", "text", "title")
-importFrom("stats", "density")
 importFrom("KernSmooth", "bkde")
-#importFrom("rgdal", "readOGR")
