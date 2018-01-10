@@ -1,3 +1,22 @@
+if (FALSE) {
+t0 <- proc.time()[3]
+ETA <- NULL
+for (spp in SPP) {
+    i <- which(SPP == spp)
+    out <- list()
+    for (j in 1:B) {
+        cat("Species: ", spp, " (", i, "/", length(SPP), ") - Run: ",
+            j, "/", B, " - ETA: ",
+            pbapply:::getTimeAsString(ETA), "\n", sep="")
+        flush.console()
+        out[[j]] <- try(do_1spec1run(j, spp, mods, CAICalpha = alpha,
+            return_best = j==1))
+        dt <- proc.time()[3] - t0
+        ETA <- ((B*length(SPP)) - ((i-1)*B+j)) * dt / ((i-1)*B+j)
+    }
+    save(out, file=paste0("e:/peter/bam/bcr4/results/", spp, ".RData"))
+}
+}
 ## store object for full grid and species
 .c4if <- new.env(parent=emptyenv())
 ## store object for subset of the grid and species

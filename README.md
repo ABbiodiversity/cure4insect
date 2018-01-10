@@ -127,6 +127,7 @@ getOption("cure4insect")
 load_common_data()
 SPP <- get_all_species()
 subset_common_data(id=get_all_id(), species=SPP)
+t0 <- proc.time()
 res <- list()
 for (i in 1:length(SPP)) {
     cat("processing species:", SPP[i], i, "/", length(SPP), "\n")
@@ -134,6 +135,7 @@ for (i in 1:length(SPP)) {
     load_species_data(SPP[i])
     res[[i]] <- try(calculate_results())
 }
+(t1 <- proc.time() - t0)
 
 
 ```
