@@ -397,10 +397,10 @@ function (x, name = deparse(substitute(x)), ...)
         if (!is.null(x$file))
             file.remove(x$file)
     }
-    ## file provided instead of an object
+    ## file provided instead of an object, name is the file name without path and extension
+    ## e.g.: .mime_part_zipfile("x.zip", "x")
     .file_attachment(fn, name = sprintf("%s.zip", name), type = "application/zip")
 }
-body[[2]] <- .mime_part_zipfile("x.zip")
 
 set_options <-
 function(...)
