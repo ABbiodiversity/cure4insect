@@ -112,6 +112,7 @@ Configuration is stored in the file
 Current options are:
 \code{path} (path to results),
 \code{version} (version of results),
+\code{verbose} (default is 1, value 0 suppresses the messages),
 \code{sender} (email of sender),
 \code{subject} (subject of the email),
 and \code{body} (body of the email).

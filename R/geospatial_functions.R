@@ -12,8 +12,10 @@ function(ply)
     rownames(coordinates(XY))[!is.na(o)]
 }
 
-#rasterize_results <-
-#function(type=c("curr", "ref", "SI", "SI2", "diff", "SD", "CoV"))
-#{
+rasterize_results <-
+function(type=c("curr", "ref", "SI", "SI2", "diff", "SD", "CoV"))
+{
 # req mefa4 and raster
-#}
+    if (!is_loaded())
+        load_common_data()
+}

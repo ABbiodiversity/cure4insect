@@ -19,19 +19,30 @@ clear_common_data <- function()
 load_common_data <-
 function(path=NULL, version=NULL)
 {
-    clear_common_data()
-    opts <- getOption("cure4insect")
-    if (is.null(path))
-        path <- opts$path
-    if (is.null(version))
-        version <- opts$version
-    fn <- file.path(path, version, "data", "kgrid_areas_by_sector.RData")
-    if (!startsWith(path, "http://")) {
-        load(fn, envir=.c4if)
+    if (is_loaded()) {
+        if (.verbose()) {
+            cat("common data already loaded\n")
+            flush.console()
+        }
     } else {
-        con <- url(fn)
-        load(con, envir=.c4if)
-        close(con)
+        if (.verbose()) {
+            cat("loading common data\n")
+            flush.console()
+        }
+        clear_common_data()
+        opts <- getOption("cure4insect")
+        if (is.null(path))
+            path <- opts$path
+        if (is.null(version))
+            version <- opts$version
+        fn <- file.path(path, version, "data", "kgrid_areas_by_sector.RData")
+        if (!startsWith(path, "http://")) {
+            load(fn, envir=.c4if)
+        } else {
+            con <- url(fn)
+            load(con, envir=.c4if)
+            close(con)
+        }
     }
     invisible(NULL)
 }
@@ -42,9 +53,11 @@ clear_subset_data <- function()
 subset_common_data <-
 function(id=NULL, species="all")
 {
+    if (.verbose()) {
+        cat("arranging subsets\n")
+        flush.console()
+    }
     clear_subset_data()
-    #requireNamespace("Matrix")
-    #tmp <- Matrix() # trigger Matrix
 
     if (!is.null(dim(species))) # if provided as table, use 1st col
         species <- as.character(species[,1L])
@@ -258,11 +271,11 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9)
     n <- length(SPP)
     OUT <- list()
     ETA <- NULL
-    if (interactive())
+    if (.verbose())
         cat("processing species:\n")
     t0 <- proc.time()[3]
     for (i in seq_len(n)) {
-        if (interactive()) {
+        if (.verbose()) {
             cat("* ", i, "/", length(SPP), " ", SPP[i], ", ETA: ",
                 getTimeAsString(ETA), sep="")
             flush.console()
@@ -282,32 +295,15 @@ function(id=NULL, species="all",
 path=NULL, version=NULL,
 address=NULL, boot=TRUE,
 level=0.9, raw_boot=FALSE, limit=0.01)
-#geojson=FALSE)
 {
-    if (is_loaded()) {
-        if (interactive()) {
-            cat("common data already loaded\n")
-            flush.console()
-        }
-    } else {
-        if (interactive()) {
-            cat("loading common data\n")
-            flush.console()
-        }
-        load_common_data(path=path, version=version)
-    }
-    if (interactive()) {
+    load_common_data(path=path, version=version)
+
+    if (.verbose()) {
         cat("arranging subsets\n")
         flush.console()
     }
-#    if (geojson) {
-#        if (interactive()) {
-#            cat("reading GeoJSON\n")
-#            flush.console()
-#        }
-#        id <- readOGR(dsn=id)
-#    }
     subset_common_data(id=id, species=species)
+
     OUT <- report_all(boot=boot, path=path, version=version, level=level)
     rval <- do.call(rbind, lapply(OUT, flatten_results, raw_boot=raw_boot,
         limit=limit))
@@ -364,3 +360,8 @@ get_all_id <- function()
 
 get_all_species <- function()
     rownames(get_species_table())
+
+.verbose() <- function() {
+    x <- getOption("cure4insect")$verbose
+    !is.null(x) && x > 0
+}
