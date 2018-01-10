@@ -307,6 +307,7 @@ level=0.9, raw_boot=FALSE, limit=0.01)
     OUT <- report_all(boot=boot, path=path, version=version, level=level)
     rval <- do.call(rbind, lapply(OUT, flatten_results, raw_boot=raw_boot,
         limit=limit))
+    class(rval) <- c("c4iblock", class(rval))
     .send_email(address, mimepart=rval)
     rval
 }
@@ -329,6 +330,77 @@ function(address=NULL, mimepart=NULL)
     }
     invisible(NULL)
 }
+
+mime_part.c4iblock <-
+function (x, name = deparse(substitute(x)), ...)
+{
+    ## unexported stuff from sendmailR
+    .file_attachment <-
+    function (fn, name, type = "application/octet-stream", disposition = "attachment")
+    {
+        if (missing(name))
+            name <- basename(fn)
+        text <- base64enc::base64encode(fn, linewidth = 72, newline = "\n")
+        headers <- list(`Content-Type` = type, `Content-Disposition` = sprintf("%s; filename=%s",
+            disposition, name), `Content-Transfer-Encoding` = "base64")
+        .mime_part(headers = headers, text = text)
+    }
+    .mime_part <-
+    function (headers, file = NULL, text = NULL)
+    {
+        if (!is.null(file) && !is.null(text))
+            stop("Can only provide file or text for mime part.")
+        e <- environment()
+        reg.finalizer(e, .mime_part_finalizer, onexit = TRUE)
+        class(e) <- "mime_part"
+        e
+    }
+    .mime_part_finalizer <-
+    function (x)
+    {
+        if (!is.null(x$file))
+            file.remove(x$file)
+    }
+
+    ## method definition: takes a custom class to write a csv
+    f <- tempfile()
+    on.exit(file.remove(f))
+    write.csv(x, file = f, ...)
+    .file_attachment(f, name = sprintf("%s.csv", name), type = "text/plain")
+}
+
+.mime_part_zipfile <- function(fn, name = deparse(substitute(fn)), ...) {
+    ## unexported stuff from sendmailR
+    .file_attachment <-
+    function (fn, name, type = "application/octet-stream", disposition = "attachment")
+    {
+        if (missing(name))
+            name <- basename(fn)
+        text <- base64enc::base64encode(fn, linewidth = 72, newline = "\n")
+        headers <- list(`Content-Type` = type, `Content-Disposition` = sprintf("%s; filename=%s",
+            disposition, name), `Content-Transfer-Encoding` = "base64")
+        .mime_part(headers = headers, text = text)
+    }
+    .mime_part <-
+    function (headers, file = NULL, text = NULL)
+    {
+        if (!is.null(file) && !is.null(text))
+            stop("Can only provide file or text for mime part.")
+        e <- environment()
+        reg.finalizer(e, .mime_part_finalizer, onexit = TRUE)
+        class(e) <- "mime_part"
+        e
+    }
+    .mime_part_finalizer <-
+    function (x)
+    {
+        if (!is.null(x$file))
+            file.remove(x$file)
+    }
+    ## file provided instead of an object
+    .file_attachment(fn, name = sprintf("%s.zip", name), type = "application/zip")
+}
+body[[2]] <- .mime_part_zipfile("x.zip")
 
 set_options <-
 function(...)
