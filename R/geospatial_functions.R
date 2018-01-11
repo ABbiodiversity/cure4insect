@@ -20,7 +20,6 @@ function(ply)
 .make_raster <-
 function(value, rc, rt)
 {
-    requireNamespace("mefa4")
     value <- as.numeric(value)
     r <- as.matrix(Xtab(value ~ Row + Col, rc))
     r[is.na(as.matrix(rt))] <- NA

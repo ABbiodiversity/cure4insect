@@ -36,3 +36,7 @@ importFrom("graphics", "abline", "axis", "barplot", "box", "hist",
 importFrom("KernSmooth", "bkde")
 importFrom("raster", "raster")
 importFrom("mefa4", "Xtab")
+
+importMethodsFrom("Matrix", "as.matrix")
+importMethodsFrom("mefa4", "as.matrix")
+importMethodsFrom("raster", "as.matrix")
