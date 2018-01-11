@@ -174,7 +174,7 @@ or use locally through Kitematic
 
 ## Todo
 
-* deveop fully fledged web interface (is/species as csv)
+* deveop fully fledged web interface (id/species as csv)
 * attachment to include: csv, metadata, readme, IDs, batch figures (zipped)
 * make containerized version for local use
 * define color schemes and plotting functionality with default thresholds and some legends?

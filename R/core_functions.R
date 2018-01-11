@@ -29,7 +29,7 @@ function(path=NULL, version=NULL)
             cat("loading common data\n")
             flush.console()
         }
-        clear_common_data()
+        #clear_common_data()
         opts <- getOption("cure4insect")
         if (is.null(path))
             path <- opts$path

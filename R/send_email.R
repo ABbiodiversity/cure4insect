@@ -7,7 +7,7 @@ function(address=NULL, mimepart=NULL)
         body <- list("Hi,\n\nYour custom report results are attached.\n\nWith regards,\n\nthe ABMI Science")
         if (!is.null(mimepart))
             body[[2]] <- mime_part(mimepart, paste0("Custom_Report_", Sys.Date()))
-        try(sent <- sendmail(sprintf("<%s>", sender),
+        sent <- try(sendmail(sprintf("<%s>", sender),
             sprintf("<%s>", address),
             subject, body,
             control=list(smtpServer="ASPMX.L.GOOGLE.COM")))
