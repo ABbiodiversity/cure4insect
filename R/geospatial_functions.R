@@ -73,3 +73,31 @@ rasterize_results <- function()
     names(rl) <- cn
     stack(rl)
 }
+
+if (FALSE) {
+
+## add pAspen and pWater to KT or make tif?
+
+Col1 <- rev(c("#D73027","#FC8D59","#FEE090","#E0F3F8","#91BFDB","#4575B4"))  # Colour gradient for reference and current
+Col1fun <- colorRampPalette(Col1, space = "rgb") # Function to interpolate among these colours for reference and current
+C1 <- Col1fun(100)
+Col2 <- c("#C51B7D","#E9A3C9","#FDE0EF","#E6F5D0","#A1D76A","#4D9221")  # Colour gradient for difference map
+Col2fun <- colorRampPalette(Col2, space = "rgb") # Function to interpolate among these colours for difference map
+C2 <- Col2fun(200)
+CW <- rgb(0.4,0.3,0.8) # water
+CE <- "lightcyan4" # exclude
+#CSI <- colorRampPalette(c("red","yellow","green"), space = "rgb")(100)
+CSI <- colorRampPalette(c("#A50026", "#D73027", "#F46D43", "#FDAE61", "#FEE08B",
+    "#FFFFBF","#D9EF8B", "#A6D96A", "#66BD63", "#1A9850", "#006837"))(100)
+
+SI <- round(100 * pmin(cr, rf) / pmax(cr, rf))
+SI[is.na(SI)] <- 100 # 0/0 is defined as 100 intact
+Max <- max(qcr, qrf)
+df <- (cr-rf) / Max
+df <- sign(df) * abs(df)^0.5
+df <- pmin(200, ceiling(99 * df)+100)
+df[df==0] <- 1
+cr <- pmin(100, ceiling(99 * sqrt(cr / Max))+1)
+rf <- pmin(100, ceiling(99 * sqrt(rf / Max))+1)
+
+}
