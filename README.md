@@ -143,6 +143,7 @@ The result is a raster stack object with the following layers:
 estimates for current abundance.
 
 ```R
+load_common_data()
 load_species_data("Ovenbird")
 r <- rasterize_results()
 plot(r, "NC") # current abundance map

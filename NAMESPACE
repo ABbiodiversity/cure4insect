@@ -34,3 +34,5 @@ importFrom("graphics", "abline", "axis", "barplot", "box", "hist",
     "lines", "mtext", "par", "plot", "points", "polygon",
     "rect", "rug", "segments", "text", "title")
 importFrom("KernSmooth", "bkde")
+importFrom("raster", "raster")
+importFrom("mefa4", "Xtab")

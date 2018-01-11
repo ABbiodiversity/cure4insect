@@ -53,7 +53,7 @@ clear_subset_data <- function()
 subset_common_data <-
 function(id=NULL, species="all")
 {
-    if (length(names(.c4if)) < 1)
+    if (!is_loaded())
         stop("common data needed: use load_common_data")
     if (.verbose()) {
         cat("arranging subsets\n")
@@ -104,6 +104,8 @@ clear_species_data <- function()
 load_species_data <-
 function(species, boot=TRUE, path=NULL, version=NULL)
 {
+    if (!is_loaded())
+        stop("common data needed: use load_common_data")
     clear_species_data()
     opts <- getOption("cure4insect")
     if (is.null(path))
@@ -273,6 +275,8 @@ function(x, raw_boot=FALSE, limit=0.01)
 report_all <-
 function(boot=TRUE, path=NULL, version=NULL, level=0.9)
 {
+    if (!is_loaded())
+        stop("common data needed: use load_common_data")
     SPP <- rownames(.c4is$SPsub)
     n <- length(SPP)
     OUT <- list()

@@ -13,35 +13,25 @@ function(ply)
 }
 
 .read_raster_template <- function()
-    raster::raster(system.file("extdata/AB_1km_mask.tif", package="cure4insect"))
+    raster(system.file("extdata/AB_1km_mask.tif", package="cure4insect"))
 
 ## rc is table with row and col indices for value
 ## rt is raster template to be used
 .make_raster <-
 function(value, rc, rt)
 {
-    requireNamespace("raster")
     requireNamespace("mefa4")
-    if (missing(rc)) {
-        opts <- set_options(verbose=0)
-        on.exit(set_options(opts))
-        load_common_data()
-        rc <- .c4if$KT
-    }
-    if (missing(rt))
-        rt <- .read_raster_template()
     value <- as.numeric(value)
-    r <- as.matrix(mefa4::Xtab(value ~ Row + Col, rc))
+    r <- as.matrix(Xtab(value ~ Row + Col, rc))
     r[is.na(as.matrix(rt))] <- NA
-    raster::raster(x=r, template=rt)
+    raster(x=r, template=rt)
 }
 
 ## SD and CoV applies to current abudnance
 rasterize_results <- function()
 {
-    opts <- set_options(verbose=0)
-    on.exit(set_options(opts))
-    load_common_data()
+    if (!is_loaded())
+        stop("common data needed: use load_common_data")
     if (length(names(.c4i1)) < 1)
         stop("species data needed: use load_species_data")
     KT <- .c4if$KT
@@ -74,7 +64,7 @@ rasterize_results <- function()
     KT$SE[is.na(KT$SE)] <- -1
     KT$CV[is.na(KT$CV)] <- -1
     requireNamespace("raster")
-    rt <- rt <- .read_raster_template()
+    rt <- .read_raster_template()
     cn <- c("NC", "NR", "SI", "SI2", "SE", "CV")
     rl <- lapply(cn, function(z) {
         r <- .make_raster(KT[,z], rc=KT, rt=rt)
