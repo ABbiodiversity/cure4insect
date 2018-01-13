@@ -10,14 +10,18 @@ function(x, type=c("unit", "regional", "underhf"), main, ...)
         "unit"=.sector_plot1(
             Curr=x$sector["Current",],
             Ref=x$sector["Reference",],
-            Area=x$sector["Area",], main=main, ...),
+            Area=x$sector["Area",],
+            RefTotal=x$intactness["Reference", 1],
+            main=main, ...),
         "regional"=.sector_plot2(
             Curr=x$sector["Current",],
             Ref=x$sector["Reference",],
+            RefTotal=x$intactness["Reference", 1],
             regional=TRUE, main=main, ...),
         "underhf"=.sector_plot2(
             Curr=x$sector["Current",],
             Ref=x$sector["Reference",],
+            RefTotal=x$intactness["Reference", 1],
             regional=FALSE, main=main, ...))
 }
 
@@ -44,14 +48,18 @@ function(x, type=c("unit", "regional", "underhf"), main, ...)
             "unit"=.sector_plot1(
                 Curr=t(curr)[,1],
                 Ref=t(ref)[,1],
-                Area=t(area)[,1], main=main, ...),
+                Area=t(area)[,1],
+                RefTotal=x[1,"Abund_Ref_Est"],
+                main=main, ...),
             "regional"=.sector_plot2(
                 Curr=t(curr)[,1],
                 Ref=t(ref)[,1],
+                RefTotal=x[1,"Abund_Ref_Est"],
                 regional=TRUE, main=main, ...),
             "underhf"=.sector_plot2(
                 Curr=t(curr)[,1],
                 Ref=t(ref)[,1],
+                RefTotal=x[1,"Abund_Ref_Est"],
                 regional=FALSE, main=main, ...))
     } else {
         cn <- switch(type,
@@ -73,9 +81,9 @@ function(x, type=c("unit", "regional", "underhf"), main, ...)
 
 
 
-## old style
+## old style: RefTotal includes Native, but Ref and Curr does not
 .sector_plot1 <-
-function(Curr, Ref, Area, main="", col=NULL,
+function(Curr, Ref, Area, RefTotal, main="", col=NULL,
 ylim=NULL, ylab="Unit effect (%)", xlab="Area (% of region)")
 {
     sectors <- c("Agriculture","Forestry","Energy","RuralUrban","Transportation")
@@ -84,7 +92,7 @@ ylim=NULL, ylab="Unit effect (%)", xlab="Area (% of region)")
         col else c("tan3","palegreen4","indianred3","skyblue3","slateblue2")
     Curr[is.na(Curr)] <- 0
     Ref[is.na(Ref)] <- 0
-    total.effect <- (100 * (Curr - Ref) / sum(Ref))[sectors]
+    total.effect <- (100 * (Curr - Ref) / RefTotal)[sectors]
     unit.effect <- 100 * total.effect / Area[sectors]
     total.effect[is.na(total.effect)] <- 0
     unit.effect[is.na(unit.effect)] <- 0
@@ -136,9 +144,9 @@ ylim=NULL, ylab="Unit effect (%)", xlab="Area (% of region)")
     invisible(rbind(total=total.effect, unit=unit.effect, area=Area[sectors]))
 }
 
-## new style
+## new style: RefTotal includes Native, but Ref and Curr does not
 .sector_plot2 <-
-function(Curr, Ref, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=NULL)
+function(Curr, Ref, RefTotal, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=NULL)
 {
     sectors <- c("Agriculture","Forestry","Energy","RuralUrban","Transportation")
     sector.names <- c("Agriculture","Forestry","Energy","RuralUrban","Transport")
@@ -147,7 +155,7 @@ function(Curr, Ref, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=NULL)
     c1 <- if (!is.null(col))
         col else c("tan3","palegreen4","indianred3","skyblue3","slateblue2")
     total.effect <- if (regional)
-        100 * (Curr - Ref)/sum(Ref) else 100 * (Curr - Ref)/Ref
+        100 * (Curr - Ref)/RefTotal else 100 * (Curr - Ref)/Ref
     total.effect <- total.effect[sectors]
     total.effect[is.na(total.effect)] <- 0
     off <- 0.25
@@ -192,7 +200,7 @@ function(Curr, Ref, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=NULL)
     invisible(total.effect)
 }
 
-## multi-species plot
+## multi-species plot: RefTotal not needed, comes directly from c4iraw
 .sector_plot3 <- function(x, ylab="Sector effects (%)", col=NULL, method="kde", ...) {
     method <- match.arg(method, c("kde", "fft", "hist"))
     if (!is.list(x))
