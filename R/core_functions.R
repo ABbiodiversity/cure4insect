@@ -2,10 +2,8 @@
 .c4if <- new.env(parent=emptyenv())
 ## store object for subset of the grid and species
 .c4is <- new.env(parent=emptyenv())
-.c4i1 <- new.env(parent=emptyenv())
 if(getRversion() >= "2.15.1")
-    utils::globalVariables(c(".c4if", ".c4is", ".c4i1"))
-#.c4i1=cure4insect:::.c4i1
+    utils::globalVariables(c(".c4if", ".c4is"))
 #.c4if=cure4insect:::.c4if
 #.c4is=cure4insect:::.c4is
 
@@ -99,57 +97,58 @@ function(id=NULL, species="all")
 }
 
 ## load data for a species
-clear_species_data <- function()
-    rm(list=ls(envir=.c4i1), envir=.c4i1)
 load_species_data <-
 function(species, boot=TRUE, path=NULL, version=NULL)
 {
     if (!is_loaded())
         stop("common data needed: use load_common_data")
-    clear_species_data()
     opts <- getOption("cure4insect")
     if (is.null(path))
         path <- opts$path
     if (is.null(version))
         version <- opts$version
     taxon <- as.character(.c4if$SP[species, "taxon"])
-    assign("species", species, envir=.c4i1)
-    assign("taxon", taxon, envir=.c4i1)
-    assign("boot", boot, envir=.c4i1)
+    y <- new.env()
+    assign("species", species, envir=y)
+    assign("taxon", taxon, envir=y)
+    assign("boot", boot, envir=y)
     fn1 <- file.path(path, version, "results", taxon, "sector", paste0(species, ".RData"))
     fn2 <- file.path(path, version, "results", taxon, "boot", paste0(species, ".RData"))
     if (!startsWith(path, "http://")) {
-        load(fn1, envir=.c4i1)
+        load(fn1, envir=y)
         if (boot)
-            load(fn2, envir=.c4i1)
+            load(fn2, envir=y)
     } else {
         con <- url(fn1)
-        load(con, envir=.c4i1)
+        load(con, envir=y)
         close(con)
         if (boot) {
             con <- url(fn2)
-            load(con, envir=.c4i1)
+            load(con, envir=y)
             close(con)
         }
     }
-    invisible(NULL)
+    class(y) <- "c4i1"
+    invisible(y)
 }
 
 calculate_results <-
-function(level=0.9)
+function(y, level=0.9)
 {
     if (length(names(.c4is)) < 1)
         stop("spatial subsets needed: use subset_common_data")
-    if (length(names(.c4i1)) < 1)
+    if (!inherits(y, "c4i1"))
+        stop("y must be of class c4i1")
+    if (length(names(y)) < 1)
         stop("species data needed: use load_species_data")
     cn <- c("Native", "Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")
     a <- c(0.5*(1-level), 1-0.5*(1-level))
-    MAX <- max(max(rowSums(.c4i1$SA.Curr)), max(rowSums(.c4i1$SA.Ref)))
+    MAX <- max(max(rowSums(y$SA.Curr)), max(rowSums(y$SA.Ref)))
     PIX <- rownames(.c4is$KTsub)
     ## Rockies and unmodelled regions should be excluded
-    PIX <- PIX[PIX %in% rownames(.c4i1$SA.Curr)]
-    SA.Curr <- .c4i1$SA.Curr[PIX,cn]
-    SA.Ref <- .c4i1$SA.Ref[PIX,cn]
+    PIX <- PIX[PIX %in% rownames(y$SA.Curr)]
+    SA.Curr <- y$SA.Curr[PIX,cn]
+    SA.Ref <- y$SA.Ref[PIX,cn]
     MEAN <- max(mean(rowSums(SA.Curr)), mean(rowSums(SA.Ref)))
     CS <- colSums(SA.Curr)
     RS <- colSums(SA.Ref)
@@ -157,11 +156,11 @@ function(level=0.9)
     NR <- sum(RS)
     SI <- 100 * min(NC, NR) / max(NC, NR)
     SI2 <- if (NC <= NR) SI else 200 - SI
-    if (.c4i1$boot) {
+    if (y$boot) {
         #PIX10 <- unique(as.character(.c4is$KTsub$Row10_Col10))
         KTsubsub <- .c4is$KTsub[PIX,,drop=FALSE]
-        Curr.Boot <- .c4i1$Curr.Boot
-        Ref.Boot <- .c4i1$Ref.Boot
+        Curr.Boot <- y$Curr.Boot
+        Ref.Boot <- y$Ref.Boot
         KTsubsub <- KTsubsub[KTsubsub$Row10_Col10 %in% rownames(Curr.Boot),,drop=FALSE]
         PIX10 <- unique(as.character(KTsubsub$Row10_Col10))
         #compare_sets(PIX10,rownames(Curr.Boot))
@@ -185,16 +184,16 @@ function(level=0.9)
     }
     Sector_Total <- (100 * (CS - RS) / NR)[-1]
     Sector_UnderHF <- (100 * (CS - RS) / RS)[-1]
-    KA <- if (.c4i1$taxon == "birds") .c4is$A_2012 else .c4is$A_2014
+    KA <- if (y$taxon == "birds") .c4is$A_2012 else .c4is$A_2014
     Sector_Area <- (100 * KA / sum(KA))[names(Sector_Total)]
     Sector_Unit <- 100 * Sector_Total / Sector_Area
     out <- list(
-        taxon=.c4i1$taxon,
-        species=.c4i1$species,
+        taxon=y$taxon,
+        species=y$species,
         max=MAX,
         mean=MEAN,
         level=level,
-        boot=.c4i1$boot,
+        boot=y$boot,
         boot_current=CB,
         boot_reference=RB,
         intactness=rbind(
@@ -213,8 +212,9 @@ function(level=0.9)
     out
 }
 
-flatten_results <-
-function(x, raw_boot=FALSE, limit=0.01)
+flatten <- function (x, ...) UseMethod("flatten")
+flatten.c4iraw <-
+function(x, raw_boot=FALSE, limit=0.01, ...)
 {
     if (limit %)(% c(0,1))
         stop("limit value must be between in [0, 1]")
@@ -278,25 +278,41 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9)
     if (!is_loaded())
         stop("common data needed: use load_common_data")
     SPP <- rownames(.c4is$SPsub)
-    n <- length(SPP)
-    OUT <- list()
-    ETA <- NULL
-    if (.verbose())
-        cat("processing species:\n")
-    t0 <- proc.time()[3]
-    for (i in seq_len(n)) {
+    opts <- getOption("cure4insect")
+    if (as.integer(opts$cores) > 1L && .Platform$OS.type != "windows") {
+        cores <- max(1L, min(detectCores(), as.integer(opts$cores), na.rm=TRUE))
         if (.verbose()) {
-            cat("* ", i, "/", length(SPP), " ", SPP[i], ", ETA: ",
-                getTimeAsString(ETA), sep="")
-            flush.console()
+            cat("processing species: parallel work in progress...\n")
+        } else {
+            opb <- pboptions(type="none")
+            on.exit(pboptions(opb))
         }
-        load_species_data(SPP[i], boot=boot, path=path, version=version)
-        OUT[[i]] <- calculate_results(level=level)
-        dt <- proc.time()[3] - t0
-        cat(", elapsed:", getTimeAsString(dt), "\n")
-        ETA <- (n - i) * dt / i
+        OUT <- pblapply(SPP, function(spp) {
+            calculate_results(load_species_data(spp,
+                boot=boot, path=path, version=version), level=level)
+        }, cl=cores)
+    } else {
+        n <- length(SPP)
+        OUT <- list()
+        ETA <- NULL
+        if (.verbose())
+            cat("processing species:\n")
+        t0 <- proc.time()[3]
+        for (i in seq_len(n)) {
+            if (.verbose()) {
+                cat("* ", i, "/", length(SPP), " ", SPP[i], ", ETA: ",
+                    getTimeAsString(ETA), sep="")
+                flush.console()
+            }
+            y <- load_species_data(SPP[i], boot=boot, path=path, version=version)
+            OUT[[i]] <- calculate_results(y, level=level)
+            dt <- proc.time()[3] - t0
+            cat(", elapsed:", getTimeAsString(dt), "\n")
+            ETA <- (n - i) * dt / i
+        }
     }
     names(OUT) <- SPP
+    class(OUT) <- "c4ilist"
     OUT
 }
 
@@ -309,10 +325,11 @@ level=0.9, raw_boot=FALSE, limit=0.01)
     load_common_data(path=path, version=version)
     subset_common_data(id=id, species=species)
     OUT <- report_all(boot=boot, path=path, version=version, level=level)
-    rval <- do.call(rbind, lapply(OUT, flatten_results, raw_boot=raw_boot,
+    rval <- do.call(rbind, lapply(OUT, flatten, raw_boot=raw_boot,
         limit=limit))
     class(rval) <- c("c4iblock", class(rval))
     .send_email(address, mimepart=rval)
+    class(rval) <- c("c4idf", "data.frame")
     rval
 }
 

@@ -1,7 +1,7 @@
 \name{sector_plot}
 \alias{sector_plot}
 \alias{sector_plot.c4iraw}
-\alias{sector_plot.data.frame}
+\alias{sector_plot.c4idf}
 \title{
 Sector Efects Plots
 }
@@ -12,13 +12,13 @@ Plots the sector effects for a single or a group of species.
 sector_plot(x, ...)
 \method{sector_plot}{c4iraw}(x,
     type=c("unit", "regional", "underhf"), main, ...)
-\method{sector_plot}{data.frame}(x,
+\method{sector_plot}{c4idf}(x,
     type=c("unit", "regional", "underhf"), main, ...)
 }
 \arguments{
   \item{x}{
 an object of class 'c4iraw' (from \code{\link{calculate_results}})
-or a data frame with flattened (1-row) results per species.
+or a data frame (class 'c4idf') with flattened (1-row) results per species.
 }
   \item{type}{
 number of bins to be used in kernel density estimation.
@@ -66,7 +66,8 @@ sector_plot(res[["CanadaWarbler"]], "unit")
 sector_plot(res[["CanadaWarbler"]], "regional")
 sector_plot(res[["CanadaWarbler"]], "underhf")
 
-z <- do.call(rbind, lapply(res, flatten_results))
+z <- do.call(rbind, lapply(res, flatten))
+class(z) <- c("c4idf", class(z))
 sector_plot(z, "unit") # all species
 sector_plot(z[1:100,], "regional") # use a subset
 sector_plot(z, "underhf", method="hist") # binned version

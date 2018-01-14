@@ -27,15 +27,15 @@ function(value, rc, rt)
 }
 
 ## SD and CoV applies to current abudnance
-rasterize_results <- function()
+rasterize_results <- function(y)
 {
     if (!is_loaded())
         stop("common data needed: use load_common_data")
-    if (length(names(.c4i1)) < 1)
+    if (length(names(y)) < 1)
         stop("species data needed: use load_species_data")
     KT <- .c4if$KT
-    NC <- rowSums(.c4i1$SA.Curr)
-    NR <- rowSums(.c4i1$SA.Ref)
+    NC <- rowSums(y$SA.Curr)
+    NR <- rowSums(y$SA.Ref)
     SI <- 100 * pmin(NC, NR) / pmax(NC, NR)
     SI2 <- ifelse(NC <= NR, SI, 200 - SI)
     i <- match(rownames(KT), names(NC))
@@ -44,8 +44,8 @@ rasterize_results <- function()
     KT$SI <- SI[i]
     KT$SI2 <- SI2[i]
 
-    if (.c4i1$boot) {
-        CB <- .c4i1$Curr.Boot
+    if (y$boot) {
+        CB <- y$Curr.Boot
         SE <- apply(CB, 1, sd)
         CV <- SE / rowMeans(CB)
         j <- match(KT$Row10_Col10, rownames(CB))

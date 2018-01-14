@@ -25,7 +25,7 @@ function(x, type=c("unit", "regional", "underhf"), main, ...)
             regional=FALSE, main=main, ...))
 }
 
-sector_plot.data.frame <-
+sector_plot.c4idf <-
 function(x, type=c("unit", "regional", "underhf"), main, ...)
 {
     type <- match.arg(type)
