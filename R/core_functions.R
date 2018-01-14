@@ -72,6 +72,8 @@ function(id=NULL, species="all")
     SPPfull <- rownames(x)[rownames(x) %in% SPPfull]
     if (length(SPPfull) <= 0)
         stop("no species selected")
+    assign("SPfull", x,
+        envir=.c4is)
     assign("SPsub", x[SPPfull,,drop=FALSE],
         envir=.c4is)
 
@@ -97,17 +99,18 @@ function(id=NULL, species="all")
 }
 
 ## load data for a species
+## avoid somehow common data: only spp table needed
 load_species_data <-
 function(species, boot=TRUE, path=NULL, version=NULL)
 {
-    if (!is_loaded())
-        stop("common data needed: use load_common_data")
+#    if (!is_loaded())
+#        stop("common data needed: use load_common_data")
     opts <- getOption("cure4insect")
     if (is.null(path))
         path <- opts$path
     if (is.null(version))
         version <- opts$version
-    taxon <- as.character(.c4if$SP[species, "taxon"])
+    taxon <- as.character(.c4is$SPfull[species, "taxon"])
     y <- new.env()
     assign("species", species, envir=y)
     assign("taxon", taxon, envir=y)
@@ -369,9 +372,12 @@ get_id_locations <- function() {
 }
 
 get_species_table <- function()  {
-    if (!is_loaded())
+    out <- .c4is$SPfull
+    if (is.null(out)) # subset is not created yet
+        out <- .c4if$SP
+    if (is.null(out)) # common data not loaded
         stop("common data needed: use load_common_data")
-    .c4if$SP
+    out
 }
 
 get_all_id <- function()
