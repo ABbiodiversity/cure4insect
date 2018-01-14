@@ -39,13 +39,15 @@ clear_subset_data()
 calculate_results(y, level=0.9)
 rasterize_results(y)
 
-report_all(boot=TRUE, path=NULL, version=NULL, level=0.9)
+report_all(boot=TRUE, path=NULL, version=NULL,
+    level=0.9, cores=NULL)
 flatten(x, ...)
 \method{flatten}{c4iraw}(x, raw_boot=FALSE, limit=0.01, ...)
 
 custom_report(id=NULL, species="all",
     path=NULL, version=NULL, address=NULL,
-    boot=TRUE, level=0.9, raw_boot=FALSE, limit=0.01)
+    boot=TRUE, level=0.9, cores=NULL,
+    raw_boot=FALSE, limit=0.01)
 
 set_options(...)
 overlay_polygon(ply)
@@ -84,6 +86,10 @@ logical, if confidence intervals for abundance and intactness are desired.
 }
   \item{level}{
 numeric, level for confidence interval, defaults to 90\%.
+}
+  \item{cores}{
+integer, number of cores used in formking (will not work on Windows).
+Defaults to \code{getOption("cure4insect")$cores} when \code{NULL}.
 }
   \item{y}{
 and input object from call to \code{load_species_data}.
@@ -225,9 +231,10 @@ do.call(rbind, lapply(xx, flatten))
 ## species="all" runs all species
 ## species="mites" runs all mite species
 ## sender="you@example.org" will send an email with the results attached
+## increase cores to allow parallel processing
 z <- custom_report(id=ID,
     species=c("AlderFlycatcher", "Achillea.millefolium"),
-    address=NULL)
+    address=NULL, cores=1)
 z
 
 ## making of the file raw_all.rda

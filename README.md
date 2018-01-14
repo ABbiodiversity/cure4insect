@@ -76,14 +76,14 @@ Wrapper function:
 * `species="all"` runs all species
 * `species="mites"` runs all mite species
 * `sender="you@example.org"` will send an email with the results attached
+* increase `cores` to allow parallel processing
 
 ```R
 z <- custom_report(id=ID,
     species=c("AlderFlycatcher", "Achillea.millefolium"),
-    address=NULL)
+    address=NULL, cores=1)
 z
 ```
-
 
 Working with a local copy of the results is much faster
 set path via function arguments or the options:

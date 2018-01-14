@@ -272,15 +272,19 @@ function(x, raw_boot=FALSE, limit=0.01, ...)
     df
 }
 
+.get_cores <- function(cores=NULL) {
+    if (is.null(cores))
+        cores <- as.integer(getOption("cure4insect")$cores)
+    max(1L, min(detectCores(), cores, na.rm=TRUE))
+}
 report_all <-
-function(boot=TRUE, path=NULL, version=NULL, level=0.9)
+function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
 {
     if (!is_loaded())
         stop("common data needed: use load_common_data")
     SPP <- rownames(.c4is$SPsub)
-    opts <- getOption("cure4insect")
-    if (as.integer(opts$cores) > 1L && .Platform$OS.type != "windows") {
-        cores <- max(1L, min(detectCores(), as.integer(opts$cores), na.rm=TRUE))
+    cores <- .get_cores(cores=cores)
+    if (cores > 1L && .Platform$OS.type != "windows") {
         if (.verbose()) {
             cat("processing species: parallel work in progress...\n")
         } else {
@@ -320,11 +324,13 @@ custom_report <-
 function(id=NULL, species="all",
 path=NULL, version=NULL,
 address=NULL, boot=TRUE,
-level=0.9, raw_boot=FALSE, limit=0.01)
+level=0.9, cores=NULL,
+raw_boot=FALSE, limit=0.01)
 {
     load_common_data(path=path, version=version)
     subset_common_data(id=id, species=species)
-    OUT <- report_all(boot=boot, path=path, version=version, level=level)
+    OUT <- report_all(boot=boot, path=path, version=version,
+        level=level, cores=cores)
     rval <- do.call(rbind, lapply(OUT, flatten, raw_boot=raw_boot,
         limit=limit))
     class(rval) <- c("c4iblock", class(rval))
