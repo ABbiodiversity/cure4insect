@@ -4,17 +4,41 @@ export(
     load_species_data,
     clear_common_data,
     clear_subset_data,
-    clear_species_data,
     calculate_results,
-    flatten_results,
+    flatten,
     report_all,
     custom_report,
-    set_options)
+    set_options,
+    overlay_polygon,
+    get_all_id,
+    get_all_species,
+    get_id_locations,
+    get_species_table,
+    is_loaded,
+    sector_plot,
+    rasterize_results)
+
+S3method(flatten, c4iraw)
+S3method(sector_plot, c4iraw)
+S3method(sector_plot, c4idf)
+
 importFrom("intrval", "%)(%")
 importFrom("Matrix", "colSums")
 importFrom("sendmailR", "sendmail", "mime_part")
-importFrom("stats", "quantile")
-importFrom("utils", "flush.console")
+importFrom("stats", "quantile", "density", "sd")
+importFrom("utils", "flush.console", "stack", "write.csv")
 importFrom("sp", "identicalCRS", "over", "spTransform", "coordinates",
     "proj4string")
-#importFrom("rgdal", "readOGR")
+importFrom("pbapply", "getTimeAsString", "pblapply", "pboptions")
+importFrom("grDevices", "boxplot.stats")
+importFrom("graphics", "abline", "axis", "barplot", "box", "hist",
+    "lines", "mtext", "par", "plot", "points", "polygon",
+    "rect", "rug", "segments", "text", "title")
+importFrom("KernSmooth", "bkde")
+importFrom("raster", "raster")
+importFrom("mefa4", "Xtab")
+importFrom("parallel", "detectCores")
+
+importMethodsFrom("Matrix", "as.matrix")
+importMethodsFrom("mefa4", "as.matrix")
+importMethodsFrom("raster", "as.matrix", "stack")
