@@ -130,6 +130,11 @@ uses forking and will not work on Windows, default is 1),
 \code{sender} (email of sender),
 \code{subject} (subject of the email),
 and \code{body} (body of the email).
+
+The multicore processing preformance (not on Windows, where shared memory forked
+processes are not available) might be limited by memory and
+network speed/bandwidth. Local copy of the data is the
+surest way to boost performance.
 }
 \value{
 \code{load_common_data} loads common data to memory of the R session.
