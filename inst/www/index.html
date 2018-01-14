@@ -16,17 +16,18 @@
 <script src="assets/jquery-ui.min.js"></script>
 
 <script>
-ocpu.seturl("http://sc-dev.abmi.ca/ocpu/library/ocpuapps/R")
-//ocpu.seturl("http://sc-dev.abmi.ca/ocpu/library/cure4insect/R")
+// comment out for production
+//ocpu.seturl("http://sc-dev.abmi.ca/ocpu/library/ocpuapps/R")
+ocpu.seturl("http://sc-dev.abmi.ca/ocpu/library/cure4insect/R")
 
 $(document).ready(function () {
 
   $("#submitbutton").on("click", function(){
 
-//      var myheader = $("#header").val() == "true";
       var myheader = $("#header").is(':checked');
       var myfile = $("#csvfile")[0].files[0];
       var myvar = $("#variable").val();
+      var myvarfull = $("#variable").find(":selected").text()
       var myemail = $("#inputEmail").val();
 
       if(!myfile){
@@ -40,34 +41,34 @@ $(document).ready(function () {
 
       $("#submitbutton").attr("disabled", "disabled");
 
-      var req1 = ocpu.call("readCsv", { // app_read_csv
+      var req1 = ocpu.call("app_read_csv", {
           "file" : myfile,
           "header" : myheader
       }, function(session1){
-          var req2 = ocpu.call("example1", { // custom_report
-              "id1" : session1,
-              "id2" : myvar,
-              "att" : myemail
+          var req2 = ocpu.call("app_test", { // custom_report,
+              "id" : session1,
+              "species" : myvar,
+              "address" : myemail
           }, function(session2){
+              alert("Custom Report results for " + myvarfull + " will be sent to " + myemail + ".");
               session2.getConsole(function(outtxt){
                   $("#output").text(outtxt);
               });
-
           });
           req2.fail(function(){
               alert("Server error: " + req2.responseText);
           });
           req2.always(function(){
               $("#submitbutton").removeAttr("disabled")
+              // reset variables
+              $("#header").val("true");
+              $("#csvfile").val("");
+              $("#variable").val("all");
           });
       });
       req1.fail(function(){
           alert("Server error: " + req1.responseText);
       });
-      // reset variables
-      $("#header").val("true");
-      $("#csvfile").val("");
-      $("#variable").val("all");
 
   });
 
@@ -90,20 +91,13 @@ $(document).ready(function () {
             <p>
               <input type="file" id="csvfile">
             </p>
-            <!-- <p>
-              Header <select id="header">
-              <option value="true">Yes</option>
-              <option value="false">No</option>
-              </select>
-            </p> -->
-           <p>
+            <p>
               <div class="checkbox">
                 <label>
                   <input type="checkbox" id="header"> Header
                 </label>
               </div>
             </p>
-
           </div>
         </div>
       </div>
@@ -116,9 +110,10 @@ $(document).ready(function () {
             </p>
             <p>
               <select id="variable">
-              <option value="all">All species</option>
+              <option value="all">All Species</option>
               <option value="mammals" disabled="disabled">Mammals</option>
               <option value="birds">Birds</option>
+              <option value="mites">Soil Mites</option>
               <option value="vplants">Vascular Plants</option>
               <option value="mosses">Bryophytes</option>
               <option value="Lichens">Lichens</option>
@@ -146,12 +141,25 @@ $(document).ready(function () {
         </div>
       </div>
     </div>
-    <div class="col-md-4 col-md-offset-4">
-      <center>
-        <button type="submit" id="submitbutton" class="btn btn-primary">Submit Request</button>
-      </center>
-      <pre><code id="output"></code></pre>
+
+    <div class="row">
+      <div class="col-md-4 col-md-offset-4">
+        <center>
+          <button type="submit" id="submitbutton" class="btn btn-primary">Submit Request</button>
+        </center>
+        <pre><code id="output"></code></pre>
+      </div>
     </div>
+
+  </div>
 
 </body>
 </html>
+<!--
+
+Todo:
+
+* OK - use app_test to troubleshoot email sending, test it
+* run birds etc runs to see where it fails with quantile/NaN
+
+-->
