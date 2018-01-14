@@ -6,7 +6,7 @@ app_test <- function(...) {
     for (i in seq_along(l))
         l[[i]] <- paste0(names(l)[i], ": ", l[[i]])
     rval <- paste(l, collapse="\n\n")
-    .send_email(l$address, mimepart=rval)
+    .send_email(list(...)$address, mimepart=rval)
     rval
 }
 
