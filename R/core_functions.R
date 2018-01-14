@@ -276,8 +276,6 @@ function(x, raw_boot=FALSE, limit=0.01, ...)
 }
 
 .get_cores <- function(cores=NULL) {
-    if (.Platform$OS.type == "windows")
-        return(1L)
     if (is.null(cores))
         cores <- as.integer(getOption("cure4insect")$cores)
     as.integer(max(1, min(detectCores(), cores, na.rm=TRUE)))
@@ -289,6 +287,43 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
         stop("common data needed: use load_common_data")
     SPP <- rownames(.c4is$SPsub)
     cores <- .get_cores(cores=cores)
+    if (cores > 1L) {
+        if (.Platform$OS.type == "windows") {
+            cl <- makeCluster(cores)
+            clusterEvalQ(cl, library(cure4insect))
+            clusterExport(cl, ".c4is")
+            on.exit(stopCluster(cl))
+        } else {
+            cl <- cores
+        }
+    } else {
+        cl <- NULL
+    }
+    if (.verbose()) {
+        cat("processing species:",
+            if (!is.null(cl)) "parallel" else "",
+            "work in progress...\n")
+    } else {
+        opb <- pboptions(type="none")
+        on.exit(pboptions(opb))
+    }
+    OUT <- pblapply(SPP, function(z) {
+        calculate_results(load_species_data(z,
+            boot=boot, path=path, version=version), level=level)
+    }, cl=cores)
+    names(OUT) <- SPP
+    class(OUT) <- "c4ilist"
+    OUT
+}
+.report_all_old <-
+function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
+{
+    if (!is_loaded())
+        stop("common data needed: use load_common_data")
+    SPP <- rownames(.c4is$SPsub)
+    cores <- .get_cores(cores=cores)
+    if (.Platform$OS.type == "windows")
+        cores <- 1L
     if (cores > 1L) {
         if (.verbose()) {
             cat("processing species: parallel work in progress...\n")

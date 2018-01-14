@@ -39,7 +39,8 @@ importFrom("graphics", "abline", "axis", "barplot", "box", "hist",
 importFrom("KernSmooth", "bkde")
 importFrom("raster", "raster")
 importFrom("mefa4", "Xtab")
-importFrom("parallel", "detectCores")
+importFrom("parallel", "detectCores", "makeCluster", "stopCluster",
+    "clusterEvalQ", "clusterExport")
 
 importMethodsFrom("Matrix", "as.matrix")
 importMethodsFrom("mefa4", "as.matrix")
