@@ -146,12 +146,14 @@ into a 1-liner data frame.
 
 \code{report_all} calculate results based on sequential calls
 to \code{load_species_data} for all species defined in the subset.
-Returns a list output from \code{calculate_results}.
+Returns a list (class 'c4ilist') output from \code{calculate_results}.
 
 \code{custom_report} wrapper function to load common data,
 subset spatial units and species list, calculate results for all species,
 and optionally send results as attachment of a email.
-Returns a data frame, rows representing species (flattened results).
+Returns an object of class 'c4idf' (inheriting from data frame),
+rows representing species (flattened results, the Comment field
+flagging possible issues).
 
 \code{overlay_polygon} selects spatial IDs based on a 'SpatialPolygons' object.
 

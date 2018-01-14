@@ -280,7 +280,17 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9)
     SPP <- rownames(.c4is$SPsub)
     opts <- getOption("cure4insect")
     if (as.integer(opts$cores) > 1L && .Platform$OS.type != "windows") {
-        stop("not yet!")
+        cores <- max(1L, min(detectCores(), as.integer(opts$cores), na.rm=TRUE))
+        if (.verbose()) {
+            cat("processing species: parallel work in progress...\n")
+        } else {
+            opb <- pboptions(type="none")
+            on.exit(pboptions(opb))
+        }
+        OUT <- pblapply(SPP, function(spp) {
+            calculate_results(load_species_data(spp,
+                boot=boot, path=path, version=version), level=level)
+        }, cl=cores)
     } else {
         n <- length(SPP)
         OUT <- list()
@@ -300,8 +310,9 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9)
             cat(", elapsed:", getTimeAsString(dt), "\n")
             ETA <- (n - i) * dt / i
         }
-        names(OUT) <- SPP
     }
+    names(OUT) <- SPP
+    class(OUT) <- "c4ilist"
     OUT
 }
 
@@ -318,6 +329,7 @@ level=0.9, raw_boot=FALSE, limit=0.01)
         limit=limit))
     class(rval) <- c("c4iblock", class(rval))
     .send_email(address, mimepart=rval)
+    class(rval) <- c("c4idf", "data.frame")
     rval
 }
 

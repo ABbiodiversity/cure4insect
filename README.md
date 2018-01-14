@@ -39,12 +39,12 @@ ID <- c("182_362", "182_363", "182_364", "182_365", "182_366", "182_367",
     "182_368", "182_369", "182_370", "182_371", "182_372")
 
 subset_common_data(id=ID, species=Spp)
-load_species_data("Ovenbird")
+y <- load_species_data("Ovenbird")
 
 ## calculate results and flatten to a 1-liner
-x <- calculate_results()
+x <- calculate_results(y)
 x
-flatten_results(x)
+flatten(x)
 ```
 
 ### Workflow with multiple species
@@ -58,7 +58,7 @@ ID <- read.table(system.file("extdata/pixels.txt", package="cure4insect"))
 subset_common_data(id=ID, species=Spp)
 xx <- report_all()
 str(xx)
-do.call(rbind, lapply(xx, flatten_results))
+do.call(rbind, lapply(xx, flatten))
 ```
 
 `id` can also be a SpatialPolygons object based on GeoJSON for example:
@@ -100,8 +100,8 @@ res <- list()
 for (i in 1:length(SPP)) {
     cat("processing species:", SPP[i], i, "/", length(SPP), "\n")
     flush.console()
-    load_species_data(SPP[i])
-    res[[i]] <- calculate_results()
+    y <- load_species_data(SPP[i])
+    res[[i]] <- calculate_results(y)
 }
 names(res) <- SPP
 (set_options(opar)) # reset options
@@ -144,8 +144,8 @@ estimates for current abundance.
 
 ```R
 load_common_data()
-load_species_data("Ovenbird")
-r <- rasterize_results()
+y <- load_species_data("Ovenbird")
+r <- rasterize_results(y)
 plot(r, "NC") # current abundance map
 plot(r, "SE") # standadr errors for current abundance
 ```
@@ -175,6 +175,6 @@ or use locally through Kitematic
 ## Todo
 
 * deveop fully fledged web interface (id/species as csv)
-* attachment to include: csv, metadata, readme, IDs, batch figures (zipped)
+* attachment to include: metadata, readme, IDs, batch figures (zipped)
 * make containerized version for local use
 * define color schemes and plotting functionality with default thresholds and some legends?
