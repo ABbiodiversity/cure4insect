@@ -18,7 +18,7 @@ export(
     sector_plot,
     rasterize_results)
 
-export(app_read_csv)
+export(app_read_csv, app_test)
 
 S3method(flatten, c4iraw)
 S3method(sector_plot, c4iraw)
