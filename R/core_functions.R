@@ -273,9 +273,11 @@ function(x, raw_boot=FALSE, limit=0.01, ...)
 }
 
 .get_cores <- function(cores=NULL) {
+    if (.Platform$OS.type == "windows")
+        return(1L)
     if (is.null(cores))
         cores <- as.integer(getOption("cure4insect")$cores)
-    max(1L, min(detectCores(), cores, na.rm=TRUE))
+    as.integer(max(1, min(detectCores(), cores, na.rm=TRUE)))
 }
 report_all <-
 function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
@@ -284,7 +286,7 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
         stop("common data needed: use load_common_data")
     SPP <- rownames(.c4is$SPsub)
     cores <- .get_cores(cores=cores)
-    if (cores > 1L && .Platform$OS.type != "windows") {
+    if (cores > 1L) {
         if (.verbose()) {
             cat("processing species: parallel work in progress...\n")
         } else {
