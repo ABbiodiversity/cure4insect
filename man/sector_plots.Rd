@@ -66,7 +66,7 @@ sector_plot(res[["CanadaWarbler"]], "unit")
 sector_plot(res[["CanadaWarbler"]], "regional")
 sector_plot(res[["CanadaWarbler"]], "underhf")
 
-z <- do.call(rbind, lapply(res, flatten_results))
+z <- do.call(rbind, lapply(res, flatten))
 sector_plot(z, "unit") # all species
 sector_plot(z[1:100,], "regional") # use a subset
 sector_plot(z, "underhf", method="hist") # binned version

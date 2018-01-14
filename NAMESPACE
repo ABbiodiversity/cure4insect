@@ -4,9 +4,8 @@ export(
     load_species_data,
     clear_common_data,
     clear_subset_data,
-    clear_species_data,
     calculate_results,
-    flatten_results,
+    flatten,
     report_all,
     custom_report,
     set_options,
@@ -18,6 +17,7 @@ export(
     is_loaded,
     sector_plot,
     rasterize_results)
+S3method(flatten, c4iraw)
 S3method(sector_plot, c4iraw)
 S3method(sector_plot, data.frame)
 
@@ -36,6 +36,7 @@ importFrom("graphics", "abline", "axis", "barplot", "box", "hist",
 importFrom("KernSmooth", "bkde")
 importFrom("raster", "raster")
 importFrom("mefa4", "Xtab")
+importFrom("parallel", "mclapply")
 
 importMethodsFrom("Matrix", "as.matrix")
 importMethodsFrom("mefa4", "as.matrix")
