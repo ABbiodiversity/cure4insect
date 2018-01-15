@@ -18,7 +18,7 @@
 <script>
 // comment out for production
 //ocpu.seturl("http://sc-dev.abmi.ca/ocpu/library/ocpuapps/R")
-ocpu.seturl("http://sc-dev.abmi.ca/ocpu/library/cure4insect/R")
+//ocpu.seturl("http://sc-dev.abmi.ca/ocpu/library/cure4insect/R")
 
 $(document).ready(function () {
 
@@ -49,12 +49,13 @@ $(document).ready(function () {
           var req2 = ocpu.call("custom_report", {
               "id" : session1,
               "species" : myvar,
+              //"species" : ["AlderFlycatcher", "Achillea.millefolium"],
               "address" : myemail
           }, function(session2){
-              alert("Custom Report results for " + myvarfull + " will be sent to " + myemail + ".");
-              session2.getConsole(function(outtxt){
-                  $("#output").text(outtxt);
-              });
+              alert("Custom report results for " + myvarfull + " is complete. Check your email (" + myemail + ").");
+              //session2.getConsole(function(outtxt){
+              //    $("#output").text(outtxt);
+              //});
           });
           req2.fail(function(){
               alert("Server error: " + req2.responseText);
@@ -65,7 +66,11 @@ $(document).ready(function () {
               $("#header").val("true");
               $("#csvfile").val("");
               $("#variable").val("all");
+              $("#inputEmail").val("");
           });
+      });
+      req1.done(function(){
+          alert("Creating custom report for " + myvarfull + " is in progress. Results will be sent to " + myemail + ".");
       });
       req1.fail(function(){
           alert("Server error: " + req1.responseText);
@@ -87,7 +92,10 @@ $(document).ready(function () {
           <div class="panel-heading"><i class="fa fa-map-marker" aria-hidden="true"></i> Spatial Subsets</div>
           <div class="panel-body">
             <p>
-              Upload a comma-separated text (CSV) file with spatial unit IDs in the 1st column (optionally with a header in the 1st row).
+              Upload a comma-separated text (CSV) file with spatial unit
+              IDs in the 1st column (see an example file
+              <a href="http://ftp.public.abmi.ca/species.abmi.ca/reports/2017/data/pixels.txt" target="_blank">here</a>, optionally with a header in the 1st row as in
+              <a href="http://ftp.public.abmi.ca/species.abmi.ca/reports/2017/data/pixels-with-id.txt" target="_blank">here</a>, read the <a href="https://github.com/ABbiodiversity/cure4insect#determining-spatial-ids-based-on-spatial-polygons" target="_blank">giude</a> to find out how to determine the IDs).
             </p>
             <p>
               <input type="file" id="csvfile">
@@ -148,7 +156,7 @@ $(document).ready(function () {
         <center>
           <button type="submit" id="submitbutton" class="btn btn-primary">Submit Request</button>
         </center>
-        <pre><code id="output"></code></pre>
+<!--        <pre><code id="output"></code></pre> -->
       </div>
     </div>
 
@@ -156,11 +164,3 @@ $(document).ready(function () {
 
 </body>
 </html>
-<!--
-
-Todo:
-
-* OK - use app_test to troubleshoot email sending, test it
-* run birds etc runs to see where it fails with quantile/NaN
-
--->
