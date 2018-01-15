@@ -180,13 +180,16 @@ plot(r, "SE") # standadr errors for current abundance
 
 ## Web API
 
-Get results in csv format (for other formats see [here](https://www.opencpu.org/api.html#api-formats))
+The web app sits [here](http://sc-dev.abmi.ca/ocpu/library/cure4insect/www/).
+To get more control over the results, use the [API](https://www.opencpu.org/api.html#api-formats).
+For example:
 
 ```shell
 curl http://sc-dev.abmi.ca/ocpu/library/cure4insect/R/custom_report/csv \
 -H "Content-Type: application/json" -d \
 '{"id":["182_362", "182_363"], "species":["AlderFlycatcher", "Achillea.millefolium"]}'
 ```
+
 
 ## Vision
 
