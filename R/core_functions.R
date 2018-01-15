@@ -27,7 +27,6 @@ function(path=NULL, version=NULL)
             cat("loading common data\n")
             flush.console()
         }
-        #clear_common_data()
         opts <- getOption("cure4insect")
         if (is.null(path))
             path <- opts$path
@@ -103,8 +102,6 @@ function(id=NULL, species="all")
 load_species_data <-
 function(species, boot=TRUE, path=NULL, version=NULL)
 {
-#    if (!is_loaded())
-#        stop("common data needed: use load_common_data")
     opts <- getOption("cure4insect")
     if (is.null(path))
         path <- opts$path
@@ -160,13 +157,11 @@ function(y, level=0.9)
     SI <- 100 * min(NC, NR) / max(NC, NR)
     SI2 <- if (NC <= NR) SI else 200 - SI
     if (y$boot) {
-        #PIX10 <- unique(as.character(.c4is$KTsub$Row10_Col10))
         KTsubsub <- .c4is$KTsub[PIX,,drop=FALSE]
         Curr.Boot <- y$Curr.Boot
         Ref.Boot <- y$Ref.Boot
         KTsubsub <- KTsubsub[KTsubsub$Row10_Col10 %in% rownames(Curr.Boot),,drop=FALSE]
         PIX10 <- unique(as.character(KTsubsub$Row10_Col10))
-        #compare_sets(PIX10,rownames(Curr.Boot))
         Curr.Boot <- Curr.Boot[PIX10,,drop=FALSE]
         Ref.Boot <- Ref.Boot[PIX10,,drop=FALSE]
         Curr.Boot <- Curr.Boot[match(KTsubsub$Row10_Col10, rownames(Curr.Boot)),]
@@ -317,17 +312,17 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
             "work in progress...\n", sep="")
     } else {
         opb <- pboptions(type="none")
-        on.exit(pboptions(opb))
+        on.exit(pboptions(opb), add=TRUE)
     }
     OUT <- pblapply(SPP, function(z) {
         calculate_results(load_species_data(z,
             boot=boot, path=path, version=version), level=level)
-    }, cl=cores)
+    }, cl=cl)
     names(OUT) <- SPP
     class(OUT) <- "c4ilist"
     OUT
 }
-## this is for testing: i.e. looking into failed requests
+## this is for testing: i.e. looking into failed requests (cores ignored)
 .report_all_by1 <-
 function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
 {

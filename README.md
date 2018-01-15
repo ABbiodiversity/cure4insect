@@ -181,11 +181,13 @@ or use locally through Kitematic
 
 devtools::install_github("ABbiodiversity/cure4insect")
 library(cure4insect)
+opar <- set_options(path = "w:/reports")
+getOption("cure4insect")
 
 load_common_data()
 ID <- c("182_362", "182_363", "182_364", "182_365", "182_366", "182_367",
     "182_368", "182_369", "182_370", "182_371", "182_372")
-subset_common_data(id=ID, species=get_all_species()[1:10])
+subset_common_data(id=ID, species=get_all_species()[1:20])
 
 system.time(z <- report_all(cores=NULL))
 system.time(z <- report_all(cores=2))
