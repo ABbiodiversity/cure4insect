@@ -139,7 +139,7 @@ function(y, level=0.9)
         stop("spatial subsets needed: use subset_common_data")
     if (!inherits(y, "c4i1"))
         stop("y must be of class c4i1")
-    .calculate_results(y=y, level=level, .c4is=as.list(.c4i))
+    .calculate_results(y=y, level=level, .c4is=as.list(.c4is))
 }
 .calculate_results <-
 function(y, level=0.9, .c4is)
@@ -323,7 +323,7 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
             level=level, .c4is=.c4is)
     }
     OUT <- pblapply(SPP, fun, boot=boot, path=path, version=version,
-        level=level, .c4is=as.list(.c4i), cl=cl)
+        level=level, .c4is=as.list(.c4is), cl=cl)
     names(OUT) <- SPP
     class(OUT) <- "c4ilist"
     OUT
