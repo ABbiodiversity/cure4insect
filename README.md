@@ -94,16 +94,14 @@ library(cure4insect)
 opar <- set_options(path = "w:/reports")
 getOption("cure4insect")
 load_common_data()
-SPP <- get_all_species()
-subset_common_data(id=get_all_id(), species=SPP)
-res <- list()
-for (i in 1:length(SPP)) {
-    cat("processing species:", SPP[i], i, "/", length(SPP), "\n")
-    flush.console()
-    y <- load_species_data(SPP[i])
-    res[[i]] <- calculate_results(y)
-}
-names(res) <- SPP
+subset_common_data(id=get_all_id(),
+    species=get_all_species())
+## see how these compare
+system.time(z <- report_all(cores=1))
+#system.time(z <- report_all(cores=2))
+#system.time(z <- report_all(cores=4))
+## this is for testing only
+#system.time(z <- .report_all_by1())
 (set_options(opar)) # reset options
 ```
 

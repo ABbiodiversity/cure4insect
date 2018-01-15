@@ -3,6 +3,7 @@
 \alias{app_test}
 \alias{.load_species_data}
 \alias{.calculate_results}
+\alias{.report_all_by1}
 \title{
 App Specific Functions and Internals
 }
@@ -17,12 +18,15 @@ app_test(...)
 
 .load_species_data(species, boot=TRUE, path=NULL, version=NULL, .c4is)
 .calculate_results(y, level=0.9, .c4is)
+.report_all_by1(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
 }
 \arguments{
   \item{species, boot, path, version}{arguments passed to
-    \code{\link{load_species_data}}.}
-  \item{y, level}{arguments passed to \code{\link{calculate_results}}.}
+    \code{\link{load_species_data}} and other functions.}
+  \item{y, level}{arguments passed to \code{\link{calculate_results}}
+    and other functions.}
   \item{.c4is}{the subset environment \code{as.list(.c4is)}.}
+  \item{cores}{desired number of cores to use.}
   \item{\dots}{arguments passed to underlying functions.}
 }
 \details{
