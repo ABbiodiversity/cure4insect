@@ -19,7 +19,7 @@ export(
     rasterize_results)
 
 export(app_read_csv, app_test,
-    .calculate_results)
+    .calculate_results, .load_species_data)
 
 S3method(flatten, c4iraw)
 S3method(sector_plot, c4iraw)

@@ -1,6 +1,8 @@
 \name{internals}
 \alias{app_read_csv}
 \alias{app_test}
+\alias{.load_species_data}
+\alias{.calculate_results}
 \title{
 App Specific Functions and Internals
 }
@@ -13,11 +15,14 @@ used by users.
 app_read_csv(...)
 app_test(...)
 
+.load_species_data(species, boot=TRUE, path=NULL, version=NULL, .c4is)
 .calculate_results(y, level=0.9, .c4is)
 }
 \arguments{
-  \item{y, level, .c4is}{arguments passed to \code{\link{calculate_results}}
-    plus the subset environment \code{as.list(.c4is)}.}
+  \item{species, boot, path, version}{arguments passed to
+    \code{\link{load_species_data}}.}
+  \item{y, level}{arguments passed to \code{\link{calculate_results}}.}
+  \item{c4is}{the subset environment \code{as.list(.c4is)}.}
   \item{\dots}{arguments passed to underlying functions.}
 }
 \details{

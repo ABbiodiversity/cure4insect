@@ -181,8 +181,8 @@ or use locally through Kitematic
 
 devtools::install_github("ABbiodiversity/cure4insect")
 library(cure4insect)
-#opar <- set_options(path = "w:/reports")
-#getOption("cure4insect")
+opar <- set_options(path = "w:/reports")
+getOption("cure4insect")
 
 load_common_data()
 ID <- c("182_362", "182_363", "182_364", "182_365", "182_366", "182_367",

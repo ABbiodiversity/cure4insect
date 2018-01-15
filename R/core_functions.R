@@ -108,6 +108,18 @@ function(species, boot=TRUE, path=NULL, version=NULL)
     if (is.null(version))
         version <- opts$version
     taxon <- as.character(.c4is$SPfull[species, "taxon"])
+    .load_species_data(species=species,
+        boot=boot, path=path, version=version, .c4is=as.list(.c4is))
+}
+.load_species_data <-
+function(species, boot=TRUE, path=NULL, version=NULL, .c4is)
+{
+    opts <- getOption("cure4insect")
+    if (is.null(path))
+        path <- opts$path
+    if (is.null(version))
+        version <- opts$version
+    taxon <- as.character(.c4is$SPfull[species, "taxon"])
     y <- new.env()
     assign("species", species, envir=y)
     assign("taxon", taxon, envir=y)
@@ -307,8 +319,8 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
         on.exit(pboptions(opb), add=TRUE)
     }
     fun <- function(z, boot=NULL, path=NULL, version=NULL, level=0.9, .c4is) {
-        .calculate_results(load_species_data(z,
-            boot=boot, path=path, version=version),
+        .calculate_results(.load_species_data(z,
+            boot=boot, path=path, version=version, .c4is=.c4is),
             level=level, .c4is=.c4is)
     }
     OUT <- pblapply(SPP, fun, boot=boot, path=path, version=version,
