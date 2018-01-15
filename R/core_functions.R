@@ -177,8 +177,8 @@ function(y, level=0.9)
         SI2B <- ifelse(CB <= RB, SIB, 200 - SIB)
         NC_CI <- quantile(CB, a)
         NR_CI <- quantile(RB, a)
-        SI_CI <- quantile(SIB, a)
-        SI2_CI <- quantile(SI2B, a)
+        SI_CI <- quantile(SIB, a, na.rm=TRUE) # division by 0 can occur
+        SI2_CI <- quantile(SI2B, a, na.rm=TRUE) # division by 0 can occur
     } else {
         CB <- RB <- rep(NA, 100)
         NC_CI <- c(NA, NA)
@@ -263,6 +263,8 @@ function(x, raw_boot=FALSE, limit=0.01, ...)
     z[is.na(z)] <- 0
     fd <- matrix(t(z), 1)
     colnames(fd) <- paste0(rep(rownames(z), each=ncol(z)), "_", colnames(z))
+    if (!KEEP)
+        fd[] <- NA
     df <- cbind(df, fd)
     df$Comments <- paste(unlist(Cm), collapse=" ")
     if (raw_boot) {
@@ -280,6 +282,17 @@ function(x, raw_boot=FALSE, limit=0.01, ...)
         cores <- as.integer(getOption("cure4insect")$cores)
     as.integer(max(1, min(detectCores(), cores, na.rm=TRUE)))
 }
+.push_subset_to_cl <- function(cl) {
+    clusterEvalQ(cl, library(cure4insect))
+    clusterEvalQ(cl, assign(".c4is", new.env()))
+    for (i in names(.c4is)) {
+        tmp <- .c4is[[i]]
+        CALL <- paste0("assign(\"", i, "\", tmp, envir=.c4is)")
+        clusterExport(cl, c("tmp", "CALL"))
+        clusterEvalQ(cl, eval(parse(text=CALL)))
+    }
+    invisible(NULL)
+}
 report_all <-
 function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
 {
@@ -290,8 +303,9 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
     if (cores > 1L) {
         if (.Platform$OS.type == "windows") {
             cl <- makeCluster(cores)
-            clusterEvalQ(cl, library(cure4insect))
-            clusterExport(cl, ".c4is")
+            #clusterEvalQ(cl, library(cure4insect))
+            #clusterExport(cl, ".c4is")
+            .push_subset_to_cl(cl)
             on.exit(stopCluster(cl))
         } else {
             cl <- cores
@@ -300,9 +314,9 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
         cl <- NULL
     }
     if (.verbose()) {
-        cat("processing species:",
-            if (!is.null(cl)) "parallel" else "",
-            "work in progress...\n")
+        cat("processing species: ",
+            if (!is.null(cl)) "parallel " else "",
+            "work in progress...\n", sep="")
     } else {
         opb <- pboptions(type="none")
         on.exit(pboptions(opb))

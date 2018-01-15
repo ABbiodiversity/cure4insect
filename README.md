@@ -178,3 +178,11 @@ or use locally through Kitematic
 * attachment to include: metadata, readme, IDs, batch figures (zipped)
 * make containerized version for local use
 * define color schemes and plotting functionality with default thresholds and some legends?
+
+load_common_data()
+subset_common_data(id=ID, species=get_all_species()[1:10])
+
+system.time(z <- report_all(cores=NULL))
+system.time(z <- report_all(cores=2))
+system.time(z <- .report_all_old()) # here is the error
+
