@@ -132,7 +132,7 @@ function(species, boot=TRUE, path=NULL, version=NULL)
     invisible(y)
 }
 
-.calculate_results <-
+calculate_results <-
 function(y, level=0.9)
 {
     if (length(names(.c4is)) < 1)
