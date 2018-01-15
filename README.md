@@ -61,16 +61,6 @@ str(xx)
 do.call(rbind, lapply(xx, flatten))
 ```
 
-`id` can also be a SpatialPolygons object based on GeoJSON for example:
-
-```R
-library(rgdal)
-dsn <- system.file("extdata/polygon.geojson", package="cure4insect")
-ply <- readOGR(dsn=dsn)
-subset_common_data(id=ply, species=Spp)
-xx2 <- report_all()
-```
-
 Wrapper function:
 
 * `species="all"` runs all species
@@ -130,6 +120,45 @@ class(z) <- c("c4idf", class(z))
 sector_plot(z, "unit") # all species
 sector_plot(z[1:100,], "regional") # use a subset
 sector_plot(z, "underhf", method="hist") # binned version
+```
+
+### Determining spatial IDs based on spatial polygons
+
+`id` can also be a SpatialPolygons object based on GeoJSON for example:
+
+```R
+library(rgdal)
+dsn <- system.file("extdata/polygon.geojson", package="cure4insect")
+ply <- readOGR(dsn=dsn)
+subset_common_data(id=ply, species=Spp)
+xx2 <- report_all()
+```
+
+Spatial IDs of the 1km x 1km spatial pixel units are to be used for the custom summaries.
+The Row_Col field defines the IDs and links the raster cells in the [geodatabase](http://ftp.public.abmi.ca/species.abmi.ca/gis/Grid1km_working.gdb.zip)
+or [CSV](http://ftp.public.abmi.ca/species.abmi.ca/gis/Grid1km_working.csv.zip}) (with latitude/longitude in [NAD_1983_10TM_AEP_Forest](http://spatialreference.org/ref/epsg/3402/) projection).
+
+For the web application, use your favourite GIS software, or in R use this:
+
+```R
+library(rgdal)
+load_common_data()
+dsn <- system.file("extdata/OSA_bound.geojson", package="cure4insect")
+ply <- readOGR(dsn=dsn)
+ID <- overlay_polygon(ply)
+## write IDs into a text file
+write.table(data.frame(SpatialID=ID), row.names=FALSE, file="SpatialID.txt")
+
+## spatial pixels: selection in red
+xy <- get_id_locations()
+plot(xy, col="grey", pch=".")
+plot(xy[ID,], col="red", pch=".", add=TRUE)
+
+## compare with the polygons
+AB <- readOGR(dsn=system.file("extdata/AB_bound.geojson",
+    package="cure4insect"))
+plot(AB, col="grey")
+plot(ply, col="red", add=TRUE)
 ```
 
 ### Raster objects and maps
