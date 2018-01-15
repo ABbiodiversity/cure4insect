@@ -22,7 +22,7 @@ app_test(...)
   \item{species, boot, path, version}{arguments passed to
     \code{\link{load_species_data}}.}
   \item{y, level}{arguments passed to \code{\link{calculate_results}}.}
-  \item{c4is}{the subset environment \code{as.list(.c4is)}.}
+  \item{.c4is}{the subset environment \code{as.list(.c4is)}.}
   \item{\dots}{arguments passed to underlying functions.}
 }
 \details{
