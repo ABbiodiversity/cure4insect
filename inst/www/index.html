@@ -45,7 +45,8 @@ $(document).ready(function () {
           "file" : myfile,
           "header" : myheader
       }, function(session1){
-          var req2 = ocpu.call("app_test", { // custom_report,
+          // custom_report or app_test
+          var req2 = ocpu.call("custom_report", {
               "id" : session1,
               "species" : myvar,
               "address" : myemail
