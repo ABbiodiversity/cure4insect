@@ -1,1 +1,4 @@
 title: app
+package_config: /usr/local/lib/R/site-library/cure4insect/config/defaults.conf
+ocpu_config: /etc/opencpu/server.conf
+
