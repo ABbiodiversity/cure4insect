@@ -288,7 +288,7 @@ function(x, raw_boot=FALSE, limit=0.01, ...)
     for (i in names(.c4is)) {
         tmp <- .c4is[[i]]
         CALL <- paste0("assign(\"", i, "\", tmp, envir=.c4is)")
-        clusterExport(cl, c("tmp", "CALL"), envir=sys.frame())
+        clusterExport(cl, c("tmp", "CALL"), envir=environment())
         clusterEvalQ(cl, eval(parse(text=CALL)))
     }
     invisible(NULL)
@@ -303,8 +303,6 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
     if (cores > 1L) {
         if (.Platform$OS.type == "windows") {
             cl <- makeCluster(cores)
-            #clusterEvalQ(cl, library(cure4insect))
-            #clusterExport(cl, ".c4is")
             .push_subset_to_cl(cl)
             on.exit(stopCluster(cl))
         } else {
