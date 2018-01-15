@@ -97,11 +97,11 @@ load_common_data()
 subset_common_data(id=get_all_id(),
     species=get_all_species())
 ## see how these compare
-system.time(z <- report_all(cores=1))
-#system.time(z <- report_all(cores=2))
-#system.time(z <- report_all(cores=4))
+system.time(res <- report_all(cores=1))
+#system.time(res <- report_all(cores=2))
+#system.time(res <- report_all(cores=4))
 ## this is for testing only
-#system.time(z <- .report_all_by1())
+#system.time(res <- .report_all_by1())
 (set_options(opar)) # reset options
 ```
 
@@ -125,7 +125,8 @@ sector_plot(res[["CanadaWarbler"]], "unit")
 sector_plot(res[["CanadaWarbler"]], "regional")
 sector_plot(res[["CanadaWarbler"]], "underhf")
 
-z <- do.call(rbind, lapply(res, flatten_results))
+z <- do.call(rbind, lapply(res, flatten))
+class(z) <- c("c4idf", class(z))
 sector_plot(z, "unit") # all species
 sector_plot(z[1:100,], "regional") # use a subset
 sector_plot(z, "underhf", method="hist") # binned version
@@ -175,23 +176,4 @@ or use locally through Kitematic
 * attachment to include: metadata, readme, IDs, batch figures (zipped)
 * make containerized version for local use
 * define color schemes and plotting functionality with default thresholds and some legends?
-* need testing for all major taxa
-
-devtools::install_github("ABbiodiversity/cure4insect")
-library(cure4insect)
-opar <- set_options(path = "w:/reports")
-getOption("cure4insect")
-
-load_common_data()
-ID <- c("182_362", "182_363", "182_364", "182_365", "182_366", "182_367",
-    "182_368", "182_369", "182_370", "182_371", "182_372")
-subset_common_data(id=ID, species=get_all_species()[1:20])
-
-system.time(z <- report_all(cores=NULL))
-system.time(z <- report_all(cores=2))
-system.time(z <- report_all(cores=4))
-system.time(z <- cure4insect:::.report_all_by1()) # here is the error
-
-system.time(z <- custom_report(id=ID, species="all", cores=2))
-
 
