@@ -132,15 +132,18 @@ function(species, boot=TRUE, path=NULL, version=NULL)
     invisible(y)
 }
 
-calculate_results <-
+.calculate_results <-
 function(y, level=0.9)
 {
     if (length(names(.c4is)) < 1)
         stop("spatial subsets needed: use subset_common_data")
     if (!inherits(y, "c4i1"))
         stop("y must be of class c4i1")
-    if (length(names(y)) < 1)
-        stop("species data needed: use load_species_data")
+    .calculate_results(y=y, level=level, .c4is=as.list(.c4i))
+}
+.calculate_results <-
+function(y, level=0.9, .c4is)
+{
     cn <- c("Native", "Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")
     a <- c(0.5*(1-level), 1-0.5*(1-level))
     MAX <- max(max(rowSums(y$SA.Curr)), max(rowSums(y$SA.Ref)))
@@ -298,7 +301,7 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
     if (cores > 1L) {
         if (.Platform$OS.type == "windows") {
             cl <- makeCluster(cores)
-            .push_subset_to_cl(cl)
+            #.push_subset_to_cl(cl)
             on.exit(stopCluster(cl))
         } else {
             cl <- cores
@@ -314,10 +317,13 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
         opb <- pboptions(type="none")
         on.exit(pboptions(opb), add=TRUE)
     }
-    OUT <- pblapply(SPP, function(z) {
-        calculate_results(load_species_data(z,
-            boot=boot, path=path, version=version), level=level)
-    }, cl=cl)
+    fun <- function(z, boot, path, version, level, .c4is) {
+        .calculate_results(load_species_data(z,
+            boot=boot, path=path, version=version),
+            level=level, .c4is=.c4is)
+    }
+    OUT <- pblapply(SPP, fun, boot=boot, path=path, version=version,
+        level=level, .c4is=as.list(.c4i), cl=cl)
     names(OUT) <- SPP
     class(OUT) <- "c4ilist"
     OUT
