@@ -174,15 +174,15 @@ or use locally through Kitematic
 
 ## Todo
 
-* deveop fully fledged web interface (id/species as csv)
 * attachment to include: metadata, readme, IDs, batch figures (zipped)
 * make containerized version for local use
 * define color schemes and plotting functionality with default thresholds and some legends?
+* need testing for all major taxa
 
 devtools::install_github("ABbiodiversity/cure4insect")
 library(cure4insect)
-opar <- set_options(path = "w:/reports")
-getOption("cure4insect")
+#opar <- set_options(path = "w:/reports")
+#getOption("cure4insect")
 
 load_common_data()
 ID <- c("182_362", "182_363", "182_364", "182_365", "182_366", "182_367",

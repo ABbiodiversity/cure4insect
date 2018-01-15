@@ -280,17 +280,6 @@ function(x, raw_boot=FALSE, limit=0.01, ...)
         cores <- as.integer(getOption("cure4insect")$cores)
     as.integer(max(1, min(detectCores(), cores, na.rm=TRUE)))
 }
-.push_subset_to_cl <- function(cl) {
-    clusterEvalQ(cl, library(cure4insect))
-    clusterEvalQ(cl, assign(".c4is", new.env()))
-    for (i in names(.c4is)) {
-        tmp <- .c4is[[i]]
-        CALL <- paste0("assign(\"", i, "\", tmp, envir=.c4is)")
-        clusterExport(cl, c("tmp", "CALL"), envir=environment())
-        clusterEvalQ(cl, eval(parse(text=CALL)))
-    }
-    invisible(NULL)
-}
 report_all <-
 function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
 {
@@ -301,7 +290,7 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
     if (cores > 1L) {
         if (.Platform$OS.type == "windows") {
             cl <- makeCluster(cores)
-            #.push_subset_to_cl(cl)
+            clusterEvalQ(cl, library(cure4insect))
             on.exit(stopCluster(cl))
         } else {
             cl <- cores
@@ -317,7 +306,7 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
         opb <- pboptions(type="none")
         on.exit(pboptions(opb), add=TRUE)
     }
-    fun <- function(z, boot, path, version, level, .c4is) {
+    fun <- function(z, boot=NULL, path=NULL, version=NULL, level=0.9, .c4is) {
         .calculate_results(load_species_data(z,
             boot=boot, path=path, version=version),
             level=level, .c4is=.c4is)
