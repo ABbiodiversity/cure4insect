@@ -288,7 +288,7 @@ function(x, raw_boot=FALSE, limit=0.01, ...)
     for (i in names(.c4is)) {
         tmp <- .c4is[[i]]
         CALL <- paste0("assign(\"", i, "\", tmp, envir=.c4is)")
-        clusterExport(cl, c("tmp", "CALL"))
+        clusterExport(cl, c("tmp", "CALL"), envir=sys.frame())
         clusterEvalQ(cl, eval(parse(text=CALL)))
     }
     invisible(NULL)
@@ -329,45 +329,30 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
     class(OUT) <- "c4ilist"
     OUT
 }
-.report_all_old <-
+## this is for testing: i.e. looking into failed requests
+.report_all_by1 <-
 function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
 {
     if (!is_loaded())
         stop("common data needed: use load_common_data")
     SPP <- rownames(.c4is$SPsub)
-    cores <- .get_cores(cores=cores)
-    if (.Platform$OS.type == "windows")
-        cores <- 1L
-    if (cores > 1L) {
+    n <- length(SPP)
+    OUT <- list()
+    ETA <- NULL
+    if (.verbose())
+        cat("processing species:\n")
+    t0 <- proc.time()[3]
+    for (i in seq_len(n)) {
         if (.verbose()) {
-            cat("processing species: parallel work in progress...\n")
-        } else {
-            opb <- pboptions(type="none")
-            on.exit(pboptions(opb))
+            cat("* ", i, "/", length(SPP), " ", SPP[i], ", ETA: ",
+                getTimeAsString(ETA), sep="")
+            flush.console()
         }
-        OUT <- pblapply(SPP, function(spp) {
-            calculate_results(load_species_data(spp,
-                boot=boot, path=path, version=version), level=level)
-        }, cl=cores)
-    } else {
-        n <- length(SPP)
-        OUT <- list()
-        ETA <- NULL
-        if (.verbose())
-            cat("processing species:\n")
-        t0 <- proc.time()[3]
-        for (i in seq_len(n)) {
-            if (.verbose()) {
-                cat("* ", i, "/", length(SPP), " ", SPP[i], ", ETA: ",
-                    getTimeAsString(ETA), sep="")
-                flush.console()
-            }
-            y <- load_species_data(SPP[i], boot=boot, path=path, version=version)
-            OUT[[i]] <- calculate_results(y, level=level)
-            dt <- proc.time()[3] - t0
-            cat(", elapsed:", getTimeAsString(dt), "\n")
-            ETA <- (n - i) * dt / i
-        }
+        y <- load_species_data(SPP[i], boot=boot, path=path, version=version)
+        OUT[[i]] <- calculate_results(y, level=level)
+        dt <- proc.time()[3] - t0
+        cat(", elapsed:", getTimeAsString(dt), "\n")
+        ETA <- (n - i) * dt / i
     }
     names(OUT) <- SPP
     class(OUT) <- "c4ilist"

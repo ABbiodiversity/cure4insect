@@ -180,6 +180,8 @@ or use locally through Kitematic
 * define color schemes and plotting functionality with default thresholds and some legends?
 
 load_common_data()
+ID <- c("182_362", "182_363", "182_364", "182_365", "182_366", "182_367",
+    "182_368", "182_369", "182_370", "182_371", "182_372")
 subset_common_data(id=ID, species=get_all_species()[1:10])
 
 system.time(z <- report_all(cores=NULL))
