@@ -192,7 +192,7 @@ subset_common_data(id=ID, species=get_all_species()[1:20])
 system.time(z <- report_all(cores=NULL))
 system.time(z <- report_all(cores=2))
 system.time(z <- report_all(cores=4))
-system.time(z <- cure4insect:::.report_all_old()) # here is the error
+system.time(z <- cure4insect:::.report_all_by1()) # here is the error
 
 system.time(z <- custom_report(id=ID, species="all", cores=2))
 

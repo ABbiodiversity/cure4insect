@@ -164,7 +164,10 @@ function(y, level=0.9, .c4is)
     PIX <- PIX[PIX %in% rownames(y$SA.Curr)]
     SA.Curr <- y$SA.Curr[PIX,cn]
     SA.Ref <- y$SA.Ref[PIX,cn]
-    MEAN <- max(mean(rowSums(SA.Curr)), mean(rowSums(SA.Ref)))
+    ## subset can have 0 rows when outside of modeled range:
+    ## this leads to mean(numeric(0))=NaN but should be 0
+    MEAN <- if (length(PIX) > 0)
+        max(mean(rowSums(SA.Curr)), mean(rowSums(SA.Ref))) else 0
     CS <- colSums(SA.Curr)
     RS <- colSums(SA.Ref)
     NC <- sum(CS)
