@@ -19,7 +19,8 @@ export(
     rasterize_results)
 
 export(app_read_csv, app_test,
-    .calculate_results, .load_species_data, .report_all_by1)
+    .calculate_results, .load_species_data, .report_all_by1,
+    .read_raster_template, .make_raster)
 
 S3method(flatten, c4iraw)
 S3method(sector_plot, c4iraw)
