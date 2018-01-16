@@ -141,7 +141,7 @@ function(species, boot=TRUE, path=NULL, version=NULL, .c4is)
         }
     }
     class(y) <- "c4i1"
-    invisible(y)
+    y
 }
 
 calculate_results <-
