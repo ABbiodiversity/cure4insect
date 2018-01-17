@@ -86,10 +86,10 @@ function(species, boot=TRUE, path=NULL, version=NULL)
         version <- opts$version
     taxon <- as.character(.c4if$SP[species, "taxon"])
     if (taxon == "birds") {
-        cveg <- .c4if$CFbirds$marginal$veg[species,]
+        cveg <- .c4if$CFbirds$joint$veg[species,]
         cveg["HardLin"] <- 0
         cveg["SoftLin"] <- mean(cveg[c("Shrub", "GrassHerb")])
-        csoil <- .c4if$CFbirds$marginal$soil[species,]
+        csoil <- .c4if$CFbirds$joint$soil[species,]
         csoil["HardLin"] <- 0
         csoil["SoftLin"] <- mean(csoil)
     } else {
@@ -144,6 +144,8 @@ function(object, xy, veg, soil, ...)
     colnames(OUT) <- names(DO)
     xy <- spTransform(xy, proj4string(.read_raster_template()))
     if (DO$veg) {
+        if (length(veg) != nrow(coordinates(xy)))
+            stop("length(veg) must equal number of points in xy")
         .check(veg, names(object$cveg))
         if (any(veg == "SoftLin") && object$taxon == "birds")
             warning("veg contained SoftLin: check your assumptions")
@@ -151,6 +153,8 @@ function(object, xy, veg, soil, ...)
         OUT$veg <- fi(object$cveg[match(veg, names(object$cveg))] + iveg)
     }
     if (DO$soil) {
+        if (length(soil) != nrow(coordinates(xy)))
+            stop("length(veg) must equal number of points in xy")
         .check(soil, names(object$csoil))
         if (any(soil == "SoftLin") && object$taxon == "birds")
             warning("soil contained SoftLin: check your assumptions")
@@ -253,14 +257,38 @@ load_common_data()
 #path="w:/reports"
 object <- load_spclim_data(species)
 
+devtools::install_github("ABbiodiversity/cure4insect")
+library(cure4insect)
+load_common_data()
+
+## see bird species codes
+sptab <- get_species_table()
+rownames(sptab)[sptab$taxon == "birds"]
+
+species <- "Ovenbird"
+#.c4if=cure4insect:::.c4if
+#path="w:/reports"
+object <- load_spclim_data(species)
+
+## these are the vegetation/disturbance classes as factor
+## you need to make a crosswalk
+## and use e.g. mefa4::reclass
+(veg <- as.factor(get_levels()$veg))
+## for each veg class value, you need to have
+## spatial locations (you can repeat the same value too
+## just make sure to avoid duplicate rownames)
+## use the sp package to get SpatialPoints
+(xy <- get_id_locations()[(10^5+1):(10^5+length(veg)),])
+
+pred <- predict(object, xy, veg)
+
+xy <- get_id_locations()
+veg <- as.factor(get_levels()$veg)
+veg <- sample(veg, nrow(coordinates(xy)), replace=TRUE)
+
+pred <- predict(object, xy, veg)
 
 
 
-soil <- as.factor(names(object$csoil))
-veg <- as.factor(names(object$cveg[1:length(soil)]))
-xy <- .c4if$XY[1:length(soil),]
-DO <- list(veg=T, soil=T, comb=T)
-
-p <- predict(object, xy, veg)
 
 }
