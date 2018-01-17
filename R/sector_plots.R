@@ -266,72 +266,157 @@ function(Curr, Ref, RefTotal, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=
 
 ## habitat associations (veg/soil) and linear feature responses
 plot_abundance <-
-function(species, type, plot=TRUE, paspen=0, ylim, main, col, ...)
+function(species, type, plot=TRUE, paspen=0, ...)
 {
-
     switch(match.arg(type, c("veg_coef", "veg_lin", "soil_coef", "soil_lin")),
-        "veg_coef"=.plot_abundance_veg(species, plot, ylim, main, col, ...),
-        "veg_lin"=.plot_abundance_lin(species, plot, veg=TRUE, ylim, main, col, ...),
-        "soil_coef"=.plot_abundance_soil(species, plot, ylim, main, col, ...),
-        "soil_lin"=.plot_abundance_lin(species, plot, veg=FALSE, ylim, main, col, ...))
+        "veg_coef"=.plot_abundance_veg(species, plot, ...),
+        "veg_lin"=.plot_abundance_lin(species, plot, veg=TRUE, ...),
+        "soil_coef"=.plot_abundance_soil(species, plot, paspen, ...),
+        "soil_lin"=.plot_abundance_lin(species, plot, veg=FALSE, ...))
 }
 
-.plot_abundance_soil <-
+.plot_abundance_veg <-
 function(species, plot=TRUE, ylim, main, col, ...)
 {
-
+    tab <- .c4if$CF$coef$veg
+    if (species %ni% rownames(tab))
+        stop(paste("coefficients were not found for", species))
+    ex <- c("AverageCoef", "SoftLin10", "HardLin10", "SoftLin", "HardLin")
+    out <- tab[species, colnames(tab) %ni% ex]
+    if (plot) {
+    }
+    invisible(out)
 }
 
+#i="AmericanThreetoedWoodpecker"
+#(.plot_abundance_soil(i,paspen=0))
+#(.plot_abundance_soil(i,paspen=1))
 .plot_abundance_soil <-
-function(species, plot=TRUE, ylim, main, col, ...)
+function(species, plot=TRUE, paspen=0, ylim, main, ylab, ...)
 {
+    tab <- .c4if$CF$coef$soil
+    if (species %ni% rownames(tab))
+        stop(paste("coefficients were not found for", species))
+    labs <- c("Productive", "Clay", "Saline", "RapidDrain", "Cult", "UrbInd")
+    out <- data.frame(Estimate=tab[species, labs],
+        LCL=.c4if$CF$lower$soil[species, labs],
+        UCL=.c4if$CF$higher$soil[species, labs])
+    if (.c4if$SP[species, "taxon"] == "birds") {
+        f <- poisson("log")$linkfun
+        fi <- poisson("log")$linkinv
+    } else {
+        f <- binomial("logit")$linkfun
+        fi <- binomial("logit")$linkinv
+    }
+    if (paspen %)(% c(0, 1))
+        stop("paspen must be in [0, 1]")
+    out[out < 10^-5] <- 10^-6
+    out <- fi(paspen * .c4if$CF$coef$paspen[species, "pAspen"] + f(out))
+    if (plot) {
+        op <- par(mai=c(1.5, 1, 0.2, 0.3))
+        on.exit(par(op))
+
+        lci <- out$LCL
+        uci <- out$UCL
+        y1 <- out$Estimate
+        x <- 1:6
+
+		if (missing(main))
+            main <- species
+		if (missing(ylab))
+            ylab <- "Relative abundance"
+        if (missing(ylim)) {
+            ymax <- max(min(max(uci[x]), 2*max(y1)), y1*1.02)
+            ylim <- c(0, ymax)
+        } else {
+            ymax <- max(ylim)
+        }
+
+        space <- c(1, x[-1] -x[-length(x)]) - 0.9
+        col.r <- c(0,   0.3, 0.5, 1,   rep(0.2, 2))  # The red part of the rgb
+        col.g <- c(0.8, 0.5, 0,   0.2, rep(0.2, 2))  # The green part
+        col.b <- c(0,   0.5, 0.5, 0.2, rep(0.2, 2))  # The blue part
+        x1 <- barplot(y1[x], space=space, border="white", col=rgb(col.r,col.g,col.b),
+            ylim=ylim, xlim=c(-0.5,7.2), xaxs="i", yaxt="n", ylab=ylab,
+            col.lab="grey50", cex.lab=1.2,axisnames=FALSE)[,1]
+        ax <- axis(side=2, cex.axis=0.9, col.axis="grey50", col.ticks="grey50", las=2)
+        abline(h=ax, col="grey80")
+        x1 <- barplot(y1[x], space=space, border="white", col=rgb(col.r, col.g, col.b),
+            ylim=ylim, xlim=c(-0.5,7.2), xaxs="i", yaxt="n", ylab=ylab,
+            col.lab="grey50", cex.lab=1.2,axisnames=FALSE, add=TRUE)[,1]
+        box(bty="l", col="grey50")
+        for (i in 1:length(x1)) {
+            lines(rep(x1[i],2), c(lci[i], y1[i]), col="grey90")
+            lines(rep(x1[i],2), c(uci[i], y1[i]), col=rgb(col.r[i], col.g[i], col.b[i]))
+        }
+        mtext(side=1, at=x1[1:4], line=1.4, c("Productive", "Clay", "Saline", "Rapid Drain"),
+            col=rgb(col.r,col.g,col.b)[1:4], las=1)
+        mtext(side=1, at=x1[5:6], line=0.7, c("Cultivated HF", "Urban/Industry HF"),
+            col=rgb(col.r,col.g,col.b)[5:6], las=2)
+        mtext(side=3, at=0, adj=0, main, col="grey30")
+    }
+    invisible(out)
 }
 
+#i="AmericanThreetoedWoodpecker"
+#(.plot_abundance_lin(i,plot=T,veg=F))
+#(.plot_abundance_lin(i,plot=T,veg=T))
 .plot_abundance_lin <-
-function(species, plot=TRUE, veg=TRUE, ylim, main, col, ...)
+function(species, plot=TRUE, veg=TRUE, ylim, main, xlab, ylab, ...)
 {
+    if (veg) {
+        tab <- .c4if$CF$coef$veg
+    } else {
+        tab <- .c4if$CF$coef$soil
+    }
+    if (species %ni% rownames(tab))
+        stop(paste("coefficients were not found for", species))
+    out <- tab[species, c("AverageCoef", "SoftLin10", "HardLin10")]
+    if (plot) {
+		p.mean <- out["AverageCoef"]
+		p.softlin10 <- out["SoftLin10"]
+		p.hardlin10 <- out["HardLin10"]
+
+		if (missing(ylim)) {
+            ymax1 <- max(p.softlin10, p.hardlin10, 2*p.mean)*1.03
+            ylim <- c(0, ymax1)
+		} else {
+            ymax <- max(ylim)
+		}
+		if (missing(main))
+            main <- species
+		if (missing(xlab))
+            xlab <- "Human footprint"
+		if (missing(ylab))
+            ylab <- "Relative abundance"
+
+		plot(c(1,1.95,2.05), c(p.mean, p.softlin10, p.hardlin10),
+            pch=c(1, 16, 15),
+            col=c("grey30", "blue3", "red4"),
+            xlab=xlab, ylab=ylab, xlim=c(0.8, 2.8), ylim=ylim,
+            tck=0.01, yaxs="i", xaxt="n", yaxt="n", bty="l",
+            cex=2, lwd=2, cex.lab=1.4, cex.axis=1.3, col.lab="grey40")
+		axis(side=2, at=pretty(ylim, n=5), cex.axis=1.3, tck=0.01,
+            cex.axis=1.3, col.axis="grey40", col.ticks="grey40")
+		axis(side=1, at=c(1,2), lab=c("None","10% linear"),
+            tck=0.01, cex.axis=1.3, col.axis="grey40", col.ticks="grey40")
+		box(bty="l", col="grey40")
+		lines(c(1,1.95), c(p.mean, p.softlin10), col="blue3")
+		lines(c(1,2.05), c(p.mean, p.hardlin10), col="red4")
+		points(c(1, 1.95, 2.05), c(p.mean, p.softlin10, p.hardlin10),
+            pch=c(1,16,15), col=c("grey30", "blue3", "red4"), cex=2, lwd=2)
+		ly <- c(p.softlin10, p.hardlin10)
+		if (abs(ly[2]-ly[1]) < ymax1/20)
+            ly <- c(mean(ly)+ymax1/40*sign(ly[1]-ly[2]), mean(ly)+ymax1/40*sign(ly[2]-ly[1]))
+		text(c(2.15, 2.15), ly, c("Soft linear","Hard linear"),
+            col=c("blue3", "red4"), cex=1.3, adj=0)
+		mtext(side=3, at=0.8, adj=0, main, col="grey30", cex=1.3)
+    }
+    invisible(out)
 }
+
 
 if (FALSE) {
-
-fig_soilhf <-
-function(pr, LAB="", ymax=NULL)
-{
-        labs <- c("Productive", "Clay", "Saline", "RapidDrain",
-            "Cult", "UrbInd")
-        op <- par(mai=c(1.5,1,0.2,0.3))
-        pr2 <- pr[labs,]
-        lci <- pr2[,3]
-        uci <- pr2[,4]
-        y1 <- pr2[,2]
-        x <- 1:6
-        if (is.null(ymax))
-            ymax <- max(min(max(uci[x]),2*max(y1)),y1*1.02)
-        space <- c(1,x[-1]-x[-length(x)])-0.9
-        col.r <- c(0,0.3,0.5,1,rep(0.2,2))  # The red part of the rgb
-        col.g<-c(0.8,0.5,0,0.2,rep(0.2,2))  # The green part
-        col.b<-c(0,0.5,0.5,0.2,rep(0.2,2))  # The blue part
-        x1 <- barplot(y1[x], space=space, border="white", col=rgb(col.r,col.g,col.b),
-            ylim=c(0,ymax), xlim=c(-0.5,7.2), xaxs="i", yaxt="n", ylab="Relative abundance",
-            col.lab="grey50", cex.lab=1.2,axisnames=FALSE)[,1]
-        ax <- axis(side=2,cex.axis=0.9,col.axis="grey50",col.ticks="grey50",las=2)
-        abline(h=ax, col="grey80")
-        x1 <- barplot(y1[x], space=space, border="white", col=rgb(col.r,col.g,col.b),
-            ylim=c(0,ymax), xlim=c(-0.5,7.2), xaxs="i", yaxt="n", ylab="Relative abundance",
-            col.lab="grey50", cex.lab=1.2,axisnames=FALSE, add=TRUE)[,1]
-        box(bty="l",col="grey50")
-        for (i in 1:length(x1)) {
-            lines(rep(x1[i],2),c(lci[i],y1[i]),col="grey90")
-            lines(rep(x1[i],2),c(uci[i],y1[i]),col=rgb(col.r[i],col.g[i],col.b[i]))
-        }
-        mtext(side=1,at=x1[1:4],line=1.4,c("Productive","Clay","Saline","Rapid Drain"),
-            col=rgb(col.r,col.g,col.b)[1:4],las=1)
-        mtext(side=1,at=x1[5:6],line=0.7,c("Cultivated HF","Urban/Industry HF"),
-            col=rgb(col.r,col.g,col.b)[5:6],las=2)
-        mtext(side=3,at=0,adj=0,LAB,col="grey30")
-        par(op)
-    invisible(NULL)
-}
 
 fig_veghf <-
 function(pr, LAB="", ymax, ylab="Relative abundance", bw=FALSE)
@@ -477,30 +562,6 @@ function(pr, LAB="", ymax, ylab="Relative abundance", bw=FALSE)
     invisible(pr2)
 }
 
-fig_linear <-
-function(pr, LAB)
-{
-		p.mean <- pr[1]
-		#p.softlin10 <- 0.9*pr[1] + 0.1*pr[2]
-		p.softlin10 <- pr[1] * exp(0.1*log(pr[2]))
-		p.hardlin10 <- pr[1] * pr[5]
-		#p.hardlin10 <- 0.9*pr[1] + 0.1*pr[5]
-		ymax1<-max(p.softlin10,p.hardlin10,2*p.mean)*1.03
-		plot(c(1,1.95,2.05),c(p.mean,p.softlin10,p.hardlin10),pch=c(1,16,15),col=c("grey30","blue3","red4"),xlab="Human footprint",ylab="Relative abundance",xlim=c(0.8,2.8),ylim=c(0,ymax1),tck=0.01,yaxs="i",xaxt="n",yaxt="n",bty="l",cex=2,lwd=2,cex.lab=1.4,cex.axis=1.3,col.lab="grey40")
-		axis(side=2,at=pretty(c(0,ymax1),n=5),cex.axis=1.3,tck=0.01,cex.axis=1.3,col.axis="grey40",col.ticks="grey40")
-		axis(side=1,at=c(1,2),lab=c("None","10% linear"),tck=0.01,cex.axis=1.3,col.axis="grey40",col.ticks="grey40")
-		box(bty="l",col="grey40")
-		lines(c(1,1.95),c(p.mean,p.softlin10),col="blue3")
-		lines(c(1,2.05),c(p.mean,p.hardlin10),col="red4")
-		points(c(1,1.95,2.05),c(p.mean,p.softlin10,p.hardlin10),pch=c(1,16,15),col=c("grey30","blue3","red4"),cex=2,lwd=2)  # Put these back on top of the lines
-		ly<-c(p.softlin10,p.hardlin10)  # Label y values - adjust so not overlapping
-		if (abs(ly[2]-ly[1])<ymax1/20) ly<-c(mean(ly)+ymax1/40*sign(ly[1]-ly[2]),mean(ly)+ymax1/40*sign(ly[2]-ly[1]))
-		text(c(2.15,2.15),ly,c("Soft linear","Hard linear"),col=c("blue3","red4"),cex=1.3,adj=0)
-		mtext(side=3,at=0.8,adj=0,LAB,col="grey30",cex=1.3)
-    invisible(c(mean=unname(p.mean),
-        soft=unname(p.softlin10),
-        hard=unname(p.hardlin10)))
-}
 
 
 
