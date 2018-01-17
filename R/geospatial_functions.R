@@ -91,13 +91,13 @@ function(species, boot=TRUE, path=NULL, version=NULL)
         cveg["SoftLin"] <- mean(cveg[c("Shrub", "GrassHerb")])
         csoil <- .c4if$CFbirds$marginal$soil[species,]
         csoil["HardLin"] <- 0
-        csoil["SoftLin"] <- mean(csoil[c("Shrub", "GrassHerb")])
+        csoil["SoftLin"] <- mean(csoil)
     } else {
         cveg <- .c4if$CF$coef$veg[species,]
         csoil <- .c4if$CF$coef$soil[species,]
     }
-    cveg <- cveg[names(cveg) %ni% c("AverageCoef", "SoftLin10", "HardLin10")]
-    csoil <- csoil[names(csoil) %ni% c("AverageCoef", "SoftLin10", "HardLin10")]
+    cveg <- cveg[get_levels()$veg]
+    csoil <- csoil[get_levels()$soil]
     y <- new.env()
     assign("species", species, envir=y)
     assign("taxon", taxon, envir=y)
@@ -114,6 +114,8 @@ function(species, boot=TRUE, path=NULL, version=NULL)
     class(y) <- "c4ispclim"
     y
 }
+get_levels <- function()
+    list(veg=colnames(.c4if$CF$lower$veg), soil=colnames(.c4if$CF$lower$soil))
 
 ## handle soft lin aspect through an option for birds:
 ## coef approach does not require rf, early seral does ???
@@ -143,11 +145,15 @@ function(object, xy, veg, soil, ...)
     xy <- spTransform(xy, proj4string(.read_raster_template()))
     if (DO$veg) {
         .check(veg, names(object$cveg))
+        if (any(veg == "SoftLin") && object$taxon == "birds")
+            warning("veg contained SoftLin: check your assumptions")
         iveg <- extract(object$rveg, xy)
         OUT$veg <- fi(object$cveg[match(veg, names(object$cveg))] + iveg)
     }
     if (DO$soil) {
         .check(soil, names(object$csoil))
+        if (any(soil == "SoftLin") && object$taxon == "birds")
+            warning("soil contained SoftLin: check your assumptions")
         isoil <- extract(object$rsoil, xy)
         OUT$soil <- fi(object$csoil[match(soil, names(object$csoil))] + isoil)
     }
@@ -238,6 +244,7 @@ plot(r, col=cols, axes=FALSE, box=FALSE)
 
 ## polygon level prediction
 
+devtools::install_github("ABbiodiversity/cure4insect")
 library(cure4insect)
 #species="AlderFlycatcher"
 species="Achillea.millefolium"
@@ -246,15 +253,14 @@ load_common_data()
 #path="w:/reports"
 object <- load_spclim_data(species)
 
+
+
+
 soil <- as.factor(names(object$csoil))
 veg <- as.factor(names(object$cveg[1:length(soil)]))
 xy <- .c4if$XY[1:length(soil),]
 DO <- list(veg=T, soil=T, comb=T)
 
 p <- predict(object, xy, veg)
-
-
-
-
 
 }

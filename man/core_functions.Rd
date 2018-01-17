@@ -21,6 +21,7 @@
 \alias{rasterize_results}
 \alias{load_spclim_data}
 \alias{predict.c4ispclim}
+\alias{get_levels}
 \title{
 Core Functions for Custom Reporting
 }
@@ -58,6 +59,7 @@ get_id_locations()
 get_species_table()
 
 load_spclim_data(species, boot=TRUE, path=NULL, version=NULL)
+get_levels()
 \method{predict}{c4ispclim}(object, xy, veg, soil, ...)
 }
 \arguments{
@@ -141,7 +143,7 @@ Current options are:
 \code{version} (version of results),
 \code{verbose} (default is 1, value 0 suppresses the messages),
 \code{cores} (number of cores to use in parallel calculations,
-uses forking and will not work on Windows, default is 1),
+uses forking on Linux/Unix/Mac and socket clusters on Windows, default is 1),
 \code{sender} (email of sender),
 \code{subject} (subject of the email),
 and \code{body} (body of the email).
@@ -205,7 +207,9 @@ All these require to run \code{load_common_data()} first.
 explicit predictions by \code{predict.c4ispclim}.
 \code{predict.c4ispclim} returns a data frame with columns
 'veg', 'soil', and 'comb' (combines 'veg' and 'soil' based on
-aspen probability of occurrence).
+aspen probability of occurrence). \code{get_levels} returns a list
+with elements 'veg' for vegetation and 'soil' for soil class levels
+expected by \code{predict.c4ispclim}.
 }
 \author{
 Peter Solymos <solymos@ualberta.ca>
