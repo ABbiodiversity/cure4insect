@@ -19,6 +19,8 @@
 \alias{is_loaded}
 \alias{overlay_polygon}
 \alias{rasterize_results}
+\alias{load_spclim_data}
+\alias{predict.c4ispclim}
 \title{
 Core Functions for Custom Reporting
 }
@@ -30,12 +32,11 @@ for custom regions and sets of species.
 \usage{
 load_common_data(path=NULL, version=NULL)
 is_loaded()
-subset_common_data(id=NULL, species="all")
-load_species_data(species, boot=TRUE, path=NULL, version=NULL)
-
 clear_common_data()
+subset_common_data(id=NULL, species="all")
 clear_subset_data()
 
+load_species_data(species, boot=TRUE, path=NULL, version=NULL)
 calculate_results(y, level=0.9)
 rasterize_results(y)
 
@@ -55,6 +56,9 @@ get_all_id()
 get_all_species()
 get_id_locations()
 get_species_table()
+
+load_spclim_data(species, boot=TRUE, path=NULL, version=NULL)
+\method{predict}{c4ispclim}(object, xy, veg, soil, ...)
 }
 \arguments{
   \item{path}{
@@ -109,6 +113,17 @@ abundance (current and reference combined).
 character, optional email address to send finished results to
 in the format \code{"name@domain.org"}.
 The default (\code{NULL}) is not to send an email.
+}
+  \item{object}{
+and input object from call to \code{load_spclim_data}.
+}
+  \item{xy}{
+a 'SpatialPoints' object defined by the 'sp' package
+with geographic coordinates corresponding to \code{veg} and \code{soil}
+(i.e. centroids of polygons).
+}
+  \item{veg, soil}{
+factor, vegetation/soil classes. One of the two or both must be provided.
 }
   \item{ply}{
 an object of class 'SpatialPolygons' defined by the 'sp' package.
@@ -185,6 +200,12 @@ species IDs. \code{get_id_locations} gets the 'SpatialPoints' object
 with geographic coordinates of the spatial IDs, \code{get_species_table}
 gets the lookup table for species.
 All these require to run \code{load_common_data()} first.
+
+\code{load_spclim_data} is used to load raster data for spatially
+explicit predictions by \code{predict.c4ispclim}.
+\code{predict.c4ispclim} returns a data frame with columns
+'veg', 'soil', and 'comb' (combines 'veg' and 'soil' based on
+aspen probability of occurrence).
 }
 \author{
 Peter Solymos <solymos@ualberta.ca>

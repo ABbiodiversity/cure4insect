@@ -16,7 +16,8 @@ export(
     get_species_table,
     is_loaded,
     sector_plot,
-    rasterize_results)
+    rasterize_results,
+    load_spclim_data)
 
 export(app_read_csv, app_test,
     .calculate_results, .load_species_data, .report_all_by1,
@@ -25,11 +26,12 @@ export(app_read_csv, app_test,
 S3method(flatten, c4iraw)
 S3method(sector_plot, c4iraw)
 S3method(sector_plot, c4idf)
+S3method(predict, c4ispclim)
 
 importFrom("intrval", "%)(%", "%ni%")
 importFrom("Matrix", "colSums")
 importFrom("sendmailR", "sendmail", "mime_part")
-importFrom("stats", "quantile", "density", "sd")
+importFrom("stats", "quantile", "density", "sd", "poisson", "binomial")
 importFrom("utils", "flush.console", "stack", "write.csv", "read.csv")
 importFrom("sp", "identicalCRS", "over", "spTransform", "coordinates",
     "proj4string")
@@ -39,11 +41,11 @@ importFrom("graphics", "abline", "axis", "barplot", "box", "hist",
     "lines", "mtext", "par", "plot", "points", "polygon",
     "rect", "rug", "segments", "text", "title")
 importFrom("KernSmooth", "bkde")
-importFrom("raster", "raster")
+importFrom("raster", "raster", "extract")
 importFrom("mefa4", "Xtab")
 importFrom("parallel", "detectCores", "makeCluster", "stopCluster",
     "clusterEvalQ", "clusterExport")
 
 importMethodsFrom("Matrix", "as.matrix")
 importMethodsFrom("mefa4", "as.matrix")
-importMethodsFrom("raster", "as.matrix", "stack")
+importMethodsFrom("raster", "as.matrix", "stack", "extract")

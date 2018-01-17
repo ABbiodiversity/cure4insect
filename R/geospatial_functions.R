@@ -74,6 +74,93 @@ rasterize_results <- function(y)
     stack(rl)
 }
 
+load_spclim_data <-
+function(species, boot=TRUE, path=NULL, version=NULL)
+{
+    if (!is_loaded())
+        stop("common data needed: use load_common_data")
+    opts <- getOption("cure4insect")
+    if (is.null(path))
+        path <- opts$path
+    if (is.null(version))
+        version <- opts$version
+    taxon <- as.character(.c4if$SP[species, "taxon"])
+    if (taxon == "birds") {
+        cveg <- .c4if$CFbirds$marginal$veg[species,]
+        cveg["HardLin"] <- 0
+        cveg["SoftLin"] <- mean(cveg[c("Shrub", "GrassHerb")])
+        csoil <- .c4if$CFbirds$marginal$soil[species,]
+        csoil["HardLin"] <- 0
+        csoil["SoftLin"] <- mean(csoil[c("Shrub", "GrassHerb")])
+    } else {
+        cveg <- .c4if$CF$coef$veg[species,]
+        csoil <- .c4if$CF$coef$soil[species,]
+    }
+    cveg <- cveg[names(cveg) %ni% c("AverageCoef", "SoftLin10", "HardLin10")]
+    csoil <- csoil[names(csoil) %ni% c("AverageCoef", "SoftLin10", "HardLin10")]
+    y <- new.env()
+    assign("species", species, envir=y)
+    assign("taxon", taxon, envir=y)
+    assign("cveg", cveg, envir=y)
+    assign("csoil", csoil, envir=y)
+    fn <- file.path(path, version, "results", taxon, "spclim", paste0(species, ".RData"))
+    if (!startsWith(path, "http://")) {
+        load(fn, envir=y)
+    } else {
+        con <- url(fn)
+        load(con, envir=y)
+        close(con)
+    }
+    class(y) <- "c4ispclim"
+    y
+}
+
+## handle soft lin aspect through an option for birds:
+## coef approach does not require rf, early seral does ???
+predict.c4ispclim <-
+function(object, xy, veg, soil, ...)
+{
+    if (!inherits(xy, "SpatialPoints"))
+        stop("xy must be of class SpatialPoints")
+    .check <- function(x, ref) {
+        z <- deparse(substitute(x))
+        if (!is.factor(x))
+            stop(paste(z, "is not factor"))
+        if (any(levels(x) %ni% ref))
+            warning(paste(z, "had unmatched levels: NA's introduced"))
+        NULL
+    }
+    fi <- if (object$taxon == "birds")
+        poisson("log")$linkinv else binomial("logit")$linkinv
+    if (missing(veg) && missing(soil))
+        stop("veg or soil must be provided")
+    DO <- list(
+        veg=!missing(veg),
+        soil=!missing(soil))
+    DO$comb <- DO$veg & DO$soil
+    OUT <- data.frame(matrix(NA, nrow(coordinates(xy)), 3))
+    colnames(OUT) <- names(DO)
+    xy <- spTransform(xy, proj4string(.read_raster_template()))
+    if (DO$veg) {
+        .check(veg, names(object$cveg))
+        iveg <- extract(object$rveg, xy)
+        OUT$veg <- fi(object$cveg[match(veg, names(object$cveg))] + iveg)
+    }
+    if (DO$soil) {
+        .check(soil, names(object$csoil))
+        isoil <- extract(object$rsoil, xy)
+        OUT$soil <- fi(object$csoil[match(soil, names(object$csoil))] + isoil)
+    }
+    if (DO$comb) {
+        rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
+        ipa <- extract(rpa, xy)
+        OUT$comb <- ipa * OUT$veg + (1 - ipa) * OUT$soil
+    }
+    class(OUT) <- c("c4ippred", class(OUT))
+    OUT
+}
+
+
 if (FALSE) {
 
 ## add pAspen and pWater to KT or make tif?
@@ -157,125 +244,16 @@ species="Achillea.millefolium"
 load_common_data()
 .c4if=cure4insect:::.c4if
 #path="w:/reports"
-y <- load_spclim_data(species)
-DO <- list(
-    veg_rf=T,veg_cr=T,
-    soil_rf=T,soil_cr=T,
-    comb_rf=T,comb_cr=T)
+object <- load_spclim_data(species)
 
-## handle soft lin aspect through an option for birds:
-## coef approach does not require rf, early seral does ???
-predict.c4ispclim <-
-function(object, veg_rf, veg_cr, soil_rf, soil_cr, xy, ...)
-{
-    if (!inherits(xy, "SpatialPoints"))
-        stop("xy must be of class SpatialPoints")
-    .check <- function(x, ref) {
-        z <- deparse(substitute(x))
-        if (!is.factor(x))
-            stop(paste(z, "is not factor"))
-        if (any(levels(x) %ni% ref))
-            warning(paste(z, "had unmatched levels: NA's introduced"))
-        NULL
-    }
-    fi <- if (object$taxon == "birds")
-        poisson("log")$linkinv else binomial("logit")$linkinv
-    DO <- list(
-        veg_rf=!missing(veg_rf),
-        veg_cr=!missing(veg_cr),
-        soil_rf=!missing(soil_rf),
-        soil_cr=!missing(soil_cr))
-    DO$comb_rf <- DO$veg_rf & DO$soil_rf
-    DO$comb_cr <- DO$veg_cr & DO$soil_cr
-    OUT <- data.frame(matrix(NA, nrow(coordinates(xy)), 6))
-    colnames(OUT) <- names(DO)
-    xy <- spTransform(xy, proj4string(.read_raster_template()))
-    if (DO$comb_rf || DO$comb_cr) {
-        rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
-        ipa <- extract(rpa, xy)
-    }
-    if (DO$veg_rf || DO$veg_cr) {
-        iveg <- extract(object$rveg, xy)
-    }
-    if (DO$soil_rf || DO$soil_cr) {
-        isoil <- extract(object$rsoil, xy)
-    }
-    if (veg_rf) {
-        .check(veg_rf)
-        OUT$veg_rf <- fi(object$cveg[match(veg_rf, names(object$cveg))] + iveg)
-    }
-    if (veg_cr) {
-        .check(veg_cr)
-        OUT$veg_cr <- fi(object$cveg[match(veg_cr, names(object$cveg))] + iveg)
-    }
-    if (soil_rf) {
-        .check(soil_rf)
-        OUT$soil_rf <- fi(object$csoil[match(soil_rf, names(object$csoil))] + isoil)
-    }
-    if (veg_cr) {
-        .check(soil_cr)
-        OUT$soil_cr <- fi(object$csoil[match(soil_cr, names(object$csoil))] + isoil)
-    }
-    if (comb_rf) {
-        OUT$comb_rf <- ipa * veg_rf + (1 - ipa) * soil_rf
-    }
-    if (comb_cr) {
-        OUT$comb_cr <- ipa * veg_cr + (1 - ipa) * soil_cr
-    }
-    OUT
-}
+soil <- as.factor(names(object$csoil))
+veg <- as.factor(names(object$cveg[1:length(soil)]))
+xy <- .c4if$XY[1:length(soil),]
+DO <- list(veg=T, soil=T, comb=T)
 
-load_spclim_data <-
-function(species, boot=TRUE, path=NULL, version=NULL)
-{
-    if (!is_loaded())
-        stop("common data needed: use load_common_data")
-    opts <- getOption("cure4insect")
-    if (is.null(path))
-        path <- opts$path
-    if (is.null(version))
-        version <- opts$version
-    taxon <- as.character(.c4if$SP[species, "taxon"])
-    .load_spclim_data(species=species,
-        boot=boot, path=path, version=version, taxon=taxon)
-}
-.load_spclim_data <-
-function(species, boot=TRUE, path=NULL, version=NULL, taxon)
-{
-    opts <- getOption("cure4insect")
-    if (is.null(path))
-        path <- opts$path
-    if (is.null(version))
-        version <- opts$version
-    if (taxon == "birds") {
-        cveg <- .c4if$CFbirds$marginal$veg[species,]
-        cveg["HardLin"] <- 0
-        cveg["SoftLin"] <- mean(cveg[c("Shrub", "GrassHerb")])
-        csoil <- .c4if$CFbirds$marginal$soil[species,]
-        csoil["HardLin"] <- 0
-        csoil["SoftLin"] <- mean(csoil[c("Shrub", "GrassHerb")])
-    } else {
-        cveg <- .c4if$CF$coef$veg[species,]
-        csoil <- .c4if$CF$coef$soil[species,]
-    }
-    cveg <- cveg[names(cveg) %ni% c("AverageCoef", "SoftLin10", "HardLin10")]
-    csoil <- csoil[names(csoil) %ni% c("AverageCoef", "SoftLin10", "HardLin10")]
-    y <- new.env()
-    assign("species", species, envir=y)
-    assign("taxon", taxon, envir=y)
-    assign("cveg", cveg, envir=y)
-    assign("csoil", csoil, envir=y)
-    fn <- file.path(path, version, "results", taxon, "spclim", paste0(species, ".RData"))
-    if (!startsWith(path, "http://")) {
-        load(fn, envir=y)
-    } else {
-        con <- url(fn)
-        load(con, envir=y)
-        close(con)
-    }
-    class(y) <- "c4ispclim"
-    y
-}
+p <- predict(object, xy, veg)
+
+
 
 
 
