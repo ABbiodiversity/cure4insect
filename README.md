@@ -18,7 +18,7 @@ Load the package 1st:
 library(cure4insect)
 ```
 
-### Workflow with 1 species
+#### Workflow with 1 species
 
 `id` is a vector of Row_Col IDs of 1km pixels,
 `species` is a vector if species IDs:
@@ -47,7 +47,7 @@ x
 flatten(x)
 ```
 
-### Workflow with multiple species
+#### Workflow with multiple species
 
 `id` and `species` can be defined using text files:
 
@@ -105,7 +105,7 @@ as.list(drop(read.dcf(file=system.file("config/defaults.conf",
 package="cure4insect"))))
 ```
 
-### Sector effects plots
+#### Sector effects plots
 
 ```R
 ## *res*ults from calculate_results, all province, all species
@@ -122,7 +122,7 @@ sector_plot(z[1:100,], "regional") # use a subset
 sector_plot(z, "underhf", method="hist") # binned version
 ```
 
-### Determining spatial IDs based on spatial polygons
+#### Determining spatial IDs based on spatial polygons
 
 `id` can also be a SpatialPolygons object based on GeoJSON for example:
 
@@ -161,7 +161,7 @@ plot(AB, col="grey")
 plot(ply, col="red", add=TRUE)
 ```
 
-### Raster objects and maps
+#### Raster objects and maps
 
 The result is a raster stack object with the following layers:
 
@@ -178,7 +178,7 @@ plot(r, "NC") # current abundance map
 plot(r, "SE") # standadr errors for current abundance
 ```
 
-### Spatially explicit (polygon level) predictions
+#### Spatially explicit (polygon level) predictions
 
 ```R
 load_common_data()
@@ -234,7 +234,7 @@ it can be deployed as a micro-service (moving things around),
 or use locally through Kitematic
 (faster to download only once and then use the local copy).
 
-## Todo
+#### Todo
 
 * attachment to include: metadata, readme, IDs, batch figures (zipped)
 * make containerized version for local use
