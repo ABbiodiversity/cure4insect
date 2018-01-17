@@ -299,5 +299,32 @@ set_options(path = "/your/path/to/local/copy")
 ## change configs in this file to make it permanent for a given installation
 as.list(drop(read.dcf(file=system.file("config/defaults.conf",
 package="cure4insect"))))
+
+\dontrun{
+## spatially explicit prediction
+load_common_data()
+## see bird species codes
+sptab <- get_species_table()
+rownames(sptab)[sptab$taxon == "birds"]
+## pick Ovenbird
+species <- "Ovenbird"
+object <- load_spclim_data(species)
+## vegetation/disturbance classes: use as factor
+## might need to make a crosswalk, use e.g. mefa4::reclass
+(veg <- as.factor(get_levels()$veg))
+## for each veg class value, need to have
+## spatial locations (can repeat the same value,
+## but avoid duplicate rownames)
+## use the sp package to get SpatialPoints as here:
+XY <- get_id_locations()
+coords <- coordinates(XY)[10^5,,drop=FALSE]
+rownames(coords) <- NULL
+xy <- data.frame(coords[rep(1, length(veg)),])
+coordinates(xy) <- ~ POINT_X + POINT_Y
+proj4string(xy) <- proj4string(XY)
+## predict
+pred <- predict(object, xy=xy, veg=veg)
+summary(pred)
+}
 }
 \keyword{ utilities }
