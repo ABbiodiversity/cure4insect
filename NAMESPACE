@@ -15,7 +15,7 @@ export(
     get_id_locations,
     get_species_table,
     is_loaded,
-    sector_plot,
+    plot_sector,
     rasterize_results,
     load_spclim_data,
     get_levels)
@@ -25,8 +25,8 @@ export(app_read_csv, app_test,
     .read_raster_template, .make_raster)
 
 S3method(flatten, c4iraw)
-S3method(sector_plot, c4iraw)
-S3method(sector_plot, c4idf)
+S3method(plot_sector, c4iraw)
+S3method(plot_sector, c4idf)
 S3method(predict, c4ispclim)
 
 importFrom("intrval", "%)(%", "%ni%")

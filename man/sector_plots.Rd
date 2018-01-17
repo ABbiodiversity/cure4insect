@@ -1,7 +1,7 @@
-\name{sector_plot}
-\alias{sector_plot}
-\alias{sector_plot.c4iraw}
-\alias{sector_plot.c4idf}
+\name{plot_sector}
+\alias{plot_sector}
+\alias{plot_sector.c4iraw}
+\alias{plot_sector.c4idf}
 \title{
 Sector Efects Plots
 }
@@ -9,10 +9,10 @@ Sector Efects Plots
 Plots the sector effects for a single or a group of species.
 }
 \usage{
-sector_plot(x, ...)
-\method{sector_plot}{c4iraw}(x,
+plot_sector(x, ...)
+\method{plot_sector}{c4iraw}(x,
     type=c("unit", "regional", "underhf"), main, ...)
-\method{sector_plot}{c4idf}(x,
+\method{plot_sector}{c4idf}(x,
     type=c("unit", "regional", "underhf"), main, ...)
 }
 \arguments{
@@ -62,14 +62,14 @@ Peter Solymos <solymos@ualberta.ca>
 ## *res*ults from calculate_results, all province, all species
 load(system.file("extdata/raw_all.rda", package="cure4insect"))
 
-sector_plot(res[["CanadaWarbler"]], "unit")
-sector_plot(res[["CanadaWarbler"]], "regional")
-sector_plot(res[["CanadaWarbler"]], "underhf")
+plot_sector(res[["CanadaWarbler"]], "unit")
+plot_sector(res[["CanadaWarbler"]], "regional")
+plot_sector(res[["CanadaWarbler"]], "underhf")
 
 z <- do.call(rbind, lapply(res, flatten))
 class(z) <- c("c4idf", class(z))
-sector_plot(z, "unit") # all species
-sector_plot(z[1:100,], "regional") # use a subset
-sector_plot(z, "underhf", method="hist") # binned version
+plot_sector(z, "unit") # all species
+plot_sector(z[1:100,], "regional") # use a subset
+plot_sector(z, "underhf", method="hist") # binned version
 }
 \keyword{ aplot }
