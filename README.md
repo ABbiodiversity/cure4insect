@@ -211,7 +211,7 @@ summary(pred)
 
 ## Web API
 
-The web app sits [here](http://sc-dev.abmi.ca/ocpu/library/cure4insect/www/).
+The web app sits [here](http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/).
 To get more control over the results, use the [API](https://www.opencpu.org/api.html#api-formats).
 For example:
 
