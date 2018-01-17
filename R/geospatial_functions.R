@@ -149,5 +149,53 @@ plot(r, col=cols, axes=FALSE, box=FALSE)
 #SI[is.na(SI)] <- 100 # 0/0 is defined as 100 intact
 # CoV
 
+## polygon level prediction
+
+#species="AlderFlycatcher"
+species="Achillea.millefolium"
+.c4if=cure4insect:::.c4if
+load_common_data()
+path="w:/reports"
+
+predict_species <-
+function(species, cr, rf, xy)
+{
+    taxon <- as.character(.c4if$SP[species, "taxon"])
+    rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
+
+
+}
+
+.load_climate_raster <-
+function(species, boot=TRUE, path=NULL, version=NULL, taxon)
+{
+    opts <- getOption("cure4insect")
+    if (is.null(path))
+        path <- opts$path
+    if (is.null(version))
+        version <- opts$version
+    fnv <- file.path(path, version, "results", taxon, "clim-veg", paste0(species, ".tif"))
+    fns <- file.path(path, version, "results", taxon, "clim-soil", paste0(species, ".tif"))
+    if (!startsWith(path, "http://")) {
+        rcv <- raster(fnv)
+        rcs <- raster(fns)
+    } else {
+        tmpv <- tempfile("climveg", fileext = ".tif")
+        download.file(url=fnv, destfile=tmpv, method="libcurl", quiet=TRUE)
+        on.exit(unlink(tmpv), add=TRUE)
+        tmps <- tempfile("climsoil", fileext = ".tif")
+        download.file(url=fns, destfile=tmps, quiet=TRUE)
+        on.exit(unlink(tmps), add=TRUE)
+        rcv <- raster(tmpv)
+        rcs <- raster(tmps)
+    }
+    invisible(y)
+}
+
+download.file(url="http://ftp.public.abmi.ca/species.abmi.ca/reports/2017/data/raster.grd",
+    destfile="z.grd")
+b=raster("z.grd")
+
+try zipping and use gzip orsomething
 
 }
