@@ -151,22 +151,95 @@ plot(r, col=cols, axes=FALSE, box=FALSE)
 
 ## polygon level prediction
 
+library(cure4insect)
 #species="AlderFlycatcher"
 species="Achillea.millefolium"
-.c4if=cure4insect:::.c4if
 load_common_data()
-path="w:/reports"
+.c4if=cure4insect:::.c4if
+#path="w:/reports"
+y <- load_spclim_data(species)
+DO <- list(
+    veg_rf=T,veg_cr=T,
+    soil_rf=T,soil_cr=T,
+    comb_rf=T,comb_cr=T)
 
-predict_species <-
-function(species, cr, rf, xy)
+## handle soft lin aspect through an option for birds:
+## coef approach does not require rf, early seral does ???
+predict.c4ispclim <-
+function(object, veg_rf, veg_cr, soil_rf, soil_cr, xy, ...)
 {
-    taxon <- as.character(.c4if$SP[species, "taxon"])
-    rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
-
-
+    if (!inherits(xy, "SpatialPoints"))
+        stop("xy must be of class SpatialPoints")
+    .check <- function(x, ref) {
+        z <- deparse(substitute(x))
+        if (!is.factor(x))
+            stop(paste(z, "is not factor"))
+        if (any(levels(x) %ni% ref))
+            warning(paste(z, "had unmatched levels: NA's introduced"))
+        NULL
+    }
+    fi <- if (object$taxon == "birds")
+        poisson("log")$linkinv else binomial("logit")$linkinv
+    DO <- list(
+        veg_rf=!missing(veg_rf),
+        veg_cr=!missing(veg_cr),
+        soil_rf=!missing(soil_rf),
+        soil_cr=!missing(soil_cr))
+    DO$comb_rf <- DO$veg_rf & DO$soil_rf
+    DO$comb_cr <- DO$veg_cr & DO$soil_cr
+    OUT <- data.frame(matrix(NA, nrow(coordinates(xy)), 6))
+    colnames(OUT) <- names(DO)
+    xy <- spTransform(xy, proj4string(.read_raster_template()))
+    if (DO$comb_rf || DO$comb_cr) {
+        rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
+        ipa <- extract(rpa, xy)
+    }
+    if (DO$veg_rf || DO$veg_cr) {
+        iveg <- extract(object$rveg, xy)
+    }
+    if (DO$soil_rf || DO$soil_cr) {
+        isoil <- extract(object$rsoil, xy)
+    }
+    if (veg_rf) {
+        .check(veg_rf)
+        OUT$veg_rf <- fi(object$cveg[match(veg_rf, names(object$cveg))] + iveg)
+    }
+    if (veg_cr) {
+        .check(veg_cr)
+        OUT$veg_cr <- fi(object$cveg[match(veg_cr, names(object$cveg))] + iveg)
+    }
+    if (soil_rf) {
+        .check(soil_rf)
+        OUT$soil_rf <- fi(object$csoil[match(soil_rf, names(object$csoil))] + isoil)
+    }
+    if (veg_cr) {
+        .check(soil_cr)
+        OUT$soil_cr <- fi(object$csoil[match(soil_cr, names(object$csoil))] + isoil)
+    }
+    if (comb_rf) {
+        OUT$comb_rf <- ipa * veg_rf + (1 - ipa) * soil_rf
+    }
+    if (comb_cr) {
+        OUT$comb_cr <- ipa * veg_cr + (1 - ipa) * soil_cr
+    }
+    OUT
 }
 
-.load_climate_raster <-
+load_spclim_data <-
+function(species, boot=TRUE, path=NULL, version=NULL)
+{
+    if (!is_loaded())
+        stop("common data needed: use load_common_data")
+    opts <- getOption("cure4insect")
+    if (is.null(path))
+        path <- opts$path
+    if (is.null(version))
+        version <- opts$version
+    taxon <- as.character(.c4if$SP[species, "taxon"])
+    .load_spclim_data(species=species,
+        boot=boot, path=path, version=version, taxon=taxon)
+}
+.load_spclim_data <-
 function(species, boot=TRUE, path=NULL, version=NULL, taxon)
 {
     opts <- getOption("cure4insect")
@@ -174,28 +247,36 @@ function(species, boot=TRUE, path=NULL, version=NULL, taxon)
         path <- opts$path
     if (is.null(version))
         version <- opts$version
-    fnv <- file.path(path, version, "results", taxon, "clim-veg", paste0(species, ".tif"))
-    fns <- file.path(path, version, "results", taxon, "clim-soil", paste0(species, ".tif"))
-    if (!startsWith(path, "http://")) {
-        rcv <- raster(fnv)
-        rcs <- raster(fns)
+    if (taxon == "birds") {
+        cveg <- .c4if$CFbirds$marginal$veg[species,]
+        cveg["HardLin"] <- 0
+        cveg["SoftLin"] <- mean(cveg[c("Shrub", "GrassHerb")])
+        csoil <- .c4if$CFbirds$marginal$soil[species,]
+        csoil["HardLin"] <- 0
+        csoil["SoftLin"] <- mean(csoil[c("Shrub", "GrassHerb")])
     } else {
-        tmpv <- tempfile("climveg", fileext = ".tif")
-        download.file(url=fnv, destfile=tmpv, method="libcurl", quiet=TRUE)
-        on.exit(unlink(tmpv), add=TRUE)
-        tmps <- tempfile("climsoil", fileext = ".tif")
-        download.file(url=fns, destfile=tmps, quiet=TRUE)
-        on.exit(unlink(tmps), add=TRUE)
-        rcv <- raster(tmpv)
-        rcs <- raster(tmps)
+        cveg <- .c4if$CF$coef$veg[species,]
+        csoil <- .c4if$CF$coef$soil[species,]
     }
-    invisible(y)
+    cveg <- cveg[names(cveg) %ni% c("AverageCoef", "SoftLin10", "HardLin10")]
+    csoil <- csoil[names(csoil) %ni% c("AverageCoef", "SoftLin10", "HardLin10")]
+    y <- new.env()
+    assign("species", species, envir=y)
+    assign("taxon", taxon, envir=y)
+    assign("cveg", cveg, envir=y)
+    assign("csoil", csoil, envir=y)
+    fn <- file.path(path, version, "results", taxon, "spclim", paste0(species, ".RData"))
+    if (!startsWith(path, "http://")) {
+        load(fn, envir=y)
+    } else {
+        con <- url(fn)
+        load(con, envir=y)
+        close(con)
+    }
+    class(y) <- "c4ispclim"
+    y
 }
 
-download.file(url="http://ftp.public.abmi.ca/species.abmi.ca/reports/2017/data/raster.grd",
-    destfile="z.grd")
-b=raster("z.grd")
 
-try zipping and use gzip orsomething
 
 }

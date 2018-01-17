@@ -26,7 +26,7 @@ S3method(flatten, c4iraw)
 S3method(sector_plot, c4iraw)
 S3method(sector_plot, c4idf)
 
-importFrom("intrval", "%)(%")
+importFrom("intrval", "%)(%", "%ni%")
 importFrom("Matrix", "colSums")
 importFrom("sendmailR", "sendmail", "mime_part")
 importFrom("stats", "quantile", "density", "sd")
