@@ -23,6 +23,8 @@ plot_abundance(species, type, plot=TRUE, paspen=0, ...)
 an object of class 'c4iraw' (from \code{\link{calculate_results}})
 or a data frame (class 'c4idf') with flattened (1-row) results per species.
 }
+  \item{species}{
+character, species ID (see \code{\link{get_all_species}}).}
   \item{type}{
 type of the plot, see Details.
 }
@@ -90,5 +92,14 @@ class(z) <- c("c4idf", class(z))
 plot_sector(z, "unit") # all species
 plot_sector(z[1:100,], "regional") # use a subset
 plot_sector(z, "underhf", method="hist") # binned version
+
+\dontrun{
+## land cover associations
+load_common_data()
+plot_abundance("Achillea.millefolium", "veg_coef")
+plot_abundance("Achillea.millefolium", "soil_coef")
+plot_abundance("Achillea.millefolium", "veg_lin")
+plot_abundance("Achillea.millefolium", "soil_lin")
+}
 }
 \keyword{ aplot }

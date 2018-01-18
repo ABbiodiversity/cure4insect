@@ -209,6 +209,16 @@ pred <- predict(object, xy=xy, veg=veg)
 summary(pred)
 ```
 
+#### Visualize land cover associations
+
+```R
+load_common_data()
+plot_abundance("Achillea.millefolium", "veg_coef")
+plot_abundance("Achillea.millefolium", "soil_coef")
+plot_abundance("Achillea.millefolium", "veg_lin")
+plot_abundance("Achillea.millefolium", "soil_lin")
+```
+
 ## Web API
 
 The web app sits [here](http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/).

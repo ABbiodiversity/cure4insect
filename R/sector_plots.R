@@ -276,21 +276,169 @@ function(species, type, plot=TRUE, paspen=0, ...)
 }
 
 .plot_abundance_veg <-
-function(species, plot=TRUE, ylim, main, col, ...)
+function(species, plot=TRUE, ylim, main, ylab, bw=FALSE, ...)
 {
     tab <- .c4if$CF$coef$veg
     if (species %ni% rownames(tab))
         stop(paste("coefficients were not found for", species))
-    ex <- c("AverageCoef", "SoftLin10", "HardLin10", "SoftLin", "HardLin")
-    out <- tab[species, colnames(tab) %ni% ex]
+    labs <- c(
+        "WhiteSpruce0", "WhiteSpruce10",
+        "WhiteSpruce20", "WhiteSpruce40", "WhiteSpruce60", "WhiteSpruce80",
+        "WhiteSpruce100", "WhiteSpruce120", "WhiteSpruce140",
+
+        "Pine0", "Pine10", "Pine20", "Pine40", "Pine60", "Pine80", "Pine100",
+        "Pine120", "Pine140",
+
+        "Deciduous0", "Deciduous10", "Deciduous20", "Deciduous40",
+        "Deciduous60", "Deciduous80", "Deciduous100", "Deciduous120",
+        "Deciduous140",
+
+        "Mixedwood0", "Mixedwood10", "Mixedwood20",
+        "Mixedwood40", "Mixedwood60", "Mixedwood80", "Mixedwood100",
+        "Mixedwood120", "Mixedwood140",
+
+        "BlackSpruce0", "BlackSpruce10",
+        "BlackSpruce20", "BlackSpruce40", "BlackSpruce60", "BlackSpruce80",
+        "BlackSpruce100", "BlackSpruce120", "BlackSpruce140",
+
+        "Larch0", "Larch10", "Larch20", "Larch40", "Larch60",
+        "Larch80", "Larch100", "Larch120", "Larch140",
+
+        "GrassHerb", "Shrub", "Swamp", "WetGrass", "WetShrub",
+        "Cult", "UrbInd",
+
+        "WhiteSpruceCC0", "WhiteSpruceCC10", "WhiteSpruceCC20", "WhiteSpruceCC40", "WhiteSpruceCC60",
+        "PineCC0", "PineCC10", "PineCC20", "PineCC40", "PineCC60",
+        "DeciduousCC0", "DeciduousCC10", "DeciduousCC20", "DeciduousCC40", "DeciduousCC60",
+        "MixedwoodCC0", "MixedwoodCC10", "MixedwoodCC20", "MixedwoodCC40", "MixedwoodCC60")
+    out <- data.frame(Estimate=tab[species, labs],
+        LCL=.c4if$CF$lower$veg[species, labs],
+        UCL=.c4if$CF$higher$veg[species, labs])
+
     if (plot) {
+
+        lci <- out$LCL
+        uci <- out$UCL
+        y1 <- out$Estimate
+        names(y1) <- rownames(out)
+
+        if (missing(main))
+            main <- species
+        if (missing(ylab))
+            ylab <- "Relative abundance"
+        if (missing(ylim)) {
+            ymax <- min(max(uci), 2 * max(y1))
+            ylim <- c(0, ymax)
+        } else {
+            ymax <- max(ylim)
+        }
+
+        x <- c(rep(1:9, 6) + rep(seq(0, 50, 10), each=9),
+            61, 63, 65, 67, 69,   72, 74)
+        space <- c(1,x[-1]-x[-length(x)])-0.99
+
+        op <- par(mai=c(1.5,1,0.2,0.3))
+        on.exit(par(op))
+
+        if (!bw) {
+            col.r <- c(rep(0,9), seq(0.3,0.6,length.out=9),
+                seq(0.5,1,length.out=9),
+                seq(0.8,0.9,length.out=9), rep(0,9),rep(0,9),
+                0.8,0.2,0,0,0, rep(0.2,2))
+            col.g <- c(seq(0.5,1,length.out=9), seq(0.4,0.8,length.out=9),
+                seq(0.1,0.2,length.out=9), seq(0.4,0.8,length.out=9),
+                seq(0.4,0.7,length.out=9), seq(0.15,0.5,length.out=9),
+                0.8,0.8,0,0,0, rep(0.2,2))
+            col.b <- c(rep(0,9),rep(0,9),rep(0,9),seq(0.2,0.4,length.out=9),
+                seq(0.2,0.6,length.out=9),seq(0.4,0.7,length.out=9),
+                0,0,1,1,1, rep(0.2,2))
+        } else {
+            col.r <- c(rep(seq(0.7,0.2,length.out=9), 6), rep(0.3,7))
+            col.b <- col.g <- col.r
+        }
+        idx <- 1:length(x)
+        x1 <- barplot(y1[idx],
+            space=space,
+            border="white",
+            col=rgb(col.r, col.g, col.b),
+            ylim=ylim,
+            xlim=c(-0.5,75.5),
+            xaxs="i", yaxt="n",
+            ylab=ylab,
+            col.lab="grey50",
+            cex.lab=1.2, axisnames=FALSE)[,1]
+        ax <- axis(side=2, cex.axis=0.9, col.axis="grey50",
+            col.ticks="grey50", las=2)
+        abline(h=ax, col="grey80")
+        x1 <- barplot(y1[idx],
+            space=space,
+            border="white", col=rgb(col.r,col.g,col.b),
+            ylim=ylim, xaxs="i", yaxt="n",
+            col.lab="grey50",
+            cex.lab=1.2, axisnames=FALSE, add=TRUE)[,1]
+        box(bty="l", col="grey50")
+        for (i in 1:length(x1)) {
+            lines(rep(x1[i],2), c(lci[idx][i], y1[idx][i]),col="grey90")
+            lines(rep(x1[i],2), c(uci[idx][i], y1[idx][i]),col=rgb(col.r[i],col.g[i],col.b[i]))
+        }
+        mtext(side=1, at=x1[c(5,14,23,32,41,50)], line=1.4,
+            c("Upland Spruce","Pine","Deciduous","Mixedwood","Black Spruce","Larch"),
+            col=rgb(col.r[c(5,14,23,32,41,50)], col.g[c(5,14,23,32,41,50)],
+            col.b[c(5,14,23,32,41,50)]),las=1)
+        at1<-rep(seq(1,9,2),6) + rep(c(0,9,18,27,36,45), each=5)
+        mtext(side=1,at=x1[at1]-0.3,rep(c("0","20","60","100","140"),6),
+            line=0.2, adj=0.5, cex=0.8, col=rgb(col.r[at1],col.g[at1], col.b[at1]))
+        mtext(side=1, at=-0.25, adj=1, line=0.2, "Age:", col="grey40", cex=0.8)
+        mtext(side=3, at=0, adj=0, main, col="grey30")
+        mtext(side=1, at=x1[c(55, 56, 57, 58, 59)],
+            c("GrassHerb", "Shrub", "Swamp", "WetGrass", "WetShrub"),
+            col=rgb(col.r[c(55, 56, 57, 58, 59)], col.g[c(55, 56, 57, 58, 59)],
+            col.b[c(55, 56, 57, 58, 59)]),
+            las=2, adj=1.1)
+        mtext(side=1, at=x1[c(60,61)], c("Cultivated HF", "Urban/Industry HF"),
+            col=rgb(col.r[c(60, 61)], col.g[c(60, 61)],
+            col.b[c(60, 61)]), las=2, adj=1.1)
+
+        ## Add cutblock trajectories - upland conifer
+        i1<-which(names(y1)=="WhiteSpruceCC0"):which(names(y1)=="WhiteSpruceCC60")
+        x2<-x1[1:5]+0.15*(x1[2]-x1[1])
+        for (j in 1:5)
+            lines(rep(x2[j],2),c(lci[i1[j]],uci[i1[j]]),col="grey60")
+        x3 <- which(names(y1)=="WhiteSpruce80")
+        lines(c(x2[1:5], x1[x3]), y1[c(i1, x3)], col="grey30", lty=2)
+        points(x2[1:5], y1[i1], pch=18, cex=1, col="grey30")
+        points(x2[1:5], y1[i1], pch=5, cex=0.7, col="grey10")
+        ## Pine
+        i1<-which(names(y1)=="PineCC0"):which(names(y1)=="PineCC60")
+        x2<-x1[10:15]+0.15*(x1[2]-x1[1])
+        for (j in 1:5)
+            lines(rep(x2[j],2),c(lci[i1[j]],uci[i1[j]]),col="grey60")
+        x3 <- which(names(y1)=="Pine80")
+        lines(c(x2[1:5], x1[x3]),y1[c(i1, x3)],col="grey30", lty=2)
+        points(x2[1:5],y1[i1],pch=18,cex=1,col="grey30")
+        points(x2[1:5],y1[i1],pch=5,cex=0.7,col="grey10")
+        ## Deciduous
+        i1<-which(names(y1)=="DeciduousCC0"):which(names(y1)=="DeciduousCC60")
+        x2<-x1[19:24]+0.15*(x1[2]-x1[1])
+        for (j in 1:5)
+            lines(rep(x2[j],2),c(lci[i1[j]],uci[i1[j]]),col="grey60")
+        x3 <- which(names(y1)=="Deciduous80")
+        lines(c(x2[1:5], x1[x3]),y1[c(i1, x3)],col="grey30", lty=2)
+        points(x2[1:5],y1[i1],pch=18,cex=1,col="grey30")
+        points(x2[1:5],y1[i1],pch=5,cex=0.7,col="grey10")
+        ## Mixed
+        i1<-which(names(y1)=="MixedwoodCC0"):which(names(y1)=="MixedwoodCC60")
+        x2<-x1[28:33]+0.15*(x1[2]-x1[1])
+        for (j in 1:5)
+            lines(rep(x2[j],2),c(lci[i1[j]],uci[i1[j]]),col="grey60")
+        x3 <- which(names(y1)=="Mixedwood80")
+        lines(c(x2[1:5], x1[x3]),y1[c(i1, x3)],col="grey30", lty=2)
+        points(x2[1:5],y1[i1],pch=18,cex=1,col="grey30")
+        points(x2[1:5],y1[i1],pch=5,cex=0.7,col="grey10")
     }
     invisible(out)
 }
 
-#i="AmericanThreetoedWoodpecker"
-#(.plot_abundance_soil(i,paspen=0))
-#(.plot_abundance_soil(i,paspen=1))
 .plot_abundance_soil <-
 function(species, plot=TRUE, paspen=0, ylim, main, ylab, ...)
 {
@@ -311,7 +459,8 @@ function(species, plot=TRUE, paspen=0, ylim, main, ylab, ...)
     if (paspen %)(% c(0, 1))
         stop("paspen must be in [0, 1]")
     out[out < 10^-5] <- 10^-6
-    out <- fi(paspen * .c4if$CF$coef$paspen[species, "pAspen"] + f(out))
+    out <- data.frame(fi(paspen * .c4if$CF$coef$paspen[species, "pAspen"] +
+        f(data.matrix(out))))
     if (plot) {
         op <- par(mai=c(1.5, 1, 0.2, 0.3))
         on.exit(par(op))
@@ -321,9 +470,9 @@ function(species, plot=TRUE, paspen=0, ylim, main, ylab, ...)
         y1 <- out$Estimate
         x <- 1:6
 
-		if (missing(main))
+        if (missing(main))
             main <- species
-		if (missing(ylab))
+        if (missing(ylab))
             ylab <- "Relative abundance"
         if (missing(ylim)) {
             ymax <- max(min(max(uci[x]), 2*max(y1)), y1*1.02)
@@ -358,9 +507,6 @@ function(species, plot=TRUE, paspen=0, ylim, main, ylab, ...)
     invisible(out)
 }
 
-#i="AmericanThreetoedWoodpecker"
-#(.plot_abundance_lin(i,plot=T,veg=F))
-#(.plot_abundance_lin(i,plot=T,veg=T))
 .plot_abundance_lin <-
 function(species, plot=TRUE, veg=TRUE, ylim, main, xlab, ylab, ...)
 {
@@ -373,196 +519,44 @@ function(species, plot=TRUE, veg=TRUE, ylim, main, xlab, ylab, ...)
         stop(paste("coefficients were not found for", species))
     out <- tab[species, c("AverageCoef", "SoftLin10", "HardLin10")]
     if (plot) {
-		p.mean <- out["AverageCoef"]
-		p.softlin10 <- out["SoftLin10"]
-		p.hardlin10 <- out["HardLin10"]
+        p.mean <- out["AverageCoef"]
+        p.softlin10 <- out["SoftLin10"]
+        p.hardlin10 <- out["HardLin10"]
 
-		if (missing(ylim)) {
+        if (missing(ylim)) {
             ymax1 <- max(p.softlin10, p.hardlin10, 2*p.mean)*1.03
             ylim <- c(0, ymax1)
-		} else {
+        } else {
             ymax <- max(ylim)
-		}
-		if (missing(main))
+        }
+        if (missing(main))
             main <- species
-		if (missing(xlab))
+        if (missing(xlab))
             xlab <- "Human footprint"
-		if (missing(ylab))
+        if (missing(ylab))
             ylab <- "Relative abundance"
 
-		plot(c(1,1.95,2.05), c(p.mean, p.softlin10, p.hardlin10),
+        plot(c(1,1.95,2.05), c(p.mean, p.softlin10, p.hardlin10),
             pch=c(1, 16, 15),
             col=c("grey30", "blue3", "red4"),
             xlab=xlab, ylab=ylab, xlim=c(0.8, 2.8), ylim=ylim,
             tck=0.01, yaxs="i", xaxt="n", yaxt="n", bty="l",
             cex=2, lwd=2, cex.lab=1.4, cex.axis=1.3, col.lab="grey40")
-		axis(side=2, at=pretty(ylim, n=5), cex.axis=1.3, tck=0.01,
+        axis(side=2, at=pretty(ylim, n=5), cex.axis=1.3, tck=0.01,
             cex.axis=1.3, col.axis="grey40", col.ticks="grey40")
-		axis(side=1, at=c(1,2), lab=c("None","10% linear"),
+        axis(side=1, at=c(1,2), labels=c("None","10% linear"),
             tck=0.01, cex.axis=1.3, col.axis="grey40", col.ticks="grey40")
-		box(bty="l", col="grey40")
-		lines(c(1,1.95), c(p.mean, p.softlin10), col="blue3")
-		lines(c(1,2.05), c(p.mean, p.hardlin10), col="red4")
-		points(c(1, 1.95, 2.05), c(p.mean, p.softlin10, p.hardlin10),
+        box(bty="l", col="grey40")
+        lines(c(1,1.95), c(p.mean, p.softlin10), col="blue3")
+        lines(c(1,2.05), c(p.mean, p.hardlin10), col="red4")
+        points(c(1, 1.95, 2.05), c(p.mean, p.softlin10, p.hardlin10),
             pch=c(1,16,15), col=c("grey30", "blue3", "red4"), cex=2, lwd=2)
-		ly <- c(p.softlin10, p.hardlin10)
-		if (abs(ly[2]-ly[1]) < ymax1/20)
+        ly <- c(p.softlin10, p.hardlin10)
+        if (abs(ly[2]-ly[1]) < ymax1/20)
             ly <- c(mean(ly)+ymax1/40*sign(ly[1]-ly[2]), mean(ly)+ymax1/40*sign(ly[2]-ly[1]))
-		text(c(2.15, 2.15), ly, c("Soft linear","Hard linear"),
+        text(c(2.15, 2.15), ly, c("Soft linear","Hard linear"),
             col=c("blue3", "red4"), cex=1.3, adj=0)
-		mtext(side=3, at=0.8, adj=0, main, col="grey30", cex=1.3)
+        mtext(side=3, at=0.8, adj=0, main, col="grey30", cex=1.3)
     }
     invisible(out)
-}
-
-
-if (FALSE) {
-
-fig_veghf <-
-function(pr, LAB="", ymax, ylab="Relative abundance", bw=FALSE)
-{
-
-        op <- par(mai=c(1.5,1,0.2,0.3))
-        labs <- c(
-            "WhiteSpruce  0", "WhiteSpruce  10",
-            "WhiteSpruce  20", "WhiteSpruce  40", "WhiteSpruce  60", "WhiteSpruce  80",
-            "WhiteSpruce  100", "WhiteSpruce  120", "WhiteSpruce  140",
-
-            "Pine  0", "Pine  10", "Pine  20", "Pine  40", "Pine  60", "Pine  80", "Pine  100",
-            "Pine  120", "Pine  140",
-
-            "Deciduous  0", "Deciduous  10", "Deciduous  20", "Deciduous  40",
-            "Deciduous  60", "Deciduous  80", "Deciduous  100", "Deciduous  120",
-            "Deciduous  140",
-
-            "Mixedwood  0", "Mixedwood  10", "Mixedwood  20",
-            "Mixedwood  40", "Mixedwood  60", "Mixedwood  80", "Mixedwood  100",
-            "Mixedwood  120", "Mixedwood  140",
-
-            "BlackSpruce  0", "BlackSpruce  10",
-            "BlackSpruce  20", "BlackSpruce  40", "BlackSpruce  60", "BlackSpruce  80",
-            "BlackSpruce  100", "BlackSpruce  120", "BlackSpruce  140",
-
-            "Larch  0", "Larch  10", "Larch  20", "Larch  40", "Larch  60",
-            "Larch  80", "Larch  100", "Larch  120", "Larch  140",
-
-            "GrassHerb", "Shrub", "Swamp", "WetGrass", "WetShrub",
-            "Cult", "UrbInd",
-
-            "WhiteSpruce CC 0", "WhiteSpruce CC 10", "WhiteSpruce CC 20", "WhiteSpruce CC 40", "WhiteSpruce CC 60",
-            "Pine CC 0", "Pine CC 10", "Pine CC 20", "Pine CC 40", "Pine CC 60",
-            "Deciduous CC 0", "Deciduous CC 10", "Deciduous CC 20", "Deciduous CC 40", "Deciduous CC 60",
-            "Mixedwood CC 0", "Mixedwood CC 10", "Mixedwood CC 20", "Mixedwood CC 40", "Mixedwood CC 60")
-
-        pr2 <- pr[labs,]
-        lci <- pr2[,3]
-        uci <- pr2[,4]
-        y1 <- pr2[,2]
-        if (missing(ymax))
-            ymax <- min(max(uci),2*max(y1))
-        #x <- c(rep(1:9,6)+rep(seq(0,50,10),each=9), 61,63,65, 68,70)
-        x <- c(rep(1:9,6)+rep(seq(0,50,10),each=9), 61,63,65,67,69, 72,74)
-        space <- c(1,x[-1]-x[-length(x)])-0.99  # The spacing between bars
-        if (!bw) {
-            col.r <- c(rep(0,9),seq(0.3,0.6,length.out=9),seq(0.5,1,length.out=9),
-                seq(0.8,0.9,length.out=9),rep(0,9),rep(0,9),
-                0.8,0.2,0,0,0, rep(0.2,2))  # The red part
-            col.g <- c(seq(0.5,1,length.out=9),seq(0.4,0.8,length.out=9),seq(0.1,0.2,length.out=9),
-                seq(0.4,0.8,length.out=9),seq(0.4,0.7,length.out=9),seq(0.15,0.5,length.out=9),
-                0.8,0.8,0,0,0, rep(0.2,2))  # The green part
-            col.b <- c(rep(0,9),rep(0,9),rep(0,9),seq(0.2,0.4,length.out=9),
-                seq(0.2,0.6,length.out=9),seq(0.4,0.7,length.out=9),
-                0,0,1,1,1, rep(0.2,2))  # The blue part
-        } else {
-            col.r <- c(rep(seq(0.7,0.2,length.out=9), 6), rep(0.3,7))
-            col.b <- col.g <- col.r
-        }
-        idx <- 1:length(x)
-        x1 <- barplot(y1[idx],
-            space=space,
-            border="white",
-            col=rgb(col.r,col.g,col.b),
-            ylim=c(0,ymax),
-            #xlim=c(-0.5,81.5),
-            xlim=c(-0.5,75.5),
-            xaxs="i", yaxt="n",
-            ylab=ylab,
-            col.lab="grey50",
-            cex.lab=1.2,axisnames=FALSE)[,1]
-        ax <- axis(side=2,cex.axis=0.9,col.axis="grey50",col.ticks="grey50",las=2)
-        abline(h=ax, col="grey80")
-        x1 <- barplot(y1[idx],
-            space=space,border="white",col=rgb(col.r,col.g,col.b),ylim=c(0,ymax),
-            xaxs="i",yaxt="n",
-            #ylab="Relative abundance",
-            col.lab="grey50",
-            cex.lab=1.2,axisnames=FALSE, add=TRUE)[,1]
-        box(bty="l",col="grey50")
-        for (i in 1:length(x1)) {
-            lines(rep(x1[i],2), c(lci[idx][i], y1[idx][i]),col="grey90")
-            lines(rep(x1[i],2), c(uci[idx][i], y1[idx][i]),col=rgb(col.r[i],col.g[i],col.b[i]))
-        }
-        mtext(side=1,at=x1[c(5,14,23,32,41,50)],line=1.4,
-            c("Upland Spruce","Pine","Deciduous","Mixedwood","Black Spruce","Larch"),
-            col=rgb(col.r[c(5,14,23,32,41,50)],col.g[c(5,14,23,32,41,50)],
-            col.b[c(5,14,23,32,41,50)]),las=1)
-        at1<-rep(seq(1,9,2),6)+rep(c(0,9,18,27,36,45),each=5)
-        mtext(side=1,at=x1[at1]-0.3,rep(c("0","20","60","100","140"),6),
-            line=0.2,adj=0.5,cex=0.8,col=rgb(col.r[at1],col.g[at1],col.b[at1]))
-        mtext(side=1,at=-0.25,adj=1,line=0.2,"Age:",col="grey40",cex=0.8)
-        mtext(side=3,at=0,adj=0,LAB,col="grey30")
-        mtext(side=1,at=x1[c(55,56,57,58,59)],
-            #c("Grass","Shrub","Wetland"),
-            c("GrassHerb", "Shrub", "Swamp", "WetGrass", "WetShrub"),
-            col=rgb(col.r[c(55,56,57,58,59)],col.g[c(55,56,57,58,59)],
-            col.b[c(55,56,57,58,59)]),
-            las=2,adj=1.1)
-        mtext(side=1,at=x1[c(60,61)],c("Cultivated HF","Urban/Industry HF"),
-            col=rgb(col.r[c(60,61)],col.g[c(60,61)],col.b[c(60,61)]),las=2,adj=1.1)
-
-        ## Add cutblock trajectories - upland conifer
-        i1<-which(names(y1)=="WhiteSpruce CC 0"):which(names(y1)=="WhiteSpruce CC 60")
-        x2<-x1[1:5]+0.15*(x1[2]-x1[1])
-        for (j in 1:5)
-            lines(rep(x2[j],2),c(lci[i1[j]],uci[i1[j]]),col="grey60")
-        x3 <- which(names(y1)=="WhiteSpruce  80")
-        lines(c(x2[1:5], x1[x3]),y1[c(i1, x3)],col="grey30", lty=2)
-        points(x2[1:5],y1[i1],pch=18,cex=1,col="grey30")
-        points(x2[1:5],y1[i1],pch=5,cex=0.7,col="grey10")
-        ## Pine
-        i1<-which(names(y1)=="Pine CC 0"):which(names(y1)=="Pine CC 60")
-        x2<-x1[10:15]+0.15*(x1[2]-x1[1])
-        for (j in 1:5)
-            lines(rep(x2[j],2),c(lci[i1[j]],uci[i1[j]]),col="grey60")
-        x3 <- which(names(y1)=="Pine  80")
-        lines(c(x2[1:5], x1[x3]),y1[c(i1, x3)],col="grey30", lty=2)
-        points(x2[1:5],y1[i1],pch=18,cex=1,col="grey30")
-        points(x2[1:5],y1[i1],pch=5,cex=0.7,col="grey10")
-        ## Deciduous
-        i1<-which(names(y1)=="Deciduous CC 0"):which(names(y1)=="Deciduous CC 60")
-        x2<-x1[19:24]+0.15*(x1[2]-x1[1])
-        for (j in 1:5)
-            lines(rep(x2[j],2),c(lci[i1[j]],uci[i1[j]]),col="grey60")
-        x3 <- which(names(y1)=="Deciduous  80")
-        lines(c(x2[1:5], x1[x3]),y1[c(i1, x3)],col="grey30", lty=2)
-        points(x2[1:5],y1[i1],pch=18,cex=1,col="grey30")
-        points(x2[1:5],y1[i1],pch=5,cex=0.7,col="grey10")
-        ## Mixed
-        i1<-which(names(y1)=="Mixedwood CC 0"):which(names(y1)=="Mixedwood CC 60")
-        x2<-x1[28:33]+0.15*(x1[2]-x1[1])
-        for (j in 1:5)
-            lines(rep(x2[j],2),c(lci[i1[j]],uci[i1[j]]),col="grey60")
-        x3 <- which(names(y1)=="Mixedwood  80")
-        lines(c(x2[1:5], x1[x3]),y1[c(i1, x3)],col="grey30", lty=2)
-        points(x2[1:5],y1[i1],pch=18,cex=1,col="grey30")
-        points(x2[1:5],y1[i1],pch=5,cex=0.7,col="grey10")
-
-        par(op)
-
-    invisible(pr2)
-}
-
-
-
-
 }
