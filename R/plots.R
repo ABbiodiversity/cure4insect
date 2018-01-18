@@ -209,6 +209,7 @@ function(Curr, Ref, RefTotal, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=
         x <- as.data.frame(x)
     sectors <- c("Agriculture","Forestry","Energy","RuralUrban","Transportation")
     sector.names <- c("Agriculture","Forestry","Energy","RuralUrban","Transport")
+    x <- x[,sectors,drop=FALSE]
     c1 <- if (!is.null(col))
         col else c("tan3","palegreen4","indianred3","skyblue3","slateblue2")
     ymin <- -100
