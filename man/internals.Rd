@@ -18,7 +18,7 @@ used by users.
 app_read_csv(...)
 app_test(...)
 
-.load_species_data(species, boot=TRUE, path=NULL, version=NULL, .c4is)
+.load_species_data(species, boot=TRUE, path=NULL, version=NULL, taxon)
 .calculate_results(y, level=0.9, .c4is)
 .report_all_by1(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
 .read_raster_template()
@@ -27,6 +27,7 @@ app_test(...)
 \arguments{
   \item{species, boot, path, version}{arguments passed to
     \code{\link{load_species_data}} and other functions.}
+  \item{taxon}{taxonomic group required for the correct path.}
   \item{y, level}{arguments passed to \code{\link{calculate_results}}
     and other functions.}
   \item{.c4is}{the subset environment \code{as.list(.c4is)}.}
