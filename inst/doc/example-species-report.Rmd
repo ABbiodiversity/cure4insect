@@ -182,11 +182,12 @@ When the effect on species is only quantified within the sector footprint,
 i.e. not taking into account native vegetation, we call it _under the footprint_ sector effect.
 
 
-```{r secor-plot,echo=FALSE,fig.height=6,fig.width=18}
-op <- par(mfrow=c(1,3))
+```{r secor-plot,echo=FALSE,fig.height=12,fig.width=12}
+op <- par(mfrow=c(2,2))
 plot_sector(x, type="regional", main="Regional")
 plot_sector(x, type="underhf", "Under HF")
 plot_sector(x, type="unit", "Unit")
+plot.new()
 par(op)
 ```
 
@@ -235,7 +236,8 @@ ply <- spTransform(ply, proj4string(r))
 subset_common_data(id=ID, species)
 xreg <- calculate_results(y)
 ## clip raster
-rreg <- mask(r, ply)
+rreg <- crop(r, ply)
+rreg <- mask(rreg, ply)
 ```
 
 ```{r plot-region,echo=FALSE,fig.height=6,fig.width=4}
@@ -267,10 +269,11 @@ df4 <- data.frame(xreg$sector)[,-1]
 kable(df4, digits=2)
 ```
 
-```{r secor-plot-reg,echo=FALSE,fig.height=6,fig.width=18}
-op <- par(mfrow=c(1,3))
+```{r secor-plot-reg,echo=FALSE,fig.height=12,fig.width=12}
+op <- par(mfrow=c(2,2))
 plot_sector(xreg, type="regional", main="Regional in OSA")
 plot_sector(xreg, type="underhf", "Under HF in OSA")
 plot_sector(xreg, type="unit", "Unit in OSA")
+plot.new()
 par(op)
 ```
