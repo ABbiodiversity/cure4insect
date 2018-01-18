@@ -1,6 +1,6 @@
 \name{custom_report}
-\alias{cure4string}
-\alias{cure4string-package}
+\alias{cure4insect}
+\alias{cure4insect-package}
 \alias{load_common_data}
 \alias{subset_common_data}
 \alias{load_species_data}
@@ -94,7 +94,8 @@ logical, if confidence intervals for abundance and intactness are desired.
 numeric, level for confidence interval, defaults to 90\%.
 }
   \item{cores}{
-integer, number of cores used in formking (will not work on Windows).
+integer, number of cores used in forking (used on Unix/Linux OS)
+or number of cluster workers (on Windows).
 Defaults to \code{getOption("cure4insect")$cores} when \code{NULL}.
 }
   \item{y}{

@@ -4,7 +4,7 @@
 \alias{plot_sector.c4idf}
 \alias{plot_abundance}
 \title{
-Abundance and Sector Efects Plots
+Abundance and Sector Effects Plots
 }
 \description{
 Plots the sector effects for a single or a group of species.
@@ -67,7 +67,7 @@ various land cover (incl. disturbance) classes,
 \code{"soil_coef"} shows relative abundance by soil and disturbance types.
 
 The \code{"veg_lin"} and \code{"soil_lin"} types show average relative abundances
-compared to 10\% vegetated (soft) and non-vegetated (hard) linear disturbence.
+compared to 10\% vegetated (soft) and non-vegetated (hard) linear disturbance.
 }
 \value{
 Called for the side effect of drawing a plot.
