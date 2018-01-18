@@ -71,11 +71,13 @@ function(x, type=c("unit", "regional", "underhf"), main, ...)
                 "Unit_Energy", "Unit_Transportation"))
         xx <- x[,cn]
         colnames(xx) <- c("Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")
+        if (missing(main))
+            main <- ""
         ylab <- switch(type,
             "regional"="Regional sector effects (%)",
             "underhf"="Under HF sector effects (%)",
             "unit"="Unit effects (%)")
-        .plot_sector3(xx, ylab=ylab, ...)
+        .plot_sector3(xx, ylab=ylab, main=main, ...)
     }
 }
 
@@ -201,7 +203,7 @@ function(Curr, Ref, RefTotal, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=
 }
 
 ## multi-species plot: RefTotal not needed, comes directly from c4iraw
-.plot_sector3 <- function(x, ylab="Sector effects (%)", col=NULL, method="kde", ...) {
+.plot_sector3 <- function(x, ylab="Sector effects (%)", col=NULL, method="kde", main="", ...) {
     method <- match.arg(method, c("kde", "fft", "hist"))
     if (!is.list(x))
         x <- as.data.frame(x)
@@ -254,7 +256,7 @@ function(Curr, Ref, RefTotal, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=
         polygon(c(-v,-v,v,v)+i, s[c(2,4,4,2)], col="#40404080", border=NA)
         lines(c(-v,v)+i, s[c(3,3)], lwd=2, col="grey30")
     }
-    title(ylab=ylab, cex=1.3, col="grey40")
+    title(ylab=ylab, cex=1.3, col="grey40", main=main)
     mtext(side=1,at=1:5,sector.names,col=c1,cex=1.3,adj=0.5,line=0.5)
     op <- par(xpd = TRUE)
     on.exit(par(op), add=TRUE)
