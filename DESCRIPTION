@@ -5,8 +5,12 @@ Version: 0.0-4
 Date: 2018-01-16
 Author: Peter Solymos [cre, aut]
 Maintainer: Peter Solymos <solymos@ualberta.ca>
-Description: Custom reporting for intactness and sector effects.
-URL: https://github.com/ABbiodiversity/cure4insect
+Description: The package is a decision support tool
+  that provides an interface to enable
+  custom reporting for intactness and sector effects
+  based on estimates and predictions created by the Alberta
+  Biodiversity Monitoring Institute (ABMI).
+URL: http://abmi.ca, https://github.com/ABbiodiversity/cure4insect
 BugReports: https://github.com/ABbiodiversity/cure4insect/issues
 License: MIT + file LICENSE
 LazyLoad: yes
