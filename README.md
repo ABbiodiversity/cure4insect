@@ -12,7 +12,7 @@ Biodiversity Monitoring Institute (ABMI)](http://abmi.ca/).
 
 ## License
 
-The estimates, predictions, and related documentation are &copy; ABMI (2014–2017) under a [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/). 
+The estimates, predictions, and related documentation are &copy; ABMI (2014&ndash;2017) under a [CC BY-SA 4.0 license](http://creativecommons.org/licenses/by-sa/4.0/). 
 
 The R package itself is licensed under [MIT license](https://github.com/ABbiodiversity/cure4insect/blob/master/LICENSE.md) &copy; 2018 Peter Solymos & ABMI.
 

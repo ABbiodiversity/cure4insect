@@ -107,19 +107,20 @@ function(species, boot=TRUE, path=NULL, version=NULL)
         path <- opts$path
     if (is.null(version))
         version <- opts$version
-    taxon <- as.character(.c4is$SPfull[species, "taxon"])
+    taxon <- as.character(.c4if$SP[species, "taxon"])
+    if (length(taxon) < 1L)
+        stop("")
     .load_species_data(species=species,
-        boot=boot, path=path, version=version, .c4is=as.list(.c4is))
+        boot=boot, path=path, version=version, taxon=taxon)
 }
 .load_species_data <-
-function(species, boot=TRUE, path=NULL, version=NULL, .c4is)
+function(species, boot=TRUE, path=NULL, version=NULL, taxon)
 {
     opts <- getOption("cure4insect")
     if (is.null(path))
         path <- opts$path
     if (is.null(version))
         version <- opts$version
-    taxon <- as.character(.c4is$SPfull[species, "taxon"])
     y <- new.env()
     assign("species", species, envir=y)
     assign("taxon", taxon, envir=y)
