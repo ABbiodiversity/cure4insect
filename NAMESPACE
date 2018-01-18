@@ -15,7 +15,8 @@ export(
     get_id_locations,
     get_species_table,
     is_loaded,
-    sector_plot,
+    plot_sector,
+    plot_abundance,
     rasterize_results,
     load_spclim_data,
     get_levels)
@@ -25,27 +26,27 @@ export(app_read_csv, app_test,
     .read_raster_template, .make_raster)
 
 S3method(flatten, c4iraw)
-S3method(sector_plot, c4iraw)
-S3method(sector_plot, c4idf)
+S3method(plot_sector, c4iraw)
+S3method(plot_sector, c4idf)
 S3method(predict, c4ispclim)
 
-importFrom("intrval", "%)(%", "%ni%")
-importFrom("Matrix", "colSums")
-importFrom("sendmailR", "sendmail", "mime_part")
-importFrom("stats", "quantile", "density", "sd", "poisson", "binomial")
-importFrom("utils", "flush.console", "stack", "write.csv", "read.csv")
-importFrom("sp", "identicalCRS", "over", "spTransform", "coordinates",
-    "proj4string")
-importFrom("pbapply", "getTimeAsString", "pblapply", "pboptions")
-importFrom("grDevices", "boxplot.stats")
 importFrom("graphics", "abline", "axis", "barplot", "box", "hist",
     "lines", "mtext", "par", "plot", "points", "polygon",
     "rect", "rug", "segments", "text", "title")
+importFrom("grDevices", "boxplot.stats", "rgb")
+importFrom("intrval", "%)(%", "%ni%")
 importFrom("KernSmooth", "bkde")
-importFrom("raster", "raster", "extract")
+importFrom("Matrix", "colSums")
 importFrom("mefa4", "Xtab")
 importFrom("parallel", "detectCores", "makeCluster", "stopCluster",
     "clusterEvalQ", "clusterExport")
+importFrom("pbapply", "getTimeAsString", "pblapply", "pboptions")
+importFrom("raster", "raster", "extract")
+importFrom("sendmailR", "sendmail", "mime_part")
+importFrom("sp", "identicalCRS", "over", "spTransform", "coordinates",
+    "proj4string")
+importFrom("stats", "quantile", "density", "sd", "poisson", "binomial")
+importFrom("utils", "flush.console", "stack", "write.csv", "read.csv")
 
 importMethodsFrom("Matrix", "as.matrix")
 importMethodsFrom("mefa4", "as.matrix")

@@ -1,31 +1,43 @@
-\name{sector_plot}
-\alias{sector_plot}
-\alias{sector_plot.c4iraw}
-\alias{sector_plot.c4idf}
+\name{plot_sector}
+\alias{plot_sector}
+\alias{plot_sector.c4iraw}
+\alias{plot_sector.c4idf}
+\alias{plot_abundance}
 \title{
-Sector Efects Plots
+Abundance and Sector Efects Plots
 }
 \description{
 Plots the sector effects for a single or a group of species.
 }
 \usage{
-sector_plot(x, ...)
-\method{sector_plot}{c4iraw}(x,
+plot_sector(x, ...)
+\method{plot_sector}{c4iraw}(x,
     type=c("unit", "regional", "underhf"), main, ...)
-\method{sector_plot}{c4idf}(x,
+\method{plot_sector}{c4idf}(x,
     type=c("unit", "regional", "underhf"), main, ...)
+
+plot_abundance(species, type, plot=TRUE, paspen=0, ...)
 }
 \arguments{
   \item{x}{
 an object of class 'c4iraw' (from \code{\link{calculate_results}})
 or a data frame (class 'c4idf') with flattened (1-row) results per species.
 }
+  \item{species}{
+character, species ID (see \code{\link{get_all_species}}).}
   \item{type}{
-number of bins to be used in kernel density estimation.
+type of the plot, see Details.
 }
   \item{main}{
 title for the plot, if single species results are displayed
 the default is to use the species ID.
+}
+  \item{plot}{
+logical, if a plot is to be drawn.
+}
+  \item{paspen}{
+numeric in [0, 1], the probability of aspen occurrence (proxy for climatic
+suitability for treed vegetation).
 }
   \item{\dots}{
 other possible arguments passed to underlying functions,
@@ -35,21 +47,30 @@ or \code{method} (one of \code{"kde"}, \code{"fft"}, or \code{"hist"}).
 }
 }
 \details{
-Unit type sector effects are based on regional current and reference abundances,
+\code{"unit"} type sector effects are based on regional current and reference abundances,
 and the regional sector effects are standardized by footprint area.
 
-Regional sector effects includes native and disturbed habitats when
+\code{"regional "} sector effects includes native and disturbed habitats when
 comparing regional abundance under current and reference conditions.
 
-Under HF (Hunam Footprint) type sector effects consider only the abundance
+\code{underhf} (under human footprint) type sector effects consider only the abundance
 that us 'under the footprint', meaning that the current designation
 is disturbed.
 
-The single species plots are different kinds of bar plots.
+The single species sector effect plots are different kinds of bar plots.
 The multi-species plot represents violin (carrot, vase) plots
 based on kernel density, fast Fourier transform, or binning (histogram).
+
+More here about types of abundance plots:
+\code{"veg_coef"} type abundance plots show relative abundances across
+various land cover (incl. disturbance) classes,
+\code{"soil_coef"} shows relative abundance by soil and disturbance types.
+
+The \code{"veg_lin"} and \code{"soil_lin"} types show average relative abundances
+compared to 10\% vegetated (soft) and non-vegetated (hard) linear disturbence.
 }
 \value{
+Called for the side effect of drawing a plot.
 Returns the plotted data invisibly.
 }
 \author{
@@ -62,14 +83,23 @@ Peter Solymos <solymos@ualberta.ca>
 ## *res*ults from calculate_results, all province, all species
 load(system.file("extdata/raw_all.rda", package="cure4insect"))
 
-sector_plot(res[["CanadaWarbler"]], "unit")
-sector_plot(res[["CanadaWarbler"]], "regional")
-sector_plot(res[["CanadaWarbler"]], "underhf")
+plot_sector(res[["CanadaWarbler"]], "unit")
+plot_sector(res[["CanadaWarbler"]], "regional")
+plot_sector(res[["CanadaWarbler"]], "underhf")
 
 z <- do.call(rbind, lapply(res, flatten))
 class(z) <- c("c4idf", class(z))
-sector_plot(z, "unit") # all species
-sector_plot(z[1:100,], "regional") # use a subset
-sector_plot(z, "underhf", method="hist") # binned version
+plot_sector(z, "unit") # all species
+plot_sector(z[1:100,], "regional") # use a subset
+plot_sector(z, "underhf", method="hist") # binned version
+
+\dontrun{
+## land cover associations
+load_common_data()
+plot_abundance("Achillea.millefolium", "veg_coef")
+plot_abundance("Achillea.millefolium", "soil_coef")
+plot_abundance("Achillea.millefolium", "veg_lin")
+plot_abundance("Achillea.millefolium", "soil_lin")
+}
 }
 \keyword{ aplot }

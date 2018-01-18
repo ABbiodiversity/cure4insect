@@ -111,15 +111,15 @@ package="cure4insect"))))
 ## *res*ults from calculate_results, all province, all species
 load(system.file("extdata/raw_all.rda", package="cure4insect"))
 
-sector_plot(res[["CanadaWarbler"]], "unit")
-sector_plot(res[["CanadaWarbler"]], "regional")
-sector_plot(res[["CanadaWarbler"]], "underhf")
+plot_sector(res[["CanadaWarbler"]], "unit")
+plot_sector(res[["CanadaWarbler"]], "regional")
+plot_sector(res[["CanadaWarbler"]], "underhf")
 
 z <- do.call(rbind, lapply(res, flatten))
 class(z) <- c("c4idf", class(z))
-sector_plot(z, "unit") # all species
-sector_plot(z[1:100,], "regional") # use a subset
-sector_plot(z, "underhf", method="hist") # binned version
+plot_sector(z, "unit") # all species
+plot_sector(z[1:100,], "regional") # use a subset
+plot_sector(z, "underhf", method="hist") # binned version
 ```
 
 #### Determining spatial IDs based on spatial polygons
@@ -207,6 +207,16 @@ proj4string(xy) <- proj4string(XY)
 ## predict
 pred <- predict(object, xy=xy, veg=veg)
 summary(pred)
+```
+
+#### Visualize land cover associations
+
+```R
+load_common_data()
+plot_abundance("Achillea.millefolium", "veg_coef")
+plot_abundance("Achillea.millefolium", "soil_coef")
+plot_abundance("Achillea.millefolium", "veg_lin")
+plot_abundance("Achillea.millefolium", "soil_lin")
 ```
 
 ## Web API
