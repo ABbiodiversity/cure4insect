@@ -12,7 +12,7 @@ Biodiversity Monitoring Institute (ABMI)](http://abmi.ca/).
 
 ## License
 
-The estimates, predictions, and related documentation are &copy; ABMI (2014&ndash;2017) under a [CC BY-SA 4.0 license](http://creativecommons.org/licenses/by-sa/4.0/). 
+The estimates, predictions, and related documentation are &copy; ABMI (2014&ndash;2017) under a [CC BY-SA 4.0 license](http://creativecommons.org/licenses/by-sa/4.0/).
 
 The R package itself is licensed under [MIT license](https://github.com/ABbiodiversity/cure4insect/blob/master/LICENSE.md) &copy; 2018 Peter Solymos & ABMI.
 
@@ -222,6 +222,15 @@ summary(pred)
 ```
 
 #### Visualize land cover associations
+
+See the following [R markdown](http://rmarkdown.rstudio.com/)
+file for a worked example of visualizations available in the package:
+
+```R
+file.show(system.file("doc/example-species-report.Rmd", package="cure4insect"))
+```
+
+Habitat associations as shown on the [species.abmi.ca](http://species.abmi.ca/) website:
 
 ```R
 load_common_data()
