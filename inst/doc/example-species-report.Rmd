@@ -17,6 +17,7 @@ urlcolor: blue
 #devtools::install_github("ABbiodiversity/cure4insect")
 library(cure4insect)
 library(knitr)
+library(rgdal)
 set_options(verbose=0)
 load_common_data()
 ```
@@ -223,15 +224,11 @@ The region of interest can be defined based for example on a spatial polygon.
 Based on thespatial subset, we summarize abundance, intactness, and sector effects.
 
 ```{r spid,echo=FALSE,results='hide'}
-library(rgdal)
-load_common_data()
-dsn <- system.file("extdata/OSA_bound.geojson", package="cure4insect")
-ply <- readOGR(dsn=dsn)
+ply <- readOGR(dsn=system.file("extdata/OSA_bound.geojson", package="cure4insect"))
 ID <- overlay_polygon(ply)
 ## write IDs into a text file
 #write.table(data.frame(SpatialID=ID), row.names=FALSE, file="SpatialID.txt")
-AB <- readOGR(dsn=system.file("extdata/AB_bound.geojson",
-    package="cure4insect"))
+AB <- readOGR(dsn=system.file("extdata/AB_bound.geojson", package="cure4insect"))
 AB <- spTransform(AB, proj4string(r))
 ply <- spTransform(ply, proj4string(r))
 ## calculate regional stats
