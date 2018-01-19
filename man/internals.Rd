@@ -42,6 +42,8 @@ app_test(...)
 \code{app_read_csv} wraps \code{\link{read.csv}}.
 
 \code{app_test} mimics \code{\link{custom_report}}.
+
+Interface for internal functions might change and usage is not recommended.
 }
 \author{
 Peter Solymos <solymos@ualberta.ca>

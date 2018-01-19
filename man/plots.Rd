@@ -50,10 +50,10 @@ or \code{method} (one of \code{"kde"}, \code{"fft"}, or \code{"hist"}).
 \code{"unit"} type sector effects are based on regional current and reference abundances,
 and the regional sector effects are standardized by footprint area.
 
-\code{"regional "} sector effects includes native and disturbed habitats when
+\code{"regional"} sector effects includes native and disturbed habitats when
 comparing regional abundance under current and reference conditions.
 
-\code{underhf} (under human footprint) type sector effects consider only the abundance
+\code{"underhf""} (under human footprint) type sector effects consider only the abundance
 that us 'under the footprint', meaning that the current designation
 is disturbed.
 
@@ -100,6 +100,9 @@ plot_abundance("Achillea.millefolium", "veg_coef")
 plot_abundance("Achillea.millefolium", "soil_coef")
 plot_abundance("Achillea.millefolium", "veg_lin")
 plot_abundance("Achillea.millefolium", "soil_lin")
+
+## R markdown file with worked examples
+file.show(system.file("doc/example-species-report.Rmd", package="cure4insect"))
 }
 }
 \keyword{ aplot }

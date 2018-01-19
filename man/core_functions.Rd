@@ -216,7 +216,7 @@ expected by \code{predict.c4ispclim}.
 Peter Solymos <solymos@ualberta.ca>
 }
 \seealso{
-\code{\link{plot_sector}} for plots.
+\code{\link{plot_sector}} and \code{\link{plot_abundance}} for plots.
 }
 \examples{
 \dontrun{
