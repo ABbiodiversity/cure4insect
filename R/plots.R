@@ -86,12 +86,17 @@ function(x, type=c("unit", "regional", "underhf"), main, ylab, ...)
 
 ## old style: RefTotal includes Native, but Ref and Curr does not
 .plot_sector1 <-
-function(Curr, Ref, Area, RefTotal, main="", col=NULL,
-ylim=NULL, ylab="Unit effect (%)", xlab="Area (% of region)")
+function(Curr, Ref, Area, RefTotal, main, col, ylim, ylab, xlab, ...)
 {
+    if (missing(main))
+        main <- ""
+    if (missing(ylab))
+        ylab <- "Unit effect (%)"
+    if (missing(xlab))
+        xlab <- "Area (% of region)"
     sectors <- c("Agriculture","Forestry","Energy","RuralUrban","Transportation")
     sector.names <- c("Agriculture","Forestry","Energy","RuralUrban","Transport")
-    c1 <- if (!is.null(col))
+    c1 <- if (!missing(col))
         col else c("tan3","palegreen4","indianred3","skyblue3","slateblue2")
     Curr[is.na(Curr)] <- 0
     Ref[is.na(Ref)] <- 0
@@ -99,7 +104,7 @@ ylim=NULL, ylab="Unit effect (%)", xlab="Area (% of region)")
     unit.effect <- 100 * total.effect / Area[sectors]
     total.effect[is.na(total.effect)] <- 0
     unit.effect[is.na(unit.effect)] <- 0
-    if (!is.null(ylim)) {
+    if (!missing(ylim)) {
         ymin <- ylim[1]
         ymax <- ylim[2]
     } else {
@@ -149,13 +154,19 @@ ylim=NULL, ylab="Unit effect (%)", xlab="Area (% of region)")
 
 ## new style: RefTotal includes Native, but Ref and Curr does not
 .plot_sector2 <-
-function(Curr, Ref, RefTotal, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=NULL)
+function(Curr, Ref, RefTotal, regional=TRUE, main, col, ylim, ylab, ...)
 {
+    if (missing(main))
+        main <- ""
+    if (missing(ylab))
+        ylab <- if (regional)
+            "Regional sector effects (%)" else "Under HF sector effects (%)"
+
     sectors <- c("Agriculture","Forestry","Energy","RuralUrban","Transportation")
     sector.names <- c("Agriculture","Forestry","Energy","RuralUrban","Transport")
     Curr[is.na(Curr)] <- 0
     Ref[is.na(Ref)] <- 0
-    c1 <- if (!is.null(col))
+    c1 <- if (!missing(col))
         col else c("tan3","palegreen4","indianred3","skyblue3","slateblue2")
     total.effect <- if (regional)
         100 * (Curr - Ref)/RefTotal else 100 * (Curr - Ref)/Ref
@@ -164,7 +175,7 @@ function(Curr, Ref, RefTotal, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=
     off <- 0.25
     a <- 1-0.5-off
     b <- 5+0.5+off
-    if (!is.null(ylim)) {
+    if (!missing(ylim)) {
         ymin <- ylim[1]
         ymax <- ylim[2]
     } else {
@@ -189,9 +200,6 @@ function(Curr, Ref, RefTotal, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=
         polygon(c(i-0.5, i-0.5, i+0.5, i+0.5), c(0,h,h,0), col=c1[i], border=NA)
     }
     lines(c(a,b), c(0, 0), col="grey40", lwd=2)
-    if (is.null(ylab))
-        ylab <- if (regional)
-            "Regional sector effects (%)" else "Under HF sector effects (%)"
     title(ylab=ylab, cex=1.3, col="grey40")
     mtext(side=1,at=1:5,sector.names,col=c1,cex=1.3,adj=0.5,line=0.5)
 
@@ -205,18 +213,19 @@ function(Curr, Ref, RefTotal, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=
 
 ## multi-species plot: RefTotal not needed, comes directly from c4iraw
 .plot_sector3 <-
-function(x, ylab="Sector effects (%)", col=NULL, method="kde",
-main="", ylim=NULL, ...)
+function(x, ylab="Sector effects (%)", method="kde", main, col, ylim, ...)
 {
     method <- match.arg(method, c("kde", "fft", "hist"))
+    if (missing(main))
+        main <- ""
     if (!is.list(x))
         x <- as.data.frame(x)
     sectors <- c("Agriculture","Forestry","Energy","RuralUrban","Transportation")
     sector.names <- c("Agriculture","Forestry","Energy","RuralUrban","Transport")
     x <- x[,sectors,drop=FALSE]
-    c1 <- if (!is.null(col))
+    c1 <- if (!missing(col))
         col else c("tan3","palegreen4","indianred3","skyblue3","slateblue2")
-    if (!is.null(ylim)) {
+    if (!missing(ylim)) {
         ymin <- ylim[1]
         ymax <- ylim[2]
     } else {

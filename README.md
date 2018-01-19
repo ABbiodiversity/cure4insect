@@ -270,3 +270,4 @@ or use locally through Kitematic
 * attachment to include: metadata, readme, IDs, batch figures (zipped)
 * make containerized version for local use
 * define color schemes and plotting functionality with default thresholds and some legends?
+* add spclim prediction support for sparse matrix based composition data
