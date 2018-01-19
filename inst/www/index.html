@@ -63,7 +63,8 @@ $(document).ready(function () {
           req2.always(function(){
               $("#submitbutton").removeAttr("disabled")
               // reset variables
-              $("#header").val("false");
+              //$("#header").val("false");
+              $("#header").attr("checked", "false");
               $("#csvfile").val("");
               $("#variable").val("all");
               $("#inputEmail").val("");
