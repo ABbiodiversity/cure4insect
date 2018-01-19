@@ -24,7 +24,7 @@ $(document).ready(function () {
 
   $("#submitbutton").on("click", function(){
 
-      var myheader = $("#header").is(':checked');
+      var myheader = $("#header").is(":checked");
       var myfile = $("#csvfile")[0].files[0];
       var myvar = $("#variable").val();
       var myvarfull = $("#variable").find(":selected").text()
@@ -63,8 +63,7 @@ $(document).ready(function () {
           req2.always(function(){
               $("#submitbutton").removeAttr("disabled")
               // reset variables
-              //$("#header").val("false");
-              $("#header").attr("checked", "false");
+              $("#header").attr("checked", false);
               $("#csvfile").val("");
               $("#variable").val("all");
               $("#inputEmail").val("");
