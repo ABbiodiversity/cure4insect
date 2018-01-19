@@ -34,7 +34,7 @@ importFrom("graphics", "abline", "axis", "barplot", "box", "hist",
     "lines", "mtext", "par", "plot", "points", "polygon",
     "rect", "rug", "segments", "text", "title")
 importFrom("grDevices", "boxplot.stats", "rgb")
-importFrom("intrval", "%)(%", "%ni%")
+importFrom("intrval", "%)(%", "[]", "%ni%")
 importFrom("KernSmooth", "bkde")
 importFrom("Matrix", "colSums")
 importFrom("mefa4", "Xtab")

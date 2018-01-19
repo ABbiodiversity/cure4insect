@@ -35,7 +35,7 @@ Biodiversity Monitoring Institute (ABMI)](http://abmi.ca/).
 species <- "AlderFlycatcher"
 info <- as.list(get_species_table()[species, c("SpeciesID", "CommonName", "ScientificName", "TSNID")])
 info <- lapply(info, as.character)
-info[["SpeciesID"]] <- paste0("`\"", info[["ScientificName"]], "\"`")
+info[["SpeciesID"]] <- paste0("`\"", info[["SpeciesID"]], "\"`")
 info[["ScientificName"]] <- paste0("_", info[["ScientificName"]], "_")
 names(info) <- c("Species ID", "Common name", "Scientific name", "TSN ID")
 for (i in 1:length(info))
@@ -211,10 +211,10 @@ op <- par(mfrow=c(3,1))
 tmp <- plot_sector(z, type="regional", main="Regional")
 points(1:5, h(tmp), pch=4, col=1, cex=3)
 
-tmp <- plot_sector(z, type="underhf", "Under HF")
+tmp <- plot_sector(z, type="underhf", main="Under HF")
 points(1:5, h(tmp), pch=4, col=1, cex=3)
 
-tmp <- plot_sector(z, type="unit", "Unit")
+tmp <- plot_sector(z, type="unit", main="Unit", ylim=c(-200,200))
 points(1:5, h(tmp), pch=4, col=1, cex=3)
 par(op)
 ```

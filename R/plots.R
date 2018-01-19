@@ -2,7 +2,7 @@ plot_sector <- function(x, ...)
     UseMethod("plot_sector")
 
 plot_sector.c4iraw <-
-function(x, type=c("unit", "regional", "underhf"), main, ...)
+function(x, type=c("unit", "regional", "underhf"), main, ylab, ...)
 {
     if (missing(main))
         main <- x$species
@@ -12,21 +12,21 @@ function(x, type=c("unit", "regional", "underhf"), main, ...)
             Ref=x$sector["Reference",],
             Area=x$sector["Area",],
             RefTotal=x$intactness["Reference", 1],
-            main=main, ...),
+            main=main, ylab=ylab, ...),
         "regional"=.plot_sector2(
             Curr=x$sector["Current",],
             Ref=x$sector["Reference",],
             RefTotal=x$intactness["Reference", 1],
-            regional=TRUE, main=main, ...),
+            regional=TRUE, main=main, ylab=ylab, ...),
         "underhf"=.plot_sector2(
             Curr=x$sector["Current",],
             Ref=x$sector["Reference",],
             RefTotal=x$intactness["Reference", 1],
-            regional=FALSE, main=main, ...))
+            regional=FALSE, main=main, ylab=ylab, ...))
 }
 
 plot_sector.c4idf <-
-function(x, type=c("unit", "regional", "underhf"), main, ...)
+function(x, type=c("unit", "regional", "underhf"), main, ylab, ...)
 {
     type <- match.arg(type)
     if (nrow(x) <= 1) {
@@ -50,17 +50,17 @@ function(x, type=c("unit", "regional", "underhf"), main, ...)
                 Ref=t(ref)[,1],
                 Area=t(area)[,1],
                 RefTotal=x[1,"Abund_Ref_Est"],
-                main=main, ...),
+                main=main, ylab=ylab, ...),
             "regional"=.plot_sector2(
                 Curr=t(curr)[,1],
                 Ref=t(ref)[,1],
                 RefTotal=x[1,"Abund_Ref_Est"],
-                regional=TRUE, main=main, ...),
+                regional=TRUE, main=main, ylab=ylab, ...),
             "underhf"=.plot_sector2(
                 Curr=t(curr)[,1],
                 Ref=t(ref)[,1],
                 RefTotal=x[1,"Abund_Ref_Est"],
-                regional=FALSE, main=main, ...))
+                regional=FALSE, main=main, ylab=ylab, ...))
     } else {
         cn <- switch(type,
             "regional"=c("Total_Misc", "Total_Agriculture", "Total_Forestry", "Total_RuralUrban",
@@ -73,11 +73,12 @@ function(x, type=c("unit", "regional", "underhf"), main, ...)
         colnames(xx) <- c("Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")
         if (missing(main))
             main <- ""
-        ylab <- switch(type,
-            "regional"="Regional sector effects (%)",
-            "underhf"="Under HF sector effects (%)",
-            "unit"="Unit effects (%)")
-        .plot_sector3(xx, ylab=ylab, main=main, ...)
+        if (missing(ylab))
+            ylab <- switch(type,
+                "regional"="Regional sector effects (%)",
+                "underhf"="Under HF sector effects (%)",
+                "unit"="Unit effects (%)")
+        .plot_sector3(xx, main=main, ylab=ylab, ...)
     }
 }
 
@@ -203,7 +204,10 @@ function(Curr, Ref, RefTotal, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=
 }
 
 ## multi-species plot: RefTotal not needed, comes directly from c4iraw
-.plot_sector3 <- function(x, ylab="Sector effects (%)", col=NULL, method="kde", main="", ...) {
+.plot_sector3 <-
+function(x, ylab="Sector effects (%)", col=NULL, method="kde",
+main="", ylim=NULL, ...)
+{
     method <- match.arg(method, c("kde", "fft", "hist"))
     if (!is.list(x))
         x <- as.data.frame(x)
@@ -212,8 +216,13 @@ function(Curr, Ref, RefTotal, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=
     x <- x[,sectors,drop=FALSE]
     c1 <- if (!is.null(col))
         col else c("tan3","palegreen4","indianred3","skyblue3","slateblue2")
-    ymin <- -100
-    ymax <- 100
+    if (!is.null(ylim)) {
+        ymin <- ylim[1]
+        ymax <- ylim[2]
+    } else {
+        ymin <- -100
+        ymax <- 100
+    }
     off <- 0.25
     a <- 1-0.5-off
     b <- 5+0.5+off
@@ -229,11 +238,13 @@ function(Curr, Ref, RefTotal, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=
     rug(yax, side=2, ticksize=0.01, col="grey40", quiet=TRUE)
     lines(c(a,a), c(ymin, ymax), col="grey40", lwd=1)
     lines(c(a,b), c(0, 0), col="grey40", lwd=2)
-    out <- list()
+    outp <- list() # higher
+    outn <- list() # lower
     for (i in 1:5) {
         xx <- sort(x[[i]])
-        k <- xx <= ymax
-        out[[i]] <- sum(!k)
+        k <- xx %[]% ylim
+        outp[[i]] <- sum(xx > ymax)
+        outn[[i]] <- sum(xx < ymin)
         st <- boxplot.stats(xx)
         s <- st$stats
         k[which(!k)[1]] <- TRUE
@@ -257,13 +268,17 @@ function(Curr, Ref, RefTotal, regional=TRUE, main="", col=NULL, ylim=NULL, ylab=
         polygon(c(-v,-v,v,v)+i, s[c(2,4,4,2)], col="#40404080", border=NA)
         lines(c(-v,v)+i, s[c(3,3)], lwd=2, col="grey30")
     }
-    title(ylab=ylab, cex=1.3, col="grey40", main=main)
+    title(ylab=ylab, cex=1.3, col="grey40")
     mtext(side=1,at=1:5,sector.names,col=c1,cex=1.3,adj=0.5,line=0.5)
+    mtext(side=3, at=0, adj=0, main, col="grey30")
     op <- par(xpd = TRUE)
     on.exit(par(op), add=TRUE)
-    out <- unlist(out)
-    points(1:5, rep(105, 5), pch=19,
-        cex=ifelse(out==0, 0, 0.5+2*out/max(out)), col=c1)
+    outp <- unlist(outp)
+    points(1:5, rep(ymax+diff(ylim)*0.025, 5), pch=19,
+        cex=ifelse(outp==0, 0, 0.5+2*outp/max(outp)), col=c1)
+    outn <- unlist(outn)
+    points(1:5, rep(ymin-diff(ylim)*0.025, 5), pch=19,
+        cex=ifelse(outn==0, 0, 0.5+2*outn/max(outn)), col=c1)
     invisible(x)
 }
 
