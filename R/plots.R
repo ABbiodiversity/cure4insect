@@ -213,11 +213,13 @@ function(Curr, Ref, RefTotal, regional=TRUE, main, col, ylim, ylab, ...)
 
 ## multi-species plot: RefTotal not needed, comes directly from c4iraw
 .plot_sector3 <-
-function(x, ylab="Sector effects (%)", method="kde", main, col, ylim, ...)
+function(x, method="kde", main, ylab, col, ylim, ...)
 {
     method <- match.arg(method, c("kde", "fft", "hist"))
     if (missing(main))
         main <- ""
+    if (missing(ylab))
+        ylab <- "Sector effects (%)"
     if (!is.list(x))
         x <- as.data.frame(x)
     sectors <- c("Agriculture","Forestry","Energy","RuralUrban","Transportation")
@@ -231,6 +233,7 @@ function(x, ylab="Sector effects (%)", method="kde", main, col, ylim, ...)
     } else {
         ymin <- -100
         ymax <- 100
+        ylim <- c(ymin, ymax)
     }
     off <- 0.25
     a <- 1-0.5-off
@@ -238,7 +241,7 @@ function(x, ylab="Sector effects (%)", method="kde", main, col, ylim, ...)
     v <- 0.1
     yax <- pretty(c(ymin,ymax))
     op <- par(las=1)
-    on.exit(par(op))
+    on.exit(par(op), add=TRUE)
     plot(0, type="n", xaxs="i", yaxs = "i", ylim=c(ymin,ymax), xlim=c(a, b),
         axes=FALSE, ann=FALSE)
     polygon(c(a,a,b,b), c(ymin, ymax, ymax, ymin), col="grey88", border="grey88")
