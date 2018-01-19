@@ -53,7 +53,7 @@ and the regional sector effects are standardized by footprint area.
 \code{"regional"} sector effects includes native and disturbed habitats when
 comparing regional abundance under current and reference conditions.
 
-\code{"underhf""} (under human footprint) type sector effects consider only the abundance
+\code{"underhf"} (under human footprint) type sector effects consider only the abundance
 that us 'under the footprint', meaning that the current designation
 is disturbed.
 
