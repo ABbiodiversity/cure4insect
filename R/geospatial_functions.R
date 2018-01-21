@@ -133,6 +133,8 @@ combine_veg_soil <-
 function(xy, veg, soil)
 {
     rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
+    if (!identicalCRS(xy, rpa))
+        xy <- spTransform(xy, proj4string(rpa))
     ipa <- extract(rpa, xy)
     ipa * veg + (1 - ipa) * soil
 }
@@ -198,7 +200,7 @@ function(object, xy, veg, soil, ...)
     if (!missing(veg)) {
         if (nrow(veg) != nrow(coordinates(xy)))
             stop("nrow(veg) must equal number of points in xy")
-        .check(colnames(veg), names(object$cveg))
+        .check(as.factor(colnames(veg)), names(object$cveg))
         if (any(colnames(veg) == "SoftLin") && object$taxon == "birds")
             warning("veg contained SoftLin: check your assumptions")
         iveg <- extract(object$rveg, xy)
@@ -209,7 +211,7 @@ function(object, xy, veg, soil, ...)
     if (!missing(soil)) {
         if (nrow(soil) != nrow(coordinates(xy)))
             stop("nrow(veg) must equal number of points in xy")
-        .check(soil, names(object$csoil))
+        .check(as.factor(colnames(soil)), names(object$csoil))
         if (any(soil == "SoftLin") && object$taxon == "birds")
             warning("soil contained SoftLin: check your assumptions")
         isoil <- extract(object$rsoil, xy)
