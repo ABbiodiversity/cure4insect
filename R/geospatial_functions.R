@@ -85,16 +85,18 @@ function(species, boot=TRUE, path=NULL, version=NULL)
     if (is.null(version))
         version <- opts$version
     taxon <- as.character(.c4if$SP[species, "taxon"])
+    ## joint and marginal coefs for birds are on log scale
     if (taxon == "birds") {
-        cveg <- .c4if$CFbirds$joint$veg[species,]
-        cveg["HardLin"] <- 0
-        cveg["SoftLin"] <- mean(cveg[c("Shrub", "GrassHerb")])
-        csoil <- .c4if$CFbirds$joint$soil[species,]
-        csoil["HardLin"] <- 0
-        csoil["SoftLin"] <- mean(csoil)
+        cveg <- .c4if$CFbirds$joint$veg[species,] # log scale
+        cveg["HardLin"] <- -10
+        cveg["SoftLin"] <- log(mean(exp(cveg[c("Shrub", "GrassHerb")])))
+        csoil <- .c4if$CFbirds$joint$soil[species,] # log scale
+        csoil["HardLin"] <- -10
+        csoil["SoftLin"] <- log(mean(exp(csoil), na.rm=TRUE)) # SoftLin is NA
+    ## marginal coefs for other taxa are on probability scale
     } else {
-        cveg <- .c4if$CF$coef$veg[species,]
-        csoil <- .c4if$CF$coef$soil[species,]
+        cveg <- binomial("logit")$linkfun(.c4if$CF$coef$veg[species,]) # p scale
+        csoil <- binomial("logit")$linkfun(.c4if$CF$coef$soil[species,]) # p scale
     }
     cveg <- cveg[get_levels()$veg]
     csoil <- csoil[get_levels()$soil]
@@ -114,8 +116,26 @@ function(species, boot=TRUE, path=NULL, version=NULL)
     class(y) <- "c4ispclim"
     y
 }
+
 get_levels <- function()
     list(veg=colnames(.c4if$CF$lower$veg), soil=colnames(.c4if$CF$lower$soil))
+
+.check <- function(x, ref) {
+    z <- deparse(substitute(x))
+    if (!is.factor(x))
+        stop(paste(z, "is not factor"))
+    if (any(levels(x) %ni% ref))
+        warning(paste(z, "had unmatched levels: NA's introduced"))
+    NULL
+}
+
+combine_veg_soil <-
+function(xy, veg, soil)
+{
+    rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
+    ipa <- extract(rpa, xy)
+    ipa * veg + (1 - ipa) * soil
+}
 
 ## handle soft lin aspect through an option for birds:
 ## coef approach does not require rf, early seral does ???
@@ -124,14 +144,7 @@ function(object, xy, veg, soil, ...)
 {
     if (!inherits(xy, "SpatialPoints"))
         stop("xy must be of class SpatialPoints")
-    .check <- function(x, ref) {
-        z <- deparse(substitute(x))
-        if (!is.factor(x))
-            stop(paste(z, "is not factor"))
-        if (any(levels(x) %ni% ref))
-            warning(paste(z, "had unmatched levels: NA's introduced"))
-        NULL
-    }
+    ## coefs in object are on log/logit scale, need linkinv
     fi <- if (object$taxon == "birds")
         poisson("log")$linkinv else binomial("logit")$linkinv
     if (missing(veg) && missing(soil))
@@ -162,10 +175,49 @@ function(object, xy, veg, soil, ...)
         OUT$soil <- fi(object$csoil[match(soil, names(object$csoil))] + isoil)
     }
     if (DO$comb) {
-        rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
-        ipa <- extract(rpa, xy)
-        OUT$comb <- ipa * OUT$veg + (1 - ipa) * OUT$soil
+        OUT$comb <- combine_veg_soil(xy, OUT$veg, OUT$soil)
     }
     class(OUT) <- c("c4ippred", class(OUT))
+    OUT
+}
+
+predict_mat <- function (object, ...)
+    UseMethod("predict_mat")
+
+predict_mat.c4ispclim <-
+function(object, xy, veg, soil, ...)
+{
+    if (!inherits(xy, "SpatialPoints"))
+        stop("xy must be of class SpatialPoints")
+    ## coefs in object are on log/logit scale, need linkinv
+    fi <- if (object$taxon == "birds")
+        poisson("log")$linkinv else binomial("logit")$linkinv
+    if (missing(veg) && missing(soil))
+        stop("veg or soil must be provided")
+    xy <- spTransform(xy, proj4string(.read_raster_template()))
+    if (!missing(veg)) {
+        if (nrow(veg) != nrow(coordinates(xy)))
+            stop("nrow(veg) must equal number of points in xy")
+        .check(colnames(veg), names(object$cveg))
+        if (any(colnames(veg) == "SoftLin") && object$taxon == "birds")
+            warning("veg contained SoftLin: check your assumptions")
+        iveg <- extract(object$rveg, xy)
+        imatv <- t(array(iveg, dim(veg), dimnames(veg)))
+        mveg <- object$cveg[match(colnames(veg), names(object$cveg))]
+        Nveg <- fi(t(mveg + imatv)) * veg
+    }
+    if (!missing(soil)) {
+        if (nrow(soil) != nrow(coordinates(xy)))
+            stop("nrow(veg) must equal number of points in xy")
+        .check(soil, names(object$csoil))
+        if (any(soil == "SoftLin") && object$taxon == "birds")
+            warning("soil contained SoftLin: check your assumptions")
+        isoil <- extract(object$rsoil, xy)
+        imats <- t(array(isoil, dim(soil), dimnames(soil)))
+        msoil <- object$csoil[match(colnames(soil), names(object$csoil))]
+        Nsoil <- fi(t(msoil + imats)) * soil
+    }
+    OUT <- list(veg=Nveg, soil=Nsoil)
+    class(OUT) <- c("c4ippredmat")
     OUT
 }

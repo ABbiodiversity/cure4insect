@@ -21,6 +21,9 @@
 \alias{rasterize_results}
 \alias{load_spclim_data}
 \alias{predict.c4ispclim}
+\alias{predict_mat}
+\alias{combine_veg_soil}
+\alias{predict_mat.c4ispclim}
 \alias{get_levels}
 \title{
 Core Functions for Custom Reporting
@@ -61,6 +64,9 @@ get_species_table()
 load_spclim_data(species, boot=TRUE, path=NULL, version=NULL)
 get_levels()
 \method{predict}{c4ispclim}(object, xy, veg, soil, ...)
+predict_mat(object, ...)
+\method{predict_mat}{c4ispclim}(object, xy, veg, soil, ...)
+combine_veg_soil(xy, veg, soil)
 }
 \arguments{
   \item{path}{
@@ -208,9 +214,19 @@ All these require to run \code{load_common_data()} first.
 explicit predictions by \code{predict.c4ispclim}.
 \code{predict.c4ispclim} returns a data frame with columns
 'veg', 'soil', and 'comb' (combines 'veg' and 'soil' based on
-aspen probability of occurrence). \code{get_levels} returns a list
+aspen probability of occurrence using \code{combine_veg_soil}
+as a weighted average based on probability of aspen occurrence).
+\code{get_levels} returns a list
 with elements 'veg' for vegetation and 'soil' for soil class levels
-expected by \code{predict.c4ispclim}.
+expected by \code{predict.c4ispclim}. The \code{predict_clim}
+method is similar, but expectes \code{veg} and \code{soil}
+to be a composition matrix with rows corresponding to
+points in space (e.g. grid cell centroids) and columns
+to correspond to vegetation/soil classes, with cell values
+as areas or proportions (row standardized). The return value
+is a list with elements \code{veg} and \code{soil},
+each containing either a matrix with same dimenstions
+as the corresponding input, or \code{NULL} when the input is missing.
 }
 \author{
 Peter Solymos <solymos@ualberta.ca>

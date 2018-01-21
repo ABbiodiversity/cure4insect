@@ -19,6 +19,8 @@ export(
     plot_abundance,
     rasterize_results,
     load_spclim_data,
+    combine_veg_soil,
+    predict_mat,
     get_levels)
 
 export(app_read_csv, app_test,
@@ -29,6 +31,7 @@ S3method(flatten, c4iraw)
 S3method(plot_sector, c4iraw)
 S3method(plot_sector, c4idf)
 S3method(predict, c4ispclim)
+S3method(predict_mat, c4ispclim)
 
 importFrom("graphics", "abline", "axis", "barplot", "box", "hist",
     "lines", "mtext", "par", "plot", "points", "polygon",
