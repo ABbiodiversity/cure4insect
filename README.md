@@ -221,6 +221,35 @@ pred <- predict(object, xy=xy, veg=veg)
 summary(pred)
 ```
 
+Using composition data in spatial grids as input:
+
+NEED TO CHECK ROWSUMS TO BE > 0! to avoid NaN
+
+```R
+xy <- xy[1:10,]
+## unrealistic data set for illustration
+mveg <- matrix(0, 10, 6)
+colnames(mveg) <- veg[c(1:6 * 10)]
+mveg[] <- rpois(60, 10) * rbinom(60, 1, 0.2)
+mveg[rowSums(mveg)==0,1] <- 1 # avoid 0 row sum
+msoil <- matrix(0, 10, 6)
+colnames(msoil) <- get_levels()$soil[1:6]
+msoil[] <- rpois(60, 10) * rbinom(60, 1, 0.4)
+msoil[rowSums(msoil)==0,1] <- 1 # avoid 0 row sum
+
+## output matrics are abundances
+prmat1 <- predict_mat(object, xy, mveg, msoil)
+
+## mean abundance per spatial unit
+prmat2 <- predict_mat(object, xy, mveg/rowSums(mveg), msoil/rowSums(msoil))
+```
+
+Combining vegetation and soil based predictions:
+
+```R
+combine_veg_soil(xy, rowSums(prmat2$veg), rowSums(prmat2$soil))
+```
+
 #### Visualize land cover associations
 
 See the following [R markdown](http://rmarkdown.rstudio.com/)
