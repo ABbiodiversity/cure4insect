@@ -223,8 +223,6 @@ summary(pred)
 
 Using composition data in spatial grids as input:
 
-NEED TO CHECK ROWSUMS TO BE > 0! to avoid NaN
-
 ```R
 xy <- xy[1:10,]
 ## unrealistic data set for illustration
