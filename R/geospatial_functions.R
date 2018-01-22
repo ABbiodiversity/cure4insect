@@ -207,6 +207,8 @@ function(object, xy, veg, soil, ...)
         imatv <- t(array(iveg, dim(veg), dimnames(veg)))
         mveg <- object$cveg[match(colnames(veg), names(object$cveg))]
         Nveg <- fi(t(mveg + imatv)) * veg
+    } else {
+        Nveg <- NULL
     }
     if (!missing(soil)) {
         if (nrow(soil) != nrow(coordinates(xy)))
@@ -218,6 +220,8 @@ function(object, xy, veg, soil, ...)
         imats <- t(array(isoil, dim(soil), dimnames(soil)))
         msoil <- object$csoil[match(colnames(soil), names(object$csoil))]
         Nsoil <- fi(t(msoil + imats)) * soil
+    } else {
+        Nsoil <- NULL
     }
     OUT <- list(veg=Nveg, soil=Nsoil)
     class(OUT) <- c("c4ippredmat")
