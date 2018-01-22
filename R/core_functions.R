@@ -159,7 +159,7 @@ function(y, level=0.9, .c4is)
 {
     cn <- c("Native", "Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")
     a <- c(0.5*(1-level), 1-0.5*(1-level))
-    MAX <- max(max(rowSums(y$SA.Curr)), max(rowSums(y$SA.Ref)))
+    MAX <- max(quantile(rowSums(y$SA.Curr), 0.99), quantile(rowSums(y$SA.Ref), 0.99))
     PIX <- rownames(.c4is$KTsub)
     ## Rockies and unmodelled regions should be excluded
     PIX <- PIX[PIX %in% rownames(y$SA.Curr)]
@@ -167,8 +167,15 @@ function(y, level=0.9, .c4is)
     SA.Ref <- y$SA.Ref[PIX,cn]
     ## subset can have 0 rows when outside of modeled range:
     ## this leads to mean(numeric(0))=NaN but should be 0
-    MEAN <- if (length(PIX) > 0)
-        max(mean(rowSums(SA.Curr)), mean(rowSums(SA.Ref))) else 0
+    if (length(PIX) > 0) {
+        cr <- rowSums(SA.Curr)
+        rf <- rowSums(SA.Ref)
+        MEAN_cr <- mean(cr[cr <= quantile(cr, 0.99)])
+        MEAN_rf <- mean(rf[rf <= quantile(rf, 0.99)])
+        MEAN <- max(MEAN_cr, MEAN_rf)
+    } else {
+        MEAN <- 0
+    }
     CS <- colSums(SA.Curr)
     RS <- colSums(SA.Ref)
     NC <- sum(CS)
