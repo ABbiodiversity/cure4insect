@@ -8,7 +8,9 @@ The [R](https://www.r-project.org/) package is a decision support tool
 that provides an interface to enable
 custom reporting for intactness and sector effects
 based on estimates and predictions created by the [Alberta
-Biodiversity Monitoring Institute (ABMI)](http://abmi.ca/).
+Biodiversity Monitoring Institute (ABMI)](http://abmi.ca/)
+in collaboration with the 
+[Boreal Avian Modelling (BAM) Project](http://www.borealbirds.ca/).
 
 ## License
 

@@ -9,8 +9,9 @@ Description: The package is a decision support tool
   that provides an interface to enable
   custom reporting for intactness and sector effects
   based on estimates and predictions created by the Alberta
-  Biodiversity Monitoring Institute (ABMI).
-URL: http://abmi.ca, https://github.com/ABbiodiversity/cure4insect
+  Biodiversity Monitoring Institute (ABMI)
+  in collaboration with the Boreal Avian Modelling (BAM) Project.
+URL: https://github.com/ABbiodiversity/cure4insect
 BugReports: https://github.com/ABbiodiversity/cure4insect/issues
 License: MIT + file LICENSE
 LazyLoad: yes
