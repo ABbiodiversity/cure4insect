@@ -70,6 +70,8 @@ function(x, type=c("unit", "regional", "underhf"), main, ylab, ...)
             "unit"=c("Unit_Misc", "Unit_Agriculture", "Unit_Forestry", "Unit_RuralUrban",
                 "Unit_Energy", "Unit_Transportation"))
         xx <- x[,cn]
+        if (type != "unit")
+            xx[xx < -100] <- -100 # -1.421085e-14 diff can occur
         colnames(xx) <- c("Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")
         if (missing(main))
             main <- ""
@@ -259,26 +261,28 @@ function(x, method="kde", main, ylab, col, ylim, ...)
         outn[[i]] <- sum(xx < ymin)
         st <- boxplot.stats(xx)
         s <- st$stats
-        k[which(!k)[1]] <- TRUE
-        if (method == "kde")
-            d <- bkde(xx[k]) # uses Normal kernel
-        if (method == "fft")
-            d <- density(xx[k]) # uses FFT
-        if (method == "hist") {
-            h <- hist(xx[k], plot=FALSE)
-            xv <- rep(h$breaks, each=2)
-            yv <- c(0, rep(h$density, each=2), 0)
-        } else {
-            xv <- d$x
-            yv <- d$y
-            j <- xv >= min(xx) & xv <= max(xx)
-            xv <- xv[j]
-            yv <- yv[j]
+        ## skip if no data in ylim range
+        if (sum(k) > 0) {
+            if (method == "kde")
+                d <- bkde(xx[k]) # uses Normal kernel
+            if (method == "fft")
+                d <- density(xx[k]) # uses FFT
+            if (method == "hist") {
+                h <- hist(xx[k], plot=FALSE)
+                xv <- rep(h$breaks, each=2)
+                yv <- c(0, rep(h$density, each=2), 0)
+            } else {
+                xv <- d$x
+                yv <- d$y
+                j <- xv >= min(xx) & xv <= max(xx)
+                xv <- xv[j]
+                yv <- yv[j]
+            }
+            yv <- 0.4 * yv / max(yv)
+            polygon(c(-yv, rev(yv))+i, c(xv, rev(xv)), col=c1[i], border=c1[i])
+            polygon(c(-v,-v,v,v)+i, s[c(2,4,4,2)], col="#40404080", border=NA)
+            lines(c(-v,v)+i, s[c(3,3)], lwd=2, col="grey30")
         }
-        yv <- 0.4 * yv / max(yv)
-        polygon(c(-yv, rev(yv))+i, c(xv, rev(xv)), col=c1[i], border=c1[i])
-        polygon(c(-v,-v,v,v)+i, s[c(2,4,4,2)], col="#40404080", border=NA)
-        lines(c(-v,v)+i, s[c(3,3)], lwd=2, col="grey30")
     }
     title(ylab=ylab, cex=1.3, col="grey40")
     mtext(side=1,at=1:5,sector.names,col=c1,cex=1.3,adj=0.5,line=0.5)

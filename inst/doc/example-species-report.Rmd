@@ -139,7 +139,6 @@ plot(sqrt(r[["NR"]]), col=col1, axes=FALSE, box=FALSE, main="Reference abundance
 plot(r[["SE"]], col=col2, axes=FALSE, box=FALSE, main="Stadard error (current)")
 plot(r[["CV"]], col=col2, axes=FALSE, box=FALSE, main="Coef. of variation (current)")
 par(op)
-
 ```
 
 
