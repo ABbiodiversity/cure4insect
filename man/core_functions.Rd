@@ -155,7 +155,7 @@ uses forking on Linux/Unix/Mac and socket clusters on Windows, default is 1),
 \code{subject} (subject of the email),
 and \code{body} (body of the email).
 
-The multicore processing preformance (not on Windows, where shared memory forked
+The multicore processing performance (not on Windows, where shared memory forked
 processes are not available) might be limited by memory and
 network speed/bandwidth. Local copy of the data is the
 surest way to boost performance.
@@ -219,13 +219,13 @@ as a weighted average based on probability of aspen occurrence).
 \code{get_levels} returns a list
 with elements 'veg' for vegetation and 'soil' for soil class levels
 expected by \code{predict.c4ispclim}. The \code{predict_clim}
-method is similar, but expectes \code{veg} and \code{soil}
+method is similar, but expects \code{veg} and \code{soil}
 to be a composition matrix with rows corresponding to
 points in space (e.g. grid cell centroids) and columns
 to correspond to vegetation/soil classes, with cell values
 as areas or proportions (row standardized). The return value
 is a list with elements \code{veg} and \code{soil},
-each containing either a matrix with same dimenstions
+each containing either a matrix with same dimensions
 as the corresponding input, or \code{NULL} when the input is missing.
 }
 \author{
