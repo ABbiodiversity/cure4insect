@@ -210,7 +210,8 @@ function(y, level=0.9, .c4is)
     }
     Sector_Total <- (100 * (CS - RS) / NR)[-1]
     Sector_UnderHF <- (100 * (CS - RS) / RS)[-1]
-    KA <- if (y$taxon == "birds") .c4is$A_2012 else .c4is$A_2014
+    KA <- if (y$taxon == "birds") # area in km^2
+        .c4is$A_2012 else .c4is$A_2014
     Sector_Area <- (100 * KA / sum(KA))[names(Sector_Total)]
     Sector_Unit <- 100 * Sector_Total / Sector_Area
     out <- list(
@@ -231,6 +232,7 @@ function(y, level=0.9, .c4is)
             Current=CS[-1],
             Reference=RS[-1],
             Area=Sector_Area,
+            #Area=KA,
             Total=Sector_Total,
             UnderHF=Sector_UnderHF,
             Unit=Sector_Unit))
