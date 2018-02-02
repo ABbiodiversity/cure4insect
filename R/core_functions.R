@@ -82,6 +82,8 @@ function(id=NULL, species="all")
         id <- overlay_polygon(id)
     if (!is.null(dim(id))) # if provided as table, use 1st col
         id <- as.character(id[,1L])
+    if (!is.character(id))
+        id <- as.character(id)
     id <- id[id %in% rownames(.c4if$KT)]
     id <- sort(id)
     if (length(id) <= 0)

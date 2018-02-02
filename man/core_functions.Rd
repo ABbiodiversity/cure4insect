@@ -78,7 +78,7 @@ version of the results or \code{NULL} \code{NULL} (default, the
 value of \code{getOption("cure4insect")$version}).
 }
   \item{id}{
-IDs of the 1km x 1km spatial pixel units to be used for the custom summaries.
+character, IDs of the 1km x 1km spatial pixel units to be used for the custom summaries.
 The Row_Col field defines the IDs and links the raster cells in the geodatabase
 (\url{http://ftp.public.abmi.ca/species.abmi.ca/gis/Grid1km_working.gdb.zip})
 or CSV
@@ -87,6 +87,8 @@ with latitude/longitude in NAD_1983_10TM_AEP_Forest projection
 \url{http://spatialreference.org/ref/epsg/3402/}).
 If \code{id} is a matrix-like object, values of the 1st column are taken.
 \code{id} can be of class 'SpatialPolygons' defined by the 'sp' package.
+The supplied values are turned into character internally.
+Use \code{get_all_id} to see all possible values.
 }
   \item{species}{
 A list of species defined by the field SpeciesID in the table
