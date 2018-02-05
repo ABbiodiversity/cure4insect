@@ -215,7 +215,7 @@ estimates for current abundance).
 \code{set_options} sets the options and return previous values invisibly.
 
 \code{get_all_id} gets all possible spatial IDs.
-\code{get_all_species} gets \cide{"all"} possible species IDs,
+\code{get_all_species} gets \code{"all"} possible species IDs,
 or a subset of those IDs for a selected \code{taxon}.
 \code{get_id_locations} gets the 'SpatialPoints' object
 with geographic coordinates of the spatial IDs, \code{get_species_table}
