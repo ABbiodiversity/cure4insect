@@ -1,8 +1,8 @@
 Package: cure4insect
 Type: Package
 Title: Custom Reporting for Intactness and Sector Effects
-Version: 0.0-5
-Date: 2018-01-21
+Version: 0.0-6
+Date: 2018-02-05
 Author: Peter Solymos [cre, aut]
 Maintainer: Peter Solymos <solymos@ualberta.ca>
 Description: The package is a decision support tool
@@ -17,5 +17,5 @@ License: MIT + file LICENSE
 LazyLoad: yes
 LazyData: true
 Depends: sp, raster
-Imports: Matrix, intrval, pbapply (>= 1.3-4), KernSmooth, 
+Imports: Matrix, intrval, pbapply (>= 1.3-4), KernSmooth,
   base64enc, mefa4, sendmailR, parallel
