@@ -84,19 +84,36 @@ function(species, boot=TRUE, path=NULL, version=NULL)
         path <- opts$path
     if (is.null(version))
         version <- opts$version
-    taxon <- as.character(.c4if$SP[species, "taxon"])
+    spinfo <- .c4if$SP[species, ]
+    taxon <- as.character(spinfo$taxon)
     ## joint and marginal coefs for birds are on log scale
     if (taxon == "birds") {
-        cveg <- .c4if$CFbirds$joint$veg[species,] # log scale
-        cveg["HardLin"] <- -10
-        cveg["SoftLin"] <- log(mean(exp(cveg[c("Shrub", "GrassHerb")])))
-        csoil <- .c4if$CFbirds$joint$soil[species,] # log scale
-        csoil["HardLin"] <- -10
-        csoil["SoftLin"] <- log(mean(exp(csoil), na.rm=TRUE)) # SoftLin is NA
+        if (spinfo$veghf.north) {
+            cveg <- .c4if$CFbirds$joint$veg[species,] # log scale
+            cveg["HardLin"] <- -10
+            cveg["SoftLin"] <- log(mean(exp(cveg[c("Shrub", "GrassHerb")])))
+        } else {
+            cveg <- NULL
+        }
+        if (spinfo$soilhf.south) {
+            csoil <- .c4if$CFbirds$joint$soil[species,] # log scale
+            csoil["HardLin"] <- -10
+            csoil["SoftLin"] <- log(mean(exp(csoil), na.rm=TRUE)) # SoftLin is NA
+        } else {
+            csoil <- NULL
+        }
     ## marginal coefs for other taxa are on probability scale
     } else {
-        cveg <- binomial("logit")$linkfun(.c4if$CF$coef$veg[species,]) # p scale
-        csoil <- binomial("logit")$linkfun(.c4if$CF$coef$soil[species,]) # p scale
+        if (spinfo$veghf.north) {
+            cveg <- binomial("logit")$linkfun(.c4if$CF$coef$veg[species,]) # p scale
+        } else {
+            cveg <- NULL
+        }
+        if (spinfo$soilhf.south) {
+            csoil <- binomial("logit")$linkfun(.c4if$CF$coef$soil[species,]) # p scale
+        } else {
+            csoil <- NULL
+        }
     }
     cveg <- cveg[get_levels()$veg]
     csoil <- csoil[get_levels()$soil]
@@ -159,22 +176,30 @@ function(object, xy, veg, soil, ...)
     colnames(OUT) <- names(DO)
     xy <- spTransform(xy, proj4string(.read_raster_template()))
     if (DO$veg) {
-        if (length(veg) != nrow(coordinates(xy)))
-            stop("length(veg) must equal number of points in xy")
-        .check(veg, names(object$cveg))
-        if (any(veg == "SoftLin") && object$taxon == "birds")
+        if (is.null(object$cveg)) {
             warning("veg contained SoftLin: check your assumptions")
-        iveg <- extract(object$rveg, xy)
-        OUT$veg <- fi(object$cveg[match(veg, names(object$cveg))] + iveg)
+        } else {
+            if (length(veg) != nrow(coordinates(xy)))
+                stop("length(veg) must equal number of points in xy")
+            .check(veg, names(object$cveg))
+            if (any(veg == "SoftLin") && object$taxon == "birds")
+                warning("veg contained SoftLin: check your assumptions")
+            iveg <- extract(object$rveg, xy)
+            OUT$veg <- fi(object$cveg[match(veg, names(object$cveg))] + iveg)
+        }
     }
     if (DO$soil) {
-        if (length(soil) != nrow(coordinates(xy)))
-            stop("length(veg) must equal number of points in xy")
-        .check(soil, names(object$csoil))
-        if (any(soil == "SoftLin") && object$taxon == "birds")
-            warning("soil contained SoftLin: check your assumptions")
-        isoil <- extract(object$rsoil, xy)
-        OUT$soil <- fi(object$csoil[match(soil, names(object$csoil))] + isoil)
+        if (is.null(object$cveg)) {
+            warning("veg contained SoftLin: check your assumptions")
+        } else {
+            if (length(soil) != nrow(coordinates(xy)))
+                stop("length(veg) must equal number of points in xy")
+            .check(soil, names(object$csoil))
+            if (any(soil == "SoftLin") && object$taxon == "birds")
+                warning("soil contained SoftLin: check your assumptions")
+            isoil <- extract(object$rsoil, xy)
+            OUT$soil <- fi(object$csoil[match(soil, names(object$csoil))] + isoil)
+        }
     }
     if (DO$comb) {
         OUT$comb <- combine_veg_soil(xy, OUT$veg, OUT$soil)
