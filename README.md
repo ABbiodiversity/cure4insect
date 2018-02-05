@@ -9,7 +9,7 @@ that provides an interface to enable
 custom reporting for intactness and sector effects
 based on estimates and predictions created by the [Alberta
 Biodiversity Monitoring Institute (ABMI)](http://abmi.ca/)
-in collaboration with the 
+in collaboration with the
 [Boreal Avian Modelling (BAM) Project](http://www.borealbirds.ca/).
 
 ## License
@@ -20,13 +20,16 @@ The R package itself is licensed under [MIT license](https://github.com/ABbiodiv
 
 ## Install
 
+Only GitHub version available now. If you have trouble installing the package,
+please file an [issua](https://github.com/ABbiodiversity/cure4insect/issues).
+
 ```R
 devtools::install_github("ABbiodiversity/cure4insect")
 ```
 
 ## Examples
 
-Load the package 1st:
+Load the package:
 
 ```R
 library(cure4insect)
