@@ -421,20 +421,21 @@ get_id_locations <- function() {
     .c4if$XY
 }
 
-get_species_table <- function()  {
-    out <- .c4is$SPfull
-    if (is.null(out)) # subset is not created yet
-        out <- .c4if$SP
-    if (is.null(out)) # common data not loaded
+get_species_table <- function(taxon="all")  {
+    if (!is_loaded())
         stop("common data needed: use load_common_data")
-    out
+    taxon <- match.arg(taxon, c("all","birds","lichens","mammals",
+        "mites","mosses","vplants"))
+    out <- .c4if$SP
+    if (taxon == "all")
+        out else out[out$taxon==taxon,]
 }
 
 get_all_id <- function()
     rownames(coordinates(get_id_locations()))
 
-get_all_species <- function()
-    rownames(get_species_table())
+get_all_species <- function(taxon="all")
+    rownames(get_species_table(taxon=taxon))
 
 .verbose <- function() {
     x <- getOption("cure4insect")$verbose

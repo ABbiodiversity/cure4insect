@@ -57,9 +57,9 @@ custom_report(id=NULL, species="all",
 set_options(...)
 overlay_polygon(ply)
 get_all_id()
-get_all_species()
+get_all_species(taxon = "all")
 get_id_locations()
-get_species_table()
+get_species_table(taxon = "all")
 
 load_spclim_data(species, boot=TRUE, path=NULL, version=NULL)
 get_levels()
@@ -94,6 +94,9 @@ Use \code{get_all_id} to see all possible values.
 A list of species defined by the field SpeciesID in the table
 \url{http://ftp.public.abmi.ca/species.abmi.ca/reports/2017/data/species-info.csv}.
 If \code{species} is a matrix-like object, values of the 1st column are taken.
+The following values are also accepted to define 'all' species, or a subset based on
+taxonomic groups: \code{"all"}, \code{"birds"}, \code{"lichens"}, \code{"mammals"},
+\code{"mites"}, \code{"mosses"}, \code{"vplants"}.
 }
   \item{boot}{
 logical, if confidence intervals for abundance and intactness are desired.
@@ -135,6 +138,11 @@ with geographic coordinates corresponding to \code{veg} and \code{soil}
 }
   \item{veg, soil}{
 factor, vegetation/soil classes. One of the two or both must be provided.
+}
+  \item{taxon}{
+character, return \code{"all"} species, or a subset (\code{"birds"},
+\code{"lichens"}, \code{"mammals"}, \code{"mites"}, \code{"mosses"},
+\code{"vplants"}).
 }
   \item{ply}{
 an object of class 'SpatialPolygons' defined by the 'sp' package.
@@ -206,10 +214,13 @@ estimates for current abundance).
 
 \code{set_options} sets the options and return previous values invisibly.
 
-\code{get_all_id} and \code{get_all_species} gets all possible spatial and
-species IDs. \code{get_id_locations} gets the 'SpatialPoints' object
+\code{get_all_id} gets all possible spatial IDs.
+\code{get_all_species} gets \cide{"all"} possible species IDs,
+or a subset of those IDs for a selected \code{taxon}.
+\code{get_id_locations} gets the 'SpatialPoints' object
 with geographic coordinates of the spatial IDs, \code{get_species_table}
-gets the lookup table for species.
+gets the lookup table for species, or a group of species as defined by the
+\code{taxon} argument.
 All these require to run \code{load_common_data()} first.
 
 \code{load_spclim_data} is used to load raster data for spatially
@@ -218,6 +229,11 @@ explicit predictions by \code{predict.c4ispclim}.
 'veg', 'soil', and 'comb' (combines 'veg' and 'soil' based on
 aspen probability of occurrence using \code{combine_veg_soil}
 as a weighted average based on probability of aspen occurrence).
+Note: for some species, either the 'veg' or 'soil' based estimates are
+unavailable. \code{predict.c4ispclim} returns \code{NA} for these
+and the combined results will be \code{NA} as well.
+A warning is also issued to inform the user of what happened.
+
 \code{get_levels} returns a list
 with elements 'veg' for vegetation and 'soil' for soil class levels
 expected by \code{predict.c4ispclim}. The \code{predict_clim}
