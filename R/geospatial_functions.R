@@ -177,7 +177,7 @@ function(object, xy, veg, soil, ...)
     xy <- spTransform(xy, proj4string(.read_raster_template()))
     if (DO$veg) {
         if (is.null(object$cveg)) {
-            warning("veg contained SoftLin: check your assumptions")
+            warning(sprintf("veg based estimates are unavailable for %s", object$species))
         } else {
             if (length(veg) != nrow(coordinates(xy)))
                 stop("length(veg) must equal number of points in xy")
@@ -189,8 +189,8 @@ function(object, xy, veg, soil, ...)
         }
     }
     if (DO$soil) {
-        if (is.null(object$cveg)) {
-            warning("veg contained SoftLin: check your assumptions")
+        if (is.null(object$csoil)) {
+            warning(sprintf("soil based estimates are unavailable for %s", object$species))
         } else {
             if (length(soil) != nrow(coordinates(xy)))
                 stop("length(veg) must equal number of points in xy")
