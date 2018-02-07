@@ -239,7 +239,7 @@ A warning is also issued to inform the user of what happened.
 \code{get_version_info} returns detailed version info for each taxa,
 depending on the \code{version} set through options or
 \code{load_common_data}, including the following variables:
-taxon, version, 1st and last year of field sampling,
+taxon, version, 1st and last year of field sampling, field methodology,
 base year and version of human footprint inventory,
 version of the backfilled vegetation layer.
 
