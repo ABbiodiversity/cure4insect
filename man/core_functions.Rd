@@ -25,7 +25,7 @@
 \alias{combine_veg_soil}
 \alias{predict_mat.c4ispclim}
 \alias{get_levels}
-|alias{get_version_info}
+\alias{get_version_info}
 \title{
 Core Functions for Custom Reporting
 }
@@ -268,6 +268,7 @@ Peter Solymos <solymos@ualberta.ca>
 ## species is a vector if species IDs
 load_common_data()
 is_loaded()
+get_version_info() # important details about versions
 ## here is how to inspect all possible spatial and species IDs
 str(get_all_id())
 str(get_all_species())
