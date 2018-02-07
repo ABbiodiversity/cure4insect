@@ -442,7 +442,7 @@ get_all_species <- function(taxon="all")
     !is.null(x) && x > 0
 }
 
-get_version_info() {
+get_version_info <- function() {
     if (!is_loaded())
         stop("common data needed: use load_common_data")
     .c4if$VER
