@@ -25,6 +25,7 @@
 \alias{combine_veg_soil}
 \alias{predict_mat.c4ispclim}
 \alias{get_levels}
+|alias{get_version_info}
 \title{
 Core Functions for Custom Reporting
 }
@@ -60,6 +61,7 @@ get_all_id()
 get_all_species(taxon = "all")
 get_id_locations()
 get_species_table(taxon = "all")
+get_version_info()
 
 load_spclim_data(species, boot=TRUE, path=NULL, version=NULL)
 get_levels()
@@ -233,6 +235,13 @@ Note: for some species, either the 'veg' or 'soil' based estimates are
 unavailable. \code{predict.c4ispclim} returns \code{NA} for these
 and the combined results will be \code{NA} as well.
 A warning is also issued to inform the user of what happened.
+
+\code{get_version_info} returns detailed version info for each taxa,
+depending on the \code{version} set through options or
+\code{load_common_data}, including the following variables:
+taxon, version, 1st and last year of field sampling,
+base year and version of human footprint inventory,
+version of the backfilled vegetation layer.
 
 \code{get_levels} returns a list
 with elements 'veg' for vegetation and 'soil' for soil class levels

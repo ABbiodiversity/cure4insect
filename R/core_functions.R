@@ -441,3 +441,9 @@ get_all_species <- function(taxon="all")
     x <- getOption("cure4insect")$verbose
     !is.null(x) && x > 0
 }
+
+get_version_info() {
+    if (!is_loaded())
+        stop("common data needed: use load_common_data")
+    .c4if$VER
+}

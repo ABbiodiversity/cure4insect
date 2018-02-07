@@ -21,7 +21,8 @@ export(
     load_spclim_data,
     combine_veg_soil,
     predict_mat,
-    get_levels)
+    get_levels,
+    get_version_info)
 
 export(app_read_csv, app_test,
     .calculate_results, .load_species_data, .report_all_by1,
