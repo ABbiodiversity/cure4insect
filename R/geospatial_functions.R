@@ -90,17 +90,19 @@ function(species, boot=TRUE, path=NULL, version=NULL)
     if (taxon == "birds") {
         if (spinfo$veghf.north) {
             cveg <- .c4if$CFbirds$joint$veg[species,] # log scale
-            cveg["HardLin"] <- -10
             cveg["SoftLin"] <- log(mean(exp(cveg[c("Shrub", "GrassHerb")])))
+            cveg["HardLin"] <- -10
         } else {
             cveg <- NULL
         }
         if (spinfo$soilhf.south) {
             csoil <- .c4if$CFbirds$joint$soil[species,] # log scale
-            csoil["HardLin"] <- -10
             csoil["SoftLin"] <- log(mean(exp(csoil), na.rm=TRUE)) # SoftLin is NA
+            csoil["HardLin"] <- -10
+            caspen <- .c4if$CFbirds$joint$paspen[species,]
         } else {
             csoil <- NULL
+            caspen <- NULL
         }
     ## marginal coefs for other taxa are on probability scale
     } else {
@@ -111,8 +113,10 @@ function(species, boot=TRUE, path=NULL, version=NULL)
         }
         if (spinfo$soilhf.south) {
             csoil <- binomial("logit")$linkfun(.c4if$CF$coef$soil[species,]) # p scale
+            caspen <- .c4if$CF$coef$paspen[species,]
         } else {
             csoil <- NULL
+            caspen <- NULL
         }
     }
     cveg <- cveg[get_levels()$veg]
@@ -122,6 +126,7 @@ function(species, boot=TRUE, path=NULL, version=NULL)
     assign("taxon", taxon, envir=y)
     assign("cveg", cveg, envir=y)
     assign("csoil", csoil, envir=y)
+    assign("caspen", caspen, envir=y)
     fn <- file.path(path, version, "results", taxon, "spclim", paste0(species, ".RData"))
     if (!startsWith(path, "http://")) {
         load(fn, envir=y)
@@ -153,6 +158,11 @@ function(xy, veg, soil)
     if (!identicalCRS(xy, rpa))
         xy <- spTransform(xy, proj4string(rpa))
     ipa <- extract(rpa, xy)
+    .combine_veg_soil(ipa, veg, soil)
+}
+.combine_veg_soil <-
+function(ipa, veg, soil)
+{
     ipa * veg + (1 - ipa) * soil
 }
 
@@ -193,16 +203,19 @@ function(object, xy, veg, soil, ...)
             warning(sprintf("soil based estimates are unavailable for %s", object$species))
         } else {
             if (length(soil) != nrow(coordinates(xy)))
-                stop("length(veg) must equal number of points in xy")
+                stop("length(soil) must equal number of points in xy")
             .check(soil, names(object$csoil))
             if (any(soil == "SoftLin") && object$taxon == "birds")
                 warning("soil contained SoftLin: check your assumptions")
             isoil <- extract(object$rsoil, xy)
-            OUT$soil <- fi(object$csoil[match(soil, names(object$csoil))] + isoil)
+            rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
+            ipa <- extract(rpa, xy)
+            OUT$soil <- fi(object$csoil[match(soil, names(object$csoil))] +
+                object$caspen * ipa + isoil)
         }
     }
     if (DO$comb) {
-        OUT$comb <- combine_veg_soil(xy, OUT$veg, OUT$soil)
+        OUT$comb <- .combine_veg_soil(ipa, OUT$veg, OUT$soil)
     }
     class(OUT) <- c("c4ippred", class(OUT))
     OUT
