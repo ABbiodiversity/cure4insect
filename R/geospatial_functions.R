@@ -255,7 +255,9 @@ function(object, xy, veg, soil, ...)
         if (any(soil == "SoftLin") && object$taxon == "birds")
             warning("soil contained SoftLin: check your assumptions")
         isoil <- extract(object$rsoil, xy)
-        imats <- t(array(isoil, dim(soil), dimnames(soil)))
+        rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
+        ipa <- extract(rpa, xy)
+        imats <- t(array(object$caspen * ipa + isoil, dim(soil), dimnames(soil)))
         msoil <- object$csoil[match(colnames(soil), names(object$csoil))]
         Nsoil <- fi(t(msoil + imats)) * soil
     } else {
