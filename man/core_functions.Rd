@@ -26,6 +26,7 @@
 \alias{predict_mat.c4ispclim}
 \alias{get_levels}
 \alias{get_version_info}
+\alias{make_multispecies_map}
 \title{
 Core Functions for Custom Reporting
 }
@@ -68,6 +69,8 @@ get_levels()
 predict_mat(object, ...)
 \method{predict_mat}{c4ispclim}(object, xy, veg, soil, ...)
 combine_veg_soil(xy, veg, soil)
+make_multispecies_map(type=c("richness", "intactness"),
+    path=NULL, version=NULL)
 }
 \arguments{
   \item{path}{
@@ -147,6 +150,12 @@ character, return \code{"all"} species, or a subset (\code{"birds"},
 }
   \item{ply}{
 an object of class 'SpatialPolygons' defined by the 'sp' package.
+}
+  \item{type}{
+character, the type of multi-species map to produce.
+\code{"intactness"} is the raster cell level average intactness across species,
+\code{"richness"} is probability of >0 observation in a 1 ha plot
+summed across species (expected species richness).
 }
   \item{\dots}{
 Arguments in \code{tag = value} form, or a list of tagged values.
@@ -332,6 +341,11 @@ r <- rasterize_results(y)
 plot(r, "NC") # current abundance map
 plot(r, "SE") # standadr errors for current abundance
 }
+
+## making multi-species richness and intactness maps for birds
+subset_common_data(species=get_all_species(taxon="birds"))
+r1 <- make_multispecies_map("richness")
+r2 <- make_multispecies_map("intactness")
 
 ## working with a local copy of the results is much faster
 ## set path via function arguments or the options:

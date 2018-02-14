@@ -267,3 +267,76 @@ function(object, xy, veg, soil, ...)
     class(OUT) <- c("c4ippredmat")
     OUT
 }
+
+.rasterize_multi <- function(y, type=c("richness", "intactness"), rt)
+{
+    if (!is_loaded())
+        stop("common data needed: use load_common_data")
+    if (length(names(y)) < 1)
+        stop("species data needed: use load_species_data")
+    z <- switch(type,
+        "richness"="NC",
+        "intactness"="SI")
+    KT <- .c4if$KT
+    NC <- rowSums(y$SA.Curr)
+    i <- match(rownames(KT), names(NC))
+    KT$NC <- NC[i]
+    KT$NC[is.na(KT$NC)] <- -1
+    if (type == "intactness") {
+        NR <- rowSums(y$SA.Ref)
+        SI <- 100 * pmin(NC, NR) / pmax(NC, NR)
+        KT$SI <- SI[i]
+        KT$SI[is.na(KT$SI)] <- -1
+    }
+    r <- .make_raster(KT[,z], rc=KT, rt=rt)
+    r[r < 0] <- NA # sentinel values to NA
+    r
+}
+
+## multi-species intactness and richness maps
+make_multispecies_map <-
+function(type=c("richness", "intactness"),
+path=NULL, version=NULL)
+{
+    type <- match.arg(type)
+    OUT <- list()
+    SPP <- rownames(.c4is$SPsub)
+    n <- length(SPP)
+    requireNamespace("raster")
+    rt <- .read_raster_template()
+    ETA <- NULL
+    if (.verbose())
+        cat("processing species:\n")
+    t0 <- proc.time()[3]
+    i <- 1L
+    if (.verbose()) {
+        cat("* ", i, "/", length(SPP), " ", SPP[i], ", ETA: ",
+            getTimeAsString(ETA), sep="")
+        flush.console()
+    }
+    r0 <- .rasterize_multi(load_species_data(SPP[1L],
+        boot=FALSE, path=path, version=version), type, rt)
+    if (type == "richness" && as.character(.c4is$SPsub[SPP[1L], "taxon"]) == "birds")
+        r0 <- 1-exp(-1*r0)
+    dt <- proc.time()[3] - t0
+    cat(", elapsed:", getTimeAsString(dt), "\n")
+    ETA <- (n - i) * dt / i
+    for (i in seq_len(n)[-1]) {
+        if (.verbose()) {
+            cat("* ", i, "/", length(SPP), " ", SPP[i], ", ETA: ",
+                getTimeAsString(ETA), sep="")
+            flush.console()
+        }
+        r <- .rasterize_multi(load_species_data(SPP[i],
+            boot=FALSE, path=path, version=version), type, rt)
+        if (type == "richness" && as.character(.c4is$SPsub[SPP[i], "taxon"]) == "birds")
+            r <- 1-exp(-1*r)
+        r0 <- r + r0
+        dt <- proc.time()[3] - t0
+        cat(", elapsed:", getTimeAsString(dt), "\n")
+        ETA <- (n - i) * dt / i
+    }
+    if (type == "intactness")
+        r0 <- r0 / n
+    r0
+}

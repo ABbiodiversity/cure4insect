@@ -195,6 +195,15 @@ plot(r, "NC") # current abundance map
 plot(r, "SE") # standadr errors for current abundance
 ```
 
+It is possible to make multi-species maps as well:
+average intactness and expected number of species.
+
+```R
+subset_common_data(species=get_all_species(taxon="birds"))
+r1 <- make_multispecies_map("richness")
+r2 <- make_multispecies_map("intactness")
+```
+
 #### Spatially explicit (polygon level) predictions
 
 ```R
