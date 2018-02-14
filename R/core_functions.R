@@ -342,6 +342,12 @@ function(fun, cores=NULL, ...)
 report_all <-
 function(boot=TRUE, path=NULL, version=NULL, cores=NULL, level=0.9)
 {
+    fun <- function(z, boot=NULL, path=NULL, version=NULL, level=0.9, .c4is) {
+        .calculate_results(.load_species_data(z,
+            boot=boot, path=path, version=version,
+            taxon=as.character(.c4is$SPsub[z, "taxon"])),
+            level=level, .c4is=.c4is)
+    }
     OUT <- .report_apply(fun, cores=cores, boot=boot, path=path, version=version,
         level=level, .c4is=as.list(.c4is))
     class(OUT) <- "c4ilist"
