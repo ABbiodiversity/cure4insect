@@ -6,6 +6,7 @@
 \alias{.report_all_by1}
 \alias{.read_raster_template}
 \alias{.make_raster}
+\alias{.report_apply}
 \title{
 App Specific Functions and Internals
 }
@@ -23,6 +24,7 @@ app_test(...)
 .report_all_by1(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
 .read_raster_template()
 .make_raster(value, rc, rt)
+.report_apply(fun, cores=NULL, ...)
 }
 \arguments{
   \item{species, boot, path, version}{arguments passed to
@@ -32,6 +34,7 @@ app_test(...)
     and other functions.}
   \item{.c4is}{the subset environment \code{as.list(.c4is)}.}
   \item{cores}{desired number of cores to use.}
+  \item{fun}{function to apply on app species in subset.}
   \item{value, rc, rt}{call \code{value},
     \code{rc} is data frame with \code{Row} and \code{Col} indices for
     \code{value}, \code{rt} is raster template from

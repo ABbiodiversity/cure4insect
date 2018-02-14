@@ -45,8 +45,7 @@ load_species_data(species, boot=TRUE, path=NULL, version=NULL)
 calculate_results(y, level=0.9)
 rasterize_results(y)
 
-report_all(boot=TRUE, path=NULL, version=NULL,
-    level=0.9, cores=NULL)
+report_all(boot=TRUE, path=NULL, version=NULL, cores=NULL, level=0.9)
 flatten(x, ...)
 \method{flatten}{c4iraw}(x, raw_boot=FALSE, limit=0.01, ...)
 

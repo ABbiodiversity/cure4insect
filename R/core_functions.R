@@ -307,8 +307,9 @@ function(x, raw_boot=FALSE, limit=0.01, ...)
         cores <- as.integer(getOption("cure4insect")$cores)
     as.integer(max(1, min(detectCores(), cores, na.rm=TRUE)))
 }
-report_all <-
-function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
+
+.report_apply <-
+function(fun, cores=NULL, ...)
 {
     if (!is_loaded())
         stop("common data needed: use load_common_data")
@@ -333,18 +334,20 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
         opb <- pboptions(type="none")
         on.exit(pboptions(opb), add=TRUE)
     }
-    fun <- function(z, boot=NULL, path=NULL, version=NULL, level=0.9, .c4is) {
-        .calculate_results(.load_species_data(z,
-            boot=boot, path=path, version=version,
-            taxon=as.character(.c4is$SPsub[z, "taxon"])),
-            level=level, .c4is=.c4is)
-    }
-    OUT <- pblapply(SPP, fun, boot=boot, path=path, version=version,
-        level=level, .c4is=as.list(.c4is), cl=cl)
+    OUT <- pblapply(SPP, fun, ..., cl=cl)
     names(OUT) <- SPP
+    OUT
+}
+
+report_all <-
+function(boot=TRUE, path=NULL, version=NULL, cores=NULL, level=0.9)
+{
+    OUT <- .report_apply(fun, cores=cores, boot=boot, path=path, version=version,
+        level=level, .c4is=as.list(.c4is))
     class(OUT) <- "c4ilist"
     OUT
 }
+
 ## this is for testing: i.e. looking into failed requests (cores ignored)
 .report_all_by1 <-
 function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
