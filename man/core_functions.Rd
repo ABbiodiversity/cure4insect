@@ -340,12 +340,12 @@ y <- load_species_data("Ovenbird")
 r <- rasterize_results(y)
 plot(r, "NC") # current abundance map
 plot(r, "SE") # standadr errors for current abundance
-}
 
 ## making multi-species richness and intactness maps for birds
 subset_common_data(species=get_all_species(taxon="birds"))
 r1 <- make_multispecies_map("richness")
 r2 <- make_multispecies_map("intactness")
+}
 
 ## working with a local copy of the results is much faster
 ## set path via function arguments or the options:
