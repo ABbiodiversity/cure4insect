@@ -62,9 +62,10 @@ function(id=NULL, species="all")
         species <- as.character(species[,1L])
     vals <- c("all","birds","lichens","mammals","mites","mosses","vplants")
     x <- .c4if$SP
-    if (length(species) == 1L && species %in% vals) {
-        SPPfull <- if (species == "all")
-            rownames(x) else rownames(x)[x$taxon==species]
+    if (any(species %in% vals)) {
+        species <- species[species %in% vals] # drop all else
+        SPPfull <- if (length(species) == 1L && species == "all")
+            rownames(x) else rownames(x)[x$taxon %in% species]
     } else {
         SPPfull <- species
     }
