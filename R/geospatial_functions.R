@@ -88,14 +88,14 @@ function(species, boot=TRUE, path=NULL, version=NULL)
     taxon <- as.character(spinfo$taxon)
     ## joint and marginal coefs for birds are on log scale
     if (taxon == "birds") {
-        if (spinfo$veghf.north) {
+        if (spinfo$model_north) {
             cveg <- .c4if$CFbirds$joint$veg[species,] # log scale
             cveg["SoftLin"] <- log(mean(exp(cveg[c("Shrub", "GrassHerb")])))
             cveg["HardLin"] <- -10
         } else {
             cveg <- NULL
         }
-        if (spinfo$soilhf.south) {
+        if (spinfo$model_south) {
             csoil <- .c4if$CFbirds$joint$soil[species,] # log scale
             csoil["SoftLin"] <- log(mean(exp(csoil), na.rm=TRUE)) # SoftLin is NA
             csoil["HardLin"] <- -10
@@ -106,12 +106,12 @@ function(species, boot=TRUE, path=NULL, version=NULL)
         }
     ## marginal coefs for other taxa are on probability scale
     } else {
-        if (spinfo$veghf.north) {
+        if (spinfo$model_north) {
             cveg <- binomial("logit")$linkfun(.c4if$CF$coef$veg[species,]) # p scale
         } else {
             cveg <- NULL
         }
-        if (spinfo$soilhf.south) {
+        if (spinfo$model_south) {
             csoil <- binomial("logit")$linkfun(.c4if$CF$coef$soil[species,]) # p scale
             caspen <- .c4if$CF$coef$paspen[species,]
         } else {

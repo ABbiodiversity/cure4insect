@@ -248,9 +248,13 @@ A warning is also issued to inform the user of what happened.
 \code{get_version_info} returns detailed version info for each taxa,
 depending on the \code{version} set through options or
 \code{load_common_data}, including the following variables:
-taxon, version, 1st and last year of field sampling, field methodology,
-base year and version of human footprint inventory,
-version of the backfilled vegetation layer.
+\code{taxon},
+\code{version} (year of production),
+1st and last year of field sampling (\code{yr_first}, \code{yr_last}),
+field \code{method}ology,
+base year and version of human footprint inventory (\code{hf}),
+version of the backfilled vegetation layer (\code{veg}),
+the type of model used (\code{model}).
 
 \code{get_levels} returns a list
 with elements 'veg' for vegetation and 'soil' for soil class levels
