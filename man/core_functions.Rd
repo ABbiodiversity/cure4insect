@@ -124,9 +124,10 @@ and input object from call to \code{calculate_results}.
 logical, if raw bootstrap abundance results should be returned.
 }
   \item{limit}{
-numeric (0-1), species stats in a region are set to \code{NA} when the mean
-abundance of the species is less than 100 * \code{limit} percent of the maximum
-abundance (current and reference combined).
+numeric (0-1), species with mean abundance less than 100 * \code{limit}
+percent of the maximum abundance (current and reference combined)
+are flagged and should not be used when calculating multi-species matrics
+because the species is not effectively present in theregion.
 }
   \item{address}{
 character, optional email address to send finished results to

@@ -248,49 +248,45 @@ function(x, raw_boot=FALSE, limit=0.01, ...)
     if (limit %)(% c(0,1))
         stop("limit value must be between in [0, 1]")
     Cm <- list()
-    df <- data.frame(SpeciesID=x$species, Taxon=x$taxon)
+    df <- data.frame(SpeciesID=x$species, Taxon=x$taxon,
+        droplevels(.c4if$SP[x$species, c("CommonName", "ScientificName",
+        "TSNID", "model_region")]))
     rownames(df) <- x$species
-    df$CI_Level <- x$level
-    KEEP <- x$mean > x$max * limit
-    if (!x$boot)
+    df$Model <- df$model_region
+    df$model_region <- NULL
+    df$Mean <- x$mean
+    df$Max <- x$max
+    df$Limit <- limit
+    KEEP <- x$mean >= x$max * limit
+    if (!KEEP)
+        Cm[[length(Cm)+1]] <- paste0("Regional mean abundance <",
+            round(100*limit,1), "% of provincial maximum.")
+    if (!x$boot) {
+        df$CI_Level <- NA
         Cm[[length(Cm)+1]] <- "Confidence intervals were not requested."
-    if (KEEP) {
-        df$Abund_Curr_Est <- x$intactness["Current", 1]
-        df$Abund_Curr_LCL <- x$intactness["Current", 2]
-        df$Abund_Curr_UCL <- x$intactness["Current", 3]
-        if (x$boot && x$intactness["Current",1] %)(% x$intactness["Current",2:3])
-            Cm[[length(Cm)+1]] <- "Current abundance estimate is outside of CI: region probably too small."
-        df$Abund_Ref_Est <- x$intactness["Reference", 1]
-        df$Abund_Ref_LCL <- x$intactness["Reference", 2]
-        df$Abund_Ref_UCL <- x$intactness["Reference", 3]
-        if (x$boot && x$intactness["Reference",1] %)(% x$intactness["Reference",2:3])
-            Cm[[length(Cm)+1]] <- "Reference abundance estimate is outside of CI: region probably too small."
-        df$SI_Est <- x$intactness["Intactness", 1]
-        df$SI2_Est <- x$intactness["Intactness2", 1]
-        df$SI2_LCL <- x$intactness["Intactness2", 2]
-        df$SI2_UCL <- x$intactness["Intactness2", 3]
-        if (x$boot && x$intactness["Intactness2",1] %)(% x$intactness["Intactness2",2:3])
-            Cm[[length(Cm)+1]] <- "Two-sided intactness estimate is outside of CI."
     } else {
-        df$Abund_Curr_Est <- NA
-        df$Abund_Curr_LCL <- NA
-        df$Abund_Curr_UCL <- NA
-        df$Abund_Ref_Est <- NA
-        df$Abund_Ref_LCL <- NA
-        df$Abund_Ref_UCL <- NA
-        df$SI_Est <- NA
-        df$SI2_Est <- NA
-        df$SI2_LCL <- NA
-        df$SI2_UCL <- NA
-        Cm[[length(Cm)+1]] <- paste0("Abundance did not reach the ",
-            round(100*limit,2), "% threshold in the region.")
+        df$CI_Level <- x$level
     }
+    df$Abund_Curr_Est <- x$intactness["Current", 1]
+    df$Abund_Curr_LCL <- x$intactness["Current", 2]
+    df$Abund_Curr_UCL <- x$intactness["Current", 3]
+    if (x$boot && x$intactness["Current",1] %)(% x$intactness["Current",2:3])
+        Cm[[length(Cm)+1]] <- "Current abundance estimate is outside of CI: region probably too small."
+    df$Abund_Ref_Est <- x$intactness["Reference", 1]
+    df$Abund_Ref_LCL <- x$intactness["Reference", 2]
+    df$Abund_Ref_UCL <- x$intactness["Reference", 3]
+    if (x$boot && x$intactness["Reference",1] %)(% x$intactness["Reference",2:3])
+        Cm[[length(Cm)+1]] <- "Reference abundance estimate is outside of CI: region probably too small."
+    df$SI_Est <- x$intactness["Intactness", 1]
+    df$SI2_Est <- x$intactness["Intactness2", 1]
+    df$SI2_LCL <- x$intactness["Intactness2", 2]
+    df$SI2_UCL <- x$intactness["Intactness2", 3]
+    if (x$boot && x$intactness["Intactness2",1] %)(% x$intactness["Intactness2",2:3])
+        Cm[[length(Cm)+1]] <- "Two-sided intactness estimate is outside of CI."
     z <- x$sector
     z[is.na(z)] <- 0
     fd <- matrix(t(z), 1)
     colnames(fd) <- paste0(rep(rownames(z), each=ncol(z)), "_", colnames(z))
-    if (!KEEP)
-        fd[] <- NA
     df <- cbind(df, fd)
     df$Comments <- paste(unlist(Cm), collapse=" ")
     if (raw_boot) {
