@@ -248,9 +248,18 @@ function(x, raw_boot=FALSE, limit=0.01, ...)
     if (limit %)(% c(0,1))
         stop("limit value must be between in [0, 1]")
     Cm <- list()
-    df <- data.frame(SpeciesID=x$species, Taxon=x$taxon,
-        droplevels(.c4if$SP[x$species, c("CommonName", "ScientificName",
-        "TSNID", "model_region")]))
+    df <- data.frame(SpeciesID=x$species, Taxon=x$taxon)
+    tmp <- .c4if$SP[x$species, c("CommonName", "ScientificName",
+        "TSNID", "model_region")]
+    ## if full data not loaded, we get NULL
+    if (is.null(tmp)) {
+        warning("load_common_data before flattening to avoid some NAs")
+        tmp <- data.frame(CommonName=NA, ScientificName=NA,
+            TSNID=NA, model_region=NA)
+    } else {
+        tmp <- droplevels(tmp)
+    }
+    df <- data.frame(df, tmp)
     rownames(df) <- x$species
     df$Model <- df$model_region
     df$model_region <- NULL
