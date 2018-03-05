@@ -21,7 +21,7 @@ The R package itself is licensed under [MIT license](https://github.com/ABbiodiv
 ## Install
 
 Only GitHub version available now. If you have trouble installing the package,
-please file an [issua](https://github.com/ABbiodiversity/cure4insect/issues).
+please file an [issue](https://github.com/ABbiodiversity/cure4insect/issues).
 
 ```R
 devtools::install_github("ABbiodiversity/cure4insect")
