@@ -294,16 +294,24 @@ function(object, xy, veg, soil, ...)
 }
 
 ## multi-species intactness and richness maps
+## clip: apply spatial IDs to crop & mask
+## limit: threshold for intactness average
 make_multispecies_map <-
 function(type=c("richness", "intactness"),
-path=NULL, version=NULL)
+path=NULL, version=NULL, clip=TRUE, limit=0.01)
 {
     type <- match.arg(type)
     OUT <- list()
     SPP <- rownames(.c4is$SPsub)
     n <- length(SPP)
+    KEEP <- rep(TRUE, n)
     requireNamespace("raster")
     rt <- .read_raster_template()
+
+    rmask <- .make_raster(ifelse(rownames(.c4if$KT) %in% rownames(.c4is$KTsub), 1, 0),
+        .c4if$KT, rt)
+    rmask[rmask == 0] <- NA
+
     ETA <- NULL
     if (.verbose())
         cat("processing species:\n")
@@ -314,12 +322,24 @@ path=NULL, version=NULL)
             getTimeAsString(ETA), sep="")
         flush.console()
     }
-    r0 <- .rasterize_multi(load_species_data(SPP[1L],
-        boot=FALSE, path=path, version=version), type, rt)
-    if (type == "richness" && as.character(.c4is$SPsub[SPP[1L], "taxon"]) == "birds")
-        r0 <- 1-exp(-1*r0)
+
+    y <- load_species_data(SPP[i], boot=FALSE, path=path, version=version)
+    KEEP[i] <- .calculate_limit(y, limit=limit)$keep
+    r0 <- .rasterize_multi(y, type, rt)
+    if (clip)
+        r0 <- mask(r0, rmask)
+    if (!KEEP[i] && type == "intactness") {
+        r0[!is.na(values(r0))] <- 0
+        MSG <- " --- DOPPED"
+    } else {
+        MSG <- ""
+    }
+    if (KEEP[i] && type == "richness" &&
+        as.character(.c4is$SPsub[SPP[1L], "taxon"]) == "birds")
+            r0 <- 1-exp(-1*r0)
+
     dt <- proc.time()[3] - t0
-    cat(", elapsed:", getTimeAsString(dt), "\n")
+    cat(MSG, ", elapsed:", getTimeAsString(dt), "\n")
     ETA <- (n - i) * dt / i
     for (i in seq_len(n)[-1]) {
         if (.verbose()) {
@@ -327,16 +347,33 @@ path=NULL, version=NULL)
                 getTimeAsString(ETA), sep="")
             flush.console()
         }
-        r <- .rasterize_multi(load_species_data(SPP[i],
-            boot=FALSE, path=path, version=version), type, rt)
-        if (type == "richness" && as.character(.c4is$SPsub[SPP[i], "taxon"]) == "birds")
-            r <- 1-exp(-1*r)
-        r0 <- r + r0
+
+#        r <- .rasterize_multi(load_species_data(SPP[i],
+#            boot=FALSE, path=path, version=version), type, rt)
+#        if (type == "richness" && as.character(.c4is$SPsub[SPP[i], "taxon"]) == "birds")
+#            r <- 1-exp(-1*r)
+        y <- load_species_data(SPP[i], boot=FALSE, path=path, version=version)
+        KEEP[i] <- .calculate_limit(y, limit=limit)$keep
+        if (!KEEP[i] && type == "intactness") {
+            MSG <- " --- DOPPED"
+        } else {
+            r <- .rasterize_multi(y, type, rt)
+            if (clip)
+                r <- mask(r, rmask)
+            if (type == "richness" &&
+                as.character(.c4is$SPsub[SPP[1L], "taxon"]) == "birds")
+                    r <- 1-exp(-1*r)
+            r0 <- r + r0
+            MSG <- ""
+        }
+
         dt <- proc.time()[3] - t0
         cat(", elapsed:", getTimeAsString(dt), "\n")
         ETA <- (n - i) * dt / i
     }
     if (type == "intactness")
-        r0 <- r0 / n
+        r0 <- r0 / sum(KEEP)
+    if (clip)
+        r0 <- trim(r0, values = NA)
     r0
 }

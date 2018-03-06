@@ -240,6 +240,33 @@ function(y, level=0.9, .c4is)
     class(out) <- "c4iraw"
     out
 }
+.calculate_limit <-
+function(y, limit=0.01)
+{
+    cn <- c("Native", "Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")
+    MAX <- max(quantile(rowSums(y$SA.Curr), 0.99), quantile(rowSums(y$SA.Ref), 0.99))
+    PIX <- rownames(.c4is$KTsub)
+    ## Rockies and unmodelled regions should be excluded
+    PIX <- PIX[PIX %in% rownames(y$SA.Curr)]
+    SA.Curr <- y$SA.Curr[PIX,cn]
+    SA.Ref <- y$SA.Ref[PIX,cn]
+    ## subset can have 0 rows when outside of modeled range:
+    ## this leads to mean(numeric(0))=NaN but should be 0
+    if (length(PIX) > 0) {
+        cr <- rowSums(SA.Curr)
+        rf <- rowSums(SA.Ref)
+        MEAN_cr <- mean(cr[cr <= quantile(cr, 0.99)])
+        MEAN_rf <- mean(rf[rf <= quantile(rf, 0.99)])
+        MEAN <- max(MEAN_cr, MEAN_rf)
+    } else {
+        MEAN <- 0
+    }
+    list(
+        max=MAX,
+        mean=MEAN,
+        limit=limit,
+        keep=MEAN >= MAX * limit)
+}
 
 flatten <- function (x, ...) UseMethod("flatten")
 flatten.c4iraw <-

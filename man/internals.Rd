@@ -7,6 +7,7 @@
 \alias{.read_raster_template}
 \alias{.make_raster}
 \alias{.rasterize_multi}
+\alias{.calculate_limit}
 \title{
 App Specific Functions and Internals
 }
@@ -21,6 +22,7 @@ app_test(...)
 
 .load_species_data(species, boot=TRUE, path=NULL, version=NULL, taxon)
 .calculate_results(y, level=0.9, .c4is)
+.calculate_limit(y, limit=0.01)
 .report_all_by1(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
 .read_raster_template()
 .make_raster(value, rc, rt)
@@ -39,6 +41,7 @@ app_test(...)
     \code{value}, \code{rt} is raster template from
     \code{.read_raster_template}.}
   \item{type}{type of multi-species map.}
+  \item{limit}{abundance threshold for multi-species intactness reporting.}
   \item{\dots}{arguments passed to underlying functions.}
 }
 \details{

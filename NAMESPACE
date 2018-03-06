@@ -27,7 +27,8 @@ export(
 
 export(app_read_csv, app_test,
     .calculate_results, .load_species_data, .report_all_by1,
-    .read_raster_template, .make_raster, .rasterize_multi)
+    .read_raster_template, .make_raster, .rasterize_multi,
+    .calculate_limit)
 
 S3method(flatten, c4iraw)
 S3method(plot_sector, c4iraw)

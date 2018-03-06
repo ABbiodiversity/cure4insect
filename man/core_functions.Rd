@@ -70,7 +70,7 @@ predict_mat(object, ...)
 \method{predict_mat}{c4ispclim}(object, xy, veg, soil, ...)
 combine_veg_soil(xy, veg, soil)
 make_multispecies_map(type=c("richness", "intactness"),
-    path=NULL, version=NULL)
+    path=NULL, version=NULL, clip=TRUE, limit=0.01)
 }
 \arguments{
   \item{path}{
@@ -153,6 +153,10 @@ character, return \code{"all"} species, or a subset (\code{"birds"},
   \item{ply}{
 an object of class 'SpatialPolygons' defined by the 'sp' package.
 }
+  \item{clip}{
+logical, if the multi-species map needs to be clipped to the region bounds
+defined by the spatial subset.
+}
   \item{type}{
 character, the type of multi-species map to produce.
 \code{"intactness"} is the raster cell level average intactness across species,
@@ -223,6 +227,12 @@ SI (intactness),
 SI2 (two-sided intactness),
 SE, and CV (bootstrap based standard error and coefficient of variation
 estimates for current abundance).
+
+\code{make_multispecies_map} calculated multi-species maps of richness
+(1-ha based probability of occurrence summed across species)
+or intactness (mean pixel level intactness of species whose
+mean abundance in the subset region is at least 100 * \code{limit}
+percent of the provincial maximum abundance).
 
 \code{set_options} sets the options and return previous values invisibly.
 
