@@ -324,22 +324,22 @@ path=NULL, version=NULL, clip=TRUE, limit=0.01)
     }
 
     y <- load_species_data(SPP[i], boot=FALSE, path=path, version=version)
-    KEEP[i] <- .calculate_limit(y, limit=limit)$keep
+    LIM <- .calculate_limit(y, limit=limit)
+    KEEP[i] <- LIM$keep
     r0 <- .rasterize_multi(y, type, rt)
     if (clip)
         r0 <- mask(r0, rmask)
     if (!KEEP[i] && type == "intactness") {
         r0[!is.na(values(r0))] <- 0
-        MSG <- " --- DOPPED"
+        MSG <- sprintf("--- DOPPED (%.3f%s)", 100*LIM$mean / LIM$max, "%")
     } else {
-        MSG <- ""
+        MSG <- sprintf("(%.1f%s)", 100*LIM$mean / LIM$max, "%")
     }
-    if (KEEP[i] && type == "richness" &&
-        as.character(.c4is$SPsub[SPP[1L], "taxon"]) == "birds")
+    if (type == "richness" && as.character(.c4is$SPsub[SPP[1L], "taxon"]) == "birds")
             r0 <- 1-exp(-1*r0)
 
     dt <- proc.time()[3] - t0
-    cat(MSG, ", elapsed:", getTimeAsString(dt), "\n")
+    cat(", elapsed:", getTimeAsString(dt), MSG, "\n")
     ETA <- (n - i) * dt / i
     for (i in seq_len(n)[-1]) {
         if (.verbose()) {
@@ -353,9 +353,10 @@ path=NULL, version=NULL, clip=TRUE, limit=0.01)
 #        if (type == "richness" && as.character(.c4is$SPsub[SPP[i], "taxon"]) == "birds")
 #            r <- 1-exp(-1*r)
         y <- load_species_data(SPP[i], boot=FALSE, path=path, version=version)
-        KEEP[i] <- .calculate_limit(y, limit=limit)$keep
+        LIM <- .calculate_limit(y, limit=limit)
+        KEEP[i] <- LIM$keep
         if (!KEEP[i] && type == "intactness") {
-            MSG <- " --- DOPPED"
+            MSG <- sprintf("--- DOPPED (%.3f%s)", 100*LIM$mean / LIM$max, "%")
         } else {
             r <- .rasterize_multi(y, type, rt)
             if (clip)
@@ -364,11 +365,11 @@ path=NULL, version=NULL, clip=TRUE, limit=0.01)
                 as.character(.c4is$SPsub[SPP[1L], "taxon"]) == "birds")
                     r <- 1-exp(-1*r)
             r0 <- r + r0
-            MSG <- ""
+            MSG <- sprintf("(%.1f%s)", 100*LIM$mean / LIM$max, "%")
         }
 
         dt <- proc.time()[3] - t0
-        cat(", elapsed:", getTimeAsString(dt), "\n")
+        cat(", elapsed:", getTimeAsString(dt), MSG, "\n")
         ETA <- (n - i) * dt / i
     }
     if (type == "intactness")
