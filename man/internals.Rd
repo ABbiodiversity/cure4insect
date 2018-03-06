@@ -6,6 +6,7 @@
 \alias{.report_all_by1}
 \alias{.read_raster_template}
 \alias{.make_raster}
+\alias{.rasterize_multi}
 \title{
 App Specific Functions and Internals
 }
@@ -23,6 +24,7 @@ app_test(...)
 .report_all_by1(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
 .read_raster_template()
 .make_raster(value, rc, rt)
+.rasterize_multi(y, type=c("richness", "intactness"), rt)
 }
 \arguments{
   \item{species, boot, path, version}{arguments passed to
@@ -36,6 +38,7 @@ app_test(...)
     \code{rc} is data frame with \code{Row} and \code{Col} indices for
     \code{value}, \code{rt} is raster template from
     \code{.read_raster_template}.}
+  \item{type}{type of multi-species map.}
   \item{\dots}{arguments passed to underlying functions.}
 }
 \details{
