@@ -8,6 +8,10 @@
 \alias{.make_raster}
 \alias{.rasterize_multi}
 \alias{.calculate_limit}
+\alias{.verbose}
+\alias{.get_cores}
+\alias{.check}
+\alias{.combine_veg_soil}
 \title{
 App Specific Functions and Internals
 }
@@ -27,6 +31,10 @@ app_test(...)
 .read_raster_template()
 .make_raster(value, rc, rt)
 .rasterize_multi(y, type=c("richness", "intactness"), rt)
+.verbose()
+.get_cores(cores=NULL)
+.check(x, ref)
+.combine_veg_soil(ipa, veg, soil)
 }
 \arguments{
   \item{species, boot, path, version}{arguments passed to
@@ -42,6 +50,10 @@ app_test(...)
     \code{.read_raster_template}.}
   \item{type}{type of multi-species map.}
   \item{limit}{abundance threshold for multi-species intactness reporting.}
+  \item{x, ref}{checking the validity of land cover classes in \code{x}
+    against the \code{ref}erence list of possible values.}
+  \item{ipa, veg, soil}{calculates a weighted average of \code{veg}
+    and \code{soil} based models based on probability of aspen (\code{ipa}).}
   \item{\dots}{arguments passed to underlying functions.}
 }
 \details{
