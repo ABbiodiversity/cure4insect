@@ -27,6 +27,8 @@
 \alias{get_levels}
 \alias{get_version_info}
 \alias{make_multispecies_map}
+\alias{get_all_qsid}
+\alias{qs2km}
 \title{
 Core Functions for Custom Reporting
 }
@@ -62,6 +64,8 @@ get_all_species(taxon = "all")
 get_id_locations()
 get_species_table(taxon = "all")
 get_version_info()
+get_all_qsid()
+qs2km(qsid)
 
 load_spclim_data(species, boot=TRUE, path=NULL, version=NULL)
 get_levels()
@@ -93,6 +97,13 @@ If \code{id} is a matrix-like object, values of the 1st column are taken.
 \code{id} can be of class 'SpatialPolygons' defined by the 'sp' package.
 The supplied values are turned into character internally.
 Use \code{get_all_id} to see all possible values.
+}
+  \item{qsid}{
+character, quarter section (QS) IDs in the
+\code{"MER-RGE-TWP-SEC-QS"} format, e.g. \code{"4-12-1-2-SE"}.
+The CSV file \url{http://ftp.public.abmi.ca/species.abmi.ca/gis/Grid1km_working.csv.zip}
+has the corresponding coordinates in NAD_1983_10TM_AEP_Forest projection
+\url{http://spatialreference.org/ref/epsg/3402/}).
 }
   \item{species}{
 A list of species defined by the field SpeciesID in the table
@@ -243,6 +254,9 @@ or a subset of those IDs for a selected \code{taxon}.
 with geographic coordinates of the spatial IDs, \code{get_species_table}
 gets the lookup table for species, or a group of species as defined by the
 \code{taxon} argument.
+\code{get_all_qsid} gets all possible quarter section (QS) IDs,
+\code{qs2km} finds the 1 square km units corresponding to the
+quarter section IDs.
 All these require to run \code{load_common_data()} first.
 
 \code{load_spclim_data} is used to load raster data for spatially

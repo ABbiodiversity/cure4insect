@@ -482,3 +482,14 @@ get_version_info <- function() {
         stop("common data needed: use load_common_data")
     .c4if$VER
 }
+
+get_all_qsid <- function() {
+    if (!is_loaded())
+        stop("common data needed: use load_common_data")
+    names(.c4if$QT2KT)
+}
+qs2km <- function(qsid) {
+    if (!is_loaded())
+        stop("common data needed: use load_common_data")
+    unique(as.character(.c4if$QT2KT[qsid]))
+}

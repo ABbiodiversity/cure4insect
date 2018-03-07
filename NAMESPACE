@@ -23,7 +23,9 @@ export(
     predict_mat,
     get_levels,
     get_version_info,
-    make_multispecies_map)
+    make_multispecies_map,
+    get_all_qsid,
+    qs2km)
 
 export(
     app_read_csv,
