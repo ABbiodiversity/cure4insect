@@ -293,12 +293,14 @@ function(object, xy, veg, soil, ...)
     NC <- rowSums(y$SA.Curr)
     i <- match(rownames(KT), names(NC))
     KT$NC <- NC[i]
-    KT$NC[is.na(KT$NC)] <- -1
+    #KT$NC[is.na(KT$NC)] <- -1
+    KT$NC[is.na(KT$NC)] <- -0
     if (type == "intactness") {
         NR <- rowSums(y$SA.Ref)
         SI <- 100 * pmin(NC, NR) / pmax(NC, NR)
         KT$SI <- SI[i]
-        KT$SI[is.na(KT$SI)] <- -1
+        #KT$SI[is.na(KT$SI)] <- -1
+        KT$SI[is.na(KT$SI)] <- 100
     }
     r <- .make_raster(KT[,z], rc=KT, rt=rt)
     r[r < 0] <- NA # sentinel values to NA
@@ -313,17 +315,14 @@ function(type=c("richness", "intactness"),
 path=NULL, version=NULL, clip=TRUE, limit=0.01)
 {
     type <- match.arg(type)
-    OUT <- list()
     SPP <- rownames(.c4is$SPsub)
     n <- length(SPP)
     KEEP <- rep(TRUE, n)
     requireNamespace("raster")
     rt <- .read_raster_template()
-
     rmask <- .make_raster(ifelse(rownames(.c4if$KT) %in% rownames(.c4is$KTsub), 1, 0),
         .c4if$KT, rt)
     rmask[rmask == 0] <- NA
-
     ETA <- NULL
     if (.verbose())
         cat("processing species:\n")
@@ -334,7 +333,6 @@ path=NULL, version=NULL, clip=TRUE, limit=0.01)
             getTimeAsString(ETA), sep="")
         flush.console()
     }
-
     y <- load_species_data(SPP[i], boot=FALSE, path=path, version=version)
     LIM <- .calculate_limit(y, limit=limit)
     KEEP[i] <- LIM$keep
@@ -349,7 +347,6 @@ path=NULL, version=NULL, clip=TRUE, limit=0.01)
     }
     if (type == "richness" && as.character(.c4is$SPsub[SPP[1L], "taxon"]) == "birds")
             r0 <- 1-exp(-1*r0)
-
     dt <- proc.time()[3] - t0
     cat(", elapsed:", getTimeAsString(dt), MSG, "\n")
     ETA <- (n - i) * dt / i
@@ -359,11 +356,6 @@ path=NULL, version=NULL, clip=TRUE, limit=0.01)
                 getTimeAsString(ETA), sep="")
             flush.console()
         }
-
-#        r <- .rasterize_multi(load_species_data(SPP[i],
-#            boot=FALSE, path=path, version=version), type, rt)
-#        if (type == "richness" && as.character(.c4is$SPsub[SPP[i], "taxon"]) == "birds")
-#            r <- 1-exp(-1*r)
         y <- load_species_data(SPP[i], boot=FALSE, path=path, version=version)
         LIM <- .calculate_limit(y, limit=limit)
         KEEP[i] <- LIM$keep
@@ -379,7 +371,6 @@ path=NULL, version=NULL, clip=TRUE, limit=0.01)
             r0 <- r + r0
             MSG <- sprintf("(%.1f%s)", 100*LIM$mean / LIM$max, "%")
         }
-
         dt <- proc.time()[3] - t0
         cat(", elapsed:", getTimeAsString(dt), MSG, "\n")
         ETA <- (n - i) * dt / i
