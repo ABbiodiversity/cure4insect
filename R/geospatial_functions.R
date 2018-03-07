@@ -188,12 +188,13 @@ function(object, xy, veg, soil, ...)
     if (DO$veg) {
         if (is.null(object$cveg)) {
             warning(sprintf("veg based estimates are unavailable for %s", object$species))
+            DO$comb <- FALSE
         } else {
             if (length(veg) != nrow(coordinates(xy)))
                 stop("length(veg) must equal number of points in xy")
             .check(veg, names(object$cveg))
-            if (any(veg == "SoftLin") && object$taxon == "birds")
-                warning("veg contained SoftLin: check your assumptions")
+            #if (any(veg == "SoftLin") && object$taxon == "birds")
+            #    warning("veg contained SoftLin: check your assumptions")
             iveg <- extract(object$rveg, xy)
             OUT$veg <- fi(object$cveg[match(veg, names(object$cveg))] + iveg)
         }
@@ -201,12 +202,13 @@ function(object, xy, veg, soil, ...)
     if (DO$soil) {
         if (is.null(object$csoil)) {
             warning(sprintf("soil based estimates are unavailable for %s", object$species))
+            DO$comb <- FALSE
         } else {
             if (length(soil) != nrow(coordinates(xy)))
                 stop("length(soil) must equal number of points in xy")
             .check(soil, names(object$csoil))
-            if (any(soil == "SoftLin") && object$taxon == "birds")
-                warning("soil contained SoftLin: check your assumptions")
+            #if (any(soil == "SoftLin") && object$taxon == "birds")
+            #    warning("soil contained SoftLin: check your assumptions")
             isoil <- extract(object$rsoil, xy)
             rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
             ipa <- extract(rpa, xy)
@@ -236,30 +238,40 @@ function(object, xy, veg, soil, ...)
         stop("veg or soil must be provided")
     xy <- spTransform(xy, proj4string(.read_raster_template()))
     if (!missing(veg)) {
-        if (nrow(veg) != nrow(coordinates(xy)))
-            stop("nrow(veg) must equal number of points in xy")
-        .check(as.factor(colnames(veg)), names(object$cveg))
-        if (any(colnames(veg) == "SoftLin") && object$taxon == "birds")
-            warning("veg contained SoftLin: check your assumptions")
-        iveg <- extract(object$rveg, xy)
-        imatv <- t(array(iveg, dim(veg), dimnames(veg)))
-        mveg <- object$cveg[match(colnames(veg), names(object$cveg))]
-        Nveg <- fi(t(mveg + imatv)) * veg
+        if (is.null(object$cveg)) {
+            warning(sprintf("veg based estimates are unavailable for %s", object$species))
+            Nveg <- NULL
+        } else {
+            if (nrow(veg) != nrow(coordinates(xy)))
+                stop("nrow(veg) must equal number of points in xy")
+            .check(as.factor(colnames(veg)), names(object$cveg))
+            if (any(colnames(veg) == "SoftLin") && object$taxon == "birds")
+                warning("veg contained SoftLin: check your assumptions")
+            iveg <- extract(object$rveg, xy)
+            imatv <- t(array(iveg, dim(veg), dimnames(veg)))
+            mveg <- object$cveg[match(colnames(veg), names(object$cveg))]
+            Nveg <- fi(t(mveg + imatv)) * veg
+        }
     } else {
         Nveg <- NULL
     }
     if (!missing(soil)) {
-        if (nrow(soil) != nrow(coordinates(xy)))
-            stop("nrow(veg) must equal number of points in xy")
-        .check(as.factor(colnames(soil)), names(object$csoil))
-        if (any(soil == "SoftLin") && object$taxon == "birds")
-            warning("soil contained SoftLin: check your assumptions")
-        isoil <- extract(object$rsoil, xy)
-        rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
-        ipa <- extract(rpa, xy)
-        imats <- t(array(object$caspen * ipa + isoil, dim(soil), dimnames(soil)))
-        msoil <- object$csoil[match(colnames(soil), names(object$csoil))]
-        Nsoil <- fi(t(msoil + imats)) * soil
+        if (is.null(object$csoil)) {
+            warning(sprintf("soil based estimates are unavailable for %s", object$species))
+            Nsoil <- NULL
+        } else {
+            if (nrow(soil) != nrow(coordinates(xy)))
+                stop("nrow(veg) must equal number of points in xy")
+            .check(as.factor(colnames(soil)), names(object$csoil))
+            if (any(soil == "SoftLin") && object$taxon == "birds")
+                warning("soil contained SoftLin: check your assumptions")
+            isoil <- extract(object$rsoil, xy)
+            rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
+            ipa <- extract(rpa, xy)
+            imats <- t(array(object$caspen * ipa + isoil, dim(soil), dimnames(soil)))
+            msoil <- object$csoil[match(colnames(soil), names(object$csoil))]
+            Nsoil <- fi(t(msoil + imats)) * soil
+        }
     } else {
         Nsoil <- NULL
     }
