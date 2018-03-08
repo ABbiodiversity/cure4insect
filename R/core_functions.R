@@ -85,10 +85,21 @@ function(id=NULL, species="all")
         id <- as.character(id[,1L])
     if (!is.character(id))
         id <- as.character(id)
+    ## QS-to-km mapping
+    if (.validate_id(id, type="qs")) {
+         if (.verbose()) {
+            cat("matching quarter sections\n")
+            flush.console()
+        }
+        id <- qs2km(id[is %in% get_all_qsid()])
+    }
+    ## validating Row_Col IDs
     id <- id[id %in% rownames(.c4if$KT)]
     id <- sort(id)
     if (length(id) <= 0)
         stop("no spatial IDs selected")
+    if (!.validate_id(id, type="km"))
+        stop("spatial id not valid")
     id10 <- sort(unique(as.character(.c4if$KT[id, "Row10_Col10"])))
     assign("KTsub", .c4if$KT[id,,drop=FALSE],
         envir=.c4is)
@@ -492,4 +503,11 @@ qs2km <- function(qsid) {
     if (!is_loaded())
         stop("common data needed: use load_common_data")
     unique(as.character(.c4if$QT2KT[qsid]))
+}
+
+.validate_id <- function(id, type=c("km", "qs")) {
+    chr <- switch(match.arg(type),
+        "km"="_",
+        "qs"="-")
+    all(grepl(chr, id))
 }

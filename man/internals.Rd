@@ -12,6 +12,7 @@
 \alias{.get_cores}
 \alias{.check}
 \alias{.combine_veg_soil}
+\alias{.validate_id}
 \title{
 App Specific Functions and Internals
 }
@@ -35,6 +36,7 @@ app_test(...)
 .get_cores(cores=NULL)
 .check(x, ref)
 .combine_veg_soil(ipa, veg, soil)
+.validate_id(id, type=c("km", "qs"))
 }
 \arguments{
   \item{species, boot, path, version}{arguments passed to
@@ -48,7 +50,8 @@ app_test(...)
     \code{rc} is data frame with \code{Row} and \code{Col} indices for
     \code{value}, \code{rt} is raster template from
     \code{.read_raster_template}.}
-  \item{type}{type of multi-species map.}
+  \item{type}{type of multi-species map (richness or intactness)
+    or spatial ID (km or QS).}
   \item{limit}{abundance threshold for multi-species intactness reporting.}
   \item{x, ref}{checking the validity of land cover classes in \code{x}
     against the \code{ref}erence list of possible values.}

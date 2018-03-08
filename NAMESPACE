@@ -40,7 +40,8 @@ export(
     .verbose,
     .get_cores,
     .check,
-    .combine_veg_soil)
+    .combine_veg_soil,
+    .validate_id)
 
 S3method(flatten, c4iraw)
 S3method(plot_sector, c4iraw)
