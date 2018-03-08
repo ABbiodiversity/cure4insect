@@ -91,7 +91,7 @@ function(id=NULL, species="all")
             cat("matching quarter sections\n")
             flush.console()
         }
-        id <- qs2km(id[is %in% get_all_qsid()])
+        id <- qs2km(id[id %in% get_all_qsid()])
     }
     ## validating Row_Col IDs
     id <- id[id %in% rownames(.c4if$KT)]
