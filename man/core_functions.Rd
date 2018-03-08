@@ -323,6 +323,14 @@ x <- calculate_results(y)
 x
 flatten(x)
 
+## using quarter sections
+Spp <- "Ovenbird"
+QSID <- c("4-12-1-2-SE", "4-12-1-2-SW", "4-12-1-3-SE", "4-12-1-3-SW")
+qs2km(QSID) # corresponding Row_Col IDs
+subset_common_data(id=QSID, species=Spp)
+y <- load_species_data(Spp)
+flatten(calculate_results(y))
+
 ## workflow with multiple species ----------------
 load_common_data() # use as before
 ## id and species can be defined using text files

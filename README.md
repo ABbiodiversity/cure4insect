@@ -56,12 +56,25 @@ ID <- c("182_362", "182_363", "182_364", "182_365", "182_366", "182_367",
     "182_368", "182_369", "182_370", "182_371", "182_372")
 
 subset_common_data(id=ID, species=Spp)
-y <- load_species_data("Ovenbird")
+y <- load_species_data(Spp)
 
 ## calculate results and flatten to a 1-liner
 x <- calculate_results(y)
 x
 flatten(x)
+```
+
+Alternatively, `id` can refer to quarter sections
+using the `"MER-RGE-TWP-SEC-QS"` format:
+
+```R
+Spp <- "Ovenbird"
+QSID <- c("4-12-1-2-SE", "4-12-1-2-SW", "4-12-1-3-SE", "4-12-1-3-SW")
+qs2km(QSID) # corresponding Row_Col IDs
+
+subset_common_data(id=QSID, species=Spp)
+y <- load_species_data(Spp)
+flatten(calculate_results(y))
 ```
 
 #### Workflow with multiple species
