@@ -137,8 +137,8 @@ logical, if raw bootstrap abundance results should be returned.
   \item{limit}{
 numeric (0-1), species with mean abundance less than 100 * \code{limit}
 percent of the maximum abundance (current and reference combined)
-are flagged and should not be used when calculating multi-species matrics
-because the species is not effectively present in theregion.
+are flagged and should not be used when calculating multi-species metrics
+because the species is not effectively present in the region.
 }
   \item{address}{
 character, optional email address to send finished results to
