@@ -287,13 +287,16 @@ function(x, raw_boot=FALSE, limit=0.01, ...)
         stop("limit value must be between in [0, 1]")
     Cm <- list()
     df <- data.frame(SpeciesID=x$species, Taxon=x$taxon)
-    tmp <- .c4if$SP[x$species, c("CommonName", "ScientificName",
-        "TSNID", "model_region")]
+    tmp <- data.frame(.c4if$SP[x$species, c("CommonName", "ScientificName",
+        "TSNID", "model_region")], .c4if$VER[x$taxon,c("version", "yr_first",
+        "yr_last", "method", "hf", "veg", "model")])
     ## if full data not loaded, we get NULL
-    if (is.null(tmp)) {
+    if (nrow(tmp) < 1L) {
         warning("load_common_data before flattening to avoid some NAs")
         tmp <- data.frame(CommonName=NA, ScientificName=NA,
-            TSNID=NA, model_region=NA)
+            TSNID=NA, model_region=NA,
+            version=NA, yr_first=NA, yr_last=NA, method=NA,
+            hf=NA, veg=NA, model=NA)
     } else {
         tmp <- droplevels(tmp)
     }
