@@ -1,3 +1,5 @@
+## todo: keep model_north and model_south columns, columns to rename
+
 flatten <- function (x, ...) UseMethod("flatten")
 flatten.c4iraw <-
 function(x, raw_boot=FALSE, limit=0.01, ...)
