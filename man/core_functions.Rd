@@ -50,12 +50,12 @@ rasterize_results(y)
 
 report_all(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
 flatten(x, ...)
-\method{flatten}{c4iraw}(x, raw_boot=FALSE, limit=0.01, ...)
+\method{flatten}{c4iraw}(x, raw_boot=FALSE, limit=NULL, ...)
 
 custom_report(id=NULL, species="all",
     path=NULL, version=NULL, address=NULL,
     boot=TRUE, level=0.9, cores=NULL,
-    raw_boot=FALSE, limit=0.01)
+    raw_boot=FALSE, limit=NULL)
 
 set_options(...)
 overlay_polygon(ply)
@@ -74,7 +74,7 @@ predict_mat(object, ...)
 \method{predict_mat}{c4ispclim}(object, xy, veg, soil, ...)
 combine_veg_soil(xy, veg, soil)
 make_multispecies_map(type=c("richness", "intactness"),
-    path=NULL, version=NULL, clip=TRUE, limit=0.01)
+    path=NULL, version=NULL, clip=TRUE, limit=NULL)
 }
 \arguments{
   \item{path}{
@@ -139,6 +139,7 @@ numeric (0-1), species with mean abundance less than 100 * \code{limit}
 percent of the maximum abundance (current and reference combined)
 are flagged and should not be used when calculating multi-species metrics
 because the species is not effectively present in the region.
+Defaults to \code{getOption("cure4insect")$limit} when \code{NULL}.
 }
   \item{address}{
 character, optional email address to send finished results to

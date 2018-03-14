@@ -2,8 +2,10 @@
 
 flatten <- function (x, ...) UseMethod("flatten")
 flatten.c4iraw <-
-function(x, raw_boot=FALSE, limit=0.01, ...)
+function(x, raw_boot=FALSE, limit=NULL, ...)
 {
+    if (is.null(limit))
+        limit <- getOption("cure4insect")$limit
     if (limit %)(% c(0,1))
         stop("limit value must be between in [0, 1]")
     Cm <- list()
@@ -150,7 +152,7 @@ function(id=NULL, species="all",
 path=NULL, version=NULL,
 address=NULL, boot=TRUE,
 level=0.9, cores=NULL,
-raw_boot=FALSE, limit=0.01)
+raw_boot=FALSE, limit=NULL)
 {
     load_common_data(path=path, version=version)
     subset_common_data(id=id, species=species)

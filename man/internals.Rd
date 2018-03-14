@@ -27,7 +27,7 @@ app_test(...)
 
 .load_species_data(species, boot=TRUE, path=NULL, version=NULL, taxon)
 .calculate_results(y, level=0.9, .c4is)
-.calculate_limit(y, limit=0.01)
+.calculate_limit(y, limit=NULL)
 .report_all_by1(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
 .read_raster_template()
 .make_raster(value, rc, rt)

@@ -312,7 +312,7 @@ function(object, xy, veg, soil, ...)
 ## limit: threshold for intactness average
 make_multispecies_map <-
 function(type=c("richness", "intactness"),
-path=NULL, version=NULL, clip=TRUE, limit=0.01)
+path=NULL, version=NULL, clip=TRUE, limit=NULL)
 {
     type <- match.arg(type)
     SPP <- rownames(.c4is$SPsub)

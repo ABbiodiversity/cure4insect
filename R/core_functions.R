@@ -252,8 +252,12 @@ function(y, level=0.9, .c4is)
     out
 }
 .calculate_limit <-
-function(y, limit=0.01)
+function(y, limit=NULL)
 {
+    if (is.null(limit))
+        limit <- getOption("cure4insect")$limit
+    if (limit %)(% c(0,1))
+        stop("limit value must be between in [0, 1]")
     cn <- c("Native", "Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")
     MAX <- max(quantile(rowSums(y$SA.Curr), 0.99), quantile(rowSums(y$SA.Ref), 0.99))
     PIX <- rownames(.c4is$KTsub)
