@@ -255,7 +255,7 @@ function(y, level=0.9, .c4is)
 function(y, limit=NULL)
 {
     if (is.null(limit))
-        limit <- getOption("cure4insect")$limit
+        limit <- as.numeric(getOption("cure4insect")$limit)
     if (limit %)(% c(0,1))
         stop("limit value must be between in [0, 1]")
     cn <- c("Native", "Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")

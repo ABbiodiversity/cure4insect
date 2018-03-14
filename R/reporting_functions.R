@@ -5,7 +5,7 @@ flatten.c4iraw <-
 function(x, raw_boot=FALSE, limit=NULL, ...)
 {
     if (is.null(limit))
-        limit <- getOption("cure4insect")$limit
+        limit <- as.numeric(getOption("cure4insect")$limit)
     if (limit %)(% c(0,1))
         stop("limit value must be between in [0, 1]")
     Cm <- list()
@@ -15,7 +15,7 @@ function(x, raw_boot=FALSE, limit=NULL, ...)
         "yr_last", "method", "hf", "veg", "model")])
     ## if full data not loaded, we get NULL
     if (nrow(tmp) < 1L) {
-        warning("load_common_data before flattening to avoid some NAs")
+        #warning("load_common_data before flattening to avoid some NAs")
         tmp <- data.frame(CommonName=NA, ScientificName=NA,
             TSNID=NA, model_region=NA,
             version=NA, yr_first=NA, yr_last=NA, method=NA,

@@ -50,6 +50,7 @@ app_test(...)
     \code{rc} is data frame with \code{Row} and \code{Col} indices for
     \code{value}, \code{rt} is raster template from
     \code{.read_raster_template}.}
+  \item{id}{spatial IDs.}
   \item{type}{type of multi-species map (richness or intactness)
     or spatial ID (km or QS).}
   \item{limit}{abundance threshold for multi-species intactness reporting.}
