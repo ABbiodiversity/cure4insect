@@ -379,3 +379,10 @@ path=NULL, version=NULL, clip=TRUE, limit=NULL)
         r0 <- trim(r0, values = NA)
     r0
 }
+
+make_subset_map <-
+function()
+{
+    .make_raster(ifelse(rownames(.c4if$KT) %in% rownames(.c4is$KTsub), 1, 0),
+        .c4if$KT, .read_raster_template())
+}

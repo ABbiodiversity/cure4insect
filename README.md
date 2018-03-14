@@ -191,6 +191,9 @@ plot(AB, col="grey")
 plot(ply, col="red", add=TRUE)
 ```
 
+Use the `make_subset_map()` function to get a raster map of
+the spatial selection.
+
 #### Raster objects and maps
 
 The result is a raster stack object with the following layers:

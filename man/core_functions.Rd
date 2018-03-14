@@ -29,6 +29,7 @@
 \alias{make_multispecies_map}
 \alias{get_all_qsid}
 \alias{qs2km}
+\alias{make_subset_map}
 \title{
 Core Functions for Custom Reporting
 }
@@ -66,6 +67,7 @@ get_species_table(taxon = "all")
 get_version_info()
 get_all_qsid()
 qs2km(qsid)
+make_subset_map()
 
 load_spclim_data(species, boot=TRUE, path=NULL, version=NULL)
 get_levels()
@@ -204,6 +206,7 @@ surest way to boost performance.
 
 \code{subset_common_data} subsets the common data and makes the information
 available in the R session.
+\code{make_subset_map} makes a raster map of the spatial selection.
 
 \code{load_species_data} load data of a single species
 and returns it.

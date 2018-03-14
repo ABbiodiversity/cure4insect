@@ -24,6 +24,7 @@ export(
     get_levels,
     get_version_info,
     make_multispecies_map,
+    make_subset_map,
     get_all_qsid,
     qs2km)
 
