@@ -62,7 +62,6 @@ rasterize_results <- function(y)
     KT$SI2[is.na(KT$SI2)] <- -1
     KT$SE[is.na(KT$SE)] <- -1
     KT$CV[is.na(KT$CV)] <- -1
-    requireNamespace("raster")
     rt <- .read_raster_template()
     cn <- c("NC", "NR", "SI", "SI2", "SE", "CV")
     rl <- lapply(cn, function(z) {
@@ -318,7 +317,6 @@ path=NULL, version=NULL, clip=TRUE, limit=NULL)
     SPP <- rownames(.c4is$SPsub)
     n <- length(SPP)
     KEEP <- rep(TRUE, n)
-    requireNamespace("raster")
     rt <- .read_raster_template()
     rmask <- .make_raster(ifelse(rownames(.c4if$KT) %in% rownames(.c4is$KTsub), 1, 0),
         .c4if$KT, rt)
