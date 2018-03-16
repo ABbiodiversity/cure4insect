@@ -61,9 +61,9 @@ custom_report(id=NULL, species="all",
 set_options(...)
 overlay_polygon(ply)
 get_all_id()
-get_all_species(taxon = "all")
+get_all_species(taxon = "all", habitat, status)
 get_id_locations()
-get_species_table(taxon = "all")
+get_species_table(taxon = "all", habitat, status)
 get_version_info()
 get_all_qsid()
 qs2km(qsid)
@@ -160,9 +160,17 @@ with geographic coordinates corresponding to \code{veg} and \code{soil}
 factor, vegetation/soil classes. One of the two or both must be provided.
 }
   \item{taxon}{
-character, return \code{"all"} species, or a subset (\code{"birds"},
-\code{"lichens"}, \code{"mammals"}, \code{"mites"}, \code{"mosses"},
-\code{"vplants"}).
+character, return \code{"all"} species, or a subset
+(one or more of \code{"birds"}, \code{"lichens"}, \code{"mammals"},
+\code{"mites"}, \code{"mosses"}, \code{"vplants"}).
+}
+  \item{habitat}{
+character, one of \code{"upland"} or \code{"lowland"} to indicate
+expert based habitat associations in Alberta.
+}
+  \item{status}{
+character, one of \code{"native"} or \code{"nonnative"} to indicate
+expert based status in Alberta.
 }
   \item{ply}{
 an object of class 'SpatialPolygons' defined by the 'sp' package.
@@ -189,6 +197,7 @@ Current options are:
 \code{path} (path to results),
 \code{version} (version of results),
 \code{verbose} (default is 1, value 0 suppresses the messages),
+\code{limit} (abundance threshold for regional intactness calculations),
 \code{cores} (number of cores to use in parallel calculations,
 uses forking on Linux/Unix/Mac and socket clusters on Windows, default is 1),
 \code{sender} (email of sender),

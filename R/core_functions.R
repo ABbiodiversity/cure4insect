@@ -310,21 +310,38 @@ get_id_locations <- function() {
     .c4if$XY
 }
 
-get_species_table <- function(taxon="all")  {
+get_species_table <-
+function(taxon="all", habitat, status)
+{
     if (!is_loaded())
         stop("common data needed: use load_common_data")
     taxon <- match.arg(taxon, c("all","birds","lichens","mammals",
-        "mites","mosses","vplants"))
+        "mites","mosses","vplants"), several.ok=TRUE)
     out <- .c4if$SP
-    if (taxon == "all")
-        out else out[out$taxon==taxon,]
+    keep <- if (taxon == "all")
+        rep(TRUE, nrow(out)) else out$taxon %in% taxon
+    cat(table(out$habitat_assoc))
+    if (!missing(habitat)) {
+        habitat <- match.arg(habitat, c("upland", "lowland"))
+        keep <- if (habitat == "upland") {
+            keep & out$habitat_assoc == "Upland"
+        } else {
+            keep & out$habitat_assoc == "Lowland"
+        }
+    }
+    if (!missing(status)) {
+        status <- match.arg(status, c("native", "nonnative"))
+        keep <- if (status == "native")
+            keep & out$native else keep & !out$native
+    }
+    out[keep,,drop=FALSE]
 }
 
 get_all_id <- function()
     rownames(coordinates(get_id_locations()))
 
-get_all_species <- function(taxon="all")
-    rownames(get_species_table(taxon=taxon))
+get_all_species <- function(taxon="all", habitat, status)
+    rownames(get_species_table(taxon, habitat, status))
 
 .verbose <- function() {
     x <- getOption("cure4insect")$verbose
