@@ -326,7 +326,6 @@ function(taxon="all", habitat, status)
     out <- .c4if$SP
     keep <- if (taxon == "all")
         rep(TRUE, nrow(out)) else out$taxon %in% taxon
-    cat(table(out$habitat_assoc))
     if (!missing(habitat)) {
         habitat <- match.arg(habitat, c("upland", "lowland"))
         keep <- if (habitat == "upland") {
