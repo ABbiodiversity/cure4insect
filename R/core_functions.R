@@ -60,14 +60,20 @@ function(id=NULL, species="all")
 
     if (!is.null(dim(species))) # if provided as table, use 1st col
         species <- as.character(species[,1L])
-    vals <- c("all","birds","lichens","mammals","mites","mosses","vplants")
+    vals <- c("all","birds","lichens","mammals","mites","mosses","vplants",
+        "upland", "lowland", "native", "nonnat")
     x <- .c4if$SP
-    if (any(species %in% vals)) {
-        species <- species[species %in% vals] # drop all else
-        SPPfull <- if (length(species) == 1L && species == "all")
-            rownames(x) else rownames(x)[x$taxon %in% species]
+    if (length(species) == 1L && tolower(species)  %in% vals) {
+        if (species %in%  c("all", "birds","lichens","mammals","mites","mosses","vplants"))
+            SPPfull <- get_all_species(taxon=species)
+        if (species %in% c("upland", "lowland"))
+            SPPfull <- get_all_species(habitat=species)
+        if (species %in% c("native", "nonnat"))
+            SPPfull <- get_all_species(status=species)
     } else {
         SPPfull <- species
+        any(SPPfull %ni% rownames(x))
+            stop("all species must ba valid IDs")
     }
     SPPfull <- rownames(x)[rownames(x) %in% SPPfull]
     if (length(SPPfull) <= 0)

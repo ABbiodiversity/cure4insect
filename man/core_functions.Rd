@@ -111,10 +111,12 @@ has the corresponding coordinates in NAD_1983_10TM_AEP_Forest projection
 A list of species defined by the field SpeciesID in the table
 \url{http://ftp.public.abmi.ca/species.abmi.ca/reports/2017/data/species-info.csv}.
 If \code{species} is a matrix-like object, values of the 1st column are taken.
-The following values are also accepted to define 'all' species, or a subset based on
-taxonomic groups: \code{"all"} (all groups/species),
-or one or more of \code{"birds"}, \code{"lichens"}, \code{"mammals"},
-\code{"mites"}, \code{"mosses"}, \code{"vplants"}.
+The following values are also accepted to define groups of species:
+\code{"all"} (all groups/species),
+or one of the taxonomic (\code{"birds"}, \code{"lichens"}, \code{"mammals"},
+\code{"mites"}, \code{"mosses"}, \code{"vplants"}) or other
+(\code{"upland"}, \code{"lowland"}, \code{"native"}, \code{"nonnative"}) groups.
+For a combination of filters, see \code{get_all_species}.
 }
   \item{boot}{
 logical, if confidence intervals for abundance and intactness are desired.
