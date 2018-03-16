@@ -72,8 +72,8 @@ function(id=NULL, species="all")
             SPPfull <- get_all_species(status=species)
     } else {
         SPPfull <- species
-        any(SPPfull %ni% rownames(x))
-            stop("all species must ba valid IDs")
+        if (any(SPPfull %ni% rownames(x)))
+            stop("all species must be valid IDs")
     }
     SPPfull <- rownames(x)[rownames(x) %in% SPPfull]
     if (length(SPPfull) <= 0)
