@@ -377,3 +377,7 @@ qs2km <- function(qsid) {
         "qs"="-")
     all(grepl(chr, id))
 }
+
+get_subset_info <- function() {
+    c(species=nrow(.c4is$SPsub), pixels=nrow(.c4is$KTsub))
+}

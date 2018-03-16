@@ -26,7 +26,8 @@ export(
     make_multispecies_map,
     make_subset_map,
     get_all_qsid,
-    qs2km)
+    qs2km,
+    get_subset_info)
 
 export(
     app_read_csv,
