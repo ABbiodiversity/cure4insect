@@ -381,3 +381,9 @@ qs2km <- function(qsid) {
 get_subset_info <- function() {
     c(species=nrow(.c4is$SPsub), pixels=nrow(.c4is$KTsub))
 }
+
+get_subset_id <- function()
+    rownames(.c4is$KTsub)
+
+get_subset_species <- function()
+    rownames(.c4is$SPsub)
