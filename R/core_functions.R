@@ -128,8 +128,6 @@ function(species, boot=TRUE, path=NULL, version=NULL)
     if (is.null(version))
         version <- opts$version
     taxon <- as.character(.c4if$SP[species, "taxon"])
-    if (taxon != "birds" && boot)
-        warning("bootstrap based estimates are being checked: treat CI results with caution")
     .load_species_data(species=species,
         boot=boot, path=path, version=version, taxon=taxon)
 }
