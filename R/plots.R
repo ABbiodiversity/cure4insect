@@ -187,6 +187,9 @@ function(Curr, Ref, RefTotal, regional=TRUE, main, col, ylim, ylab, ...)
         ymax <- max(ymax,max(total.effect)+0.08*(max(total.effect)-min(total.effect,0)))
         ymin <- min(ymin,min(total.effect)-0.08*(max(total.effect,0)-min(total.effect)))
     }
+    total.effect0 <- total.effect
+    total.effect[total.effect > ymax] <- ymax
+    total.effect[total.effect < ymin] <- ymin
     yax <- pretty(c(ymin,ymax))
     op <- par(las=1, xpd = TRUE)
     on.exit(par(op))
@@ -208,7 +211,7 @@ function(Curr, Ref, RefTotal, regional=TRUE, main, col, ylim, ylab, ...)
     y <- total.effect+0.025*(ymax-ymin)*sign(total.effect)
     if (abs(y[3]-y[4])<0.05*(ymax-ymin))
         y[3:4]<-mean(y[3:4])+(c(-0.015,0.015)*(ymax-ymin))[rank(y[3:4])]
-    text(1:5,y,paste(sprintf("%.1f",total.effect),"%",sep=""),col="darkblue",cex=1.2)
+    text(1:5,y,paste(sprintf("%.1f",total.effect0),"%",sep=""),col="darkblue",cex=1.2)
     mtext(side=3,line=1,at=0,adj=0, main, cex=1.4,col="grey40")
     invisible(total.effect)
 }
