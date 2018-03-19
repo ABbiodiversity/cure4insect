@@ -25,7 +25,7 @@ load_common_data()
 # Introduction
 
 This example species report has been produced using the
-**cure4insect** [R](https://www.r-project.org/) package 
+**cure4insect** [R](https://www.r-project.org/) package
 which a decision support tool that provides an interface to enable
 custom reporting for intactness and sector effects
 based on estimates and predictions created by the [Alberta
@@ -46,11 +46,11 @@ for (i in 1:length(info))
 
 ## Habitat associations in northern Alberta
 
-Models were used to show how species' relative abundance differed among 
+Models were used to show how species' relative abundance differed among
 vegetation and human footprint types in the Boreal and Foothills regions of
-Alberta. Predicted species abundance in each habitat type is shown with bars. 
-Vertical lines indicate 90% confidence intervals. 
-Dots within the forested habitat types show predicted species abundance in 
+Alberta. Predicted species abundance in each habitat type is shown with bars.
+Vertical lines indicate 90% confidence intervals.
+Dots within the forested habitat types show predicted species abundance in
 cutblocks of various ages.
 
 ```{r hab-veg,echo=FALSE,fig.height=6,fig.width=12}
@@ -64,14 +64,14 @@ plot_abundance(species, type="veg_coef", ylim=ylim)
 
 ## Habitat associations in southern Alberta
 
-Models were used to show how species, relative abundance differed among soil 
-and human footprint types in the grassland and parkland regions of 
-Alberta. Due to natural disturbances and vegetation succession, 
-varying amounts of aspen and other trees may be present on each soil type; 
-the presence/absence of trees greatly affects the presence and abundance of 
-many biota. As such, information is presented twice for southern Alberta: 
-once for sites with trees present, and onec for sites without trees present. 
-Predicted species abundance in each soil/human footprint type is shown with bars. 
+Models were used to show how species, relative abundance differed among soil
+and human footprint types in the grassland and parkland regions of
+Alberta. Due to natural disturbances and vegetation succession,
+varying amounts of aspen and other trees may be present on each soil type;
+the presence/absence of trees greatly affects the presence and abundance of
+many biota. As such, information is presented twice for southern Alberta:
+once for sites with trees present, and onec for sites without trees present.
+Predicted species abundance in each soil/human footprint type is shown with bars.
 Vertical lines indicate 90% confidence intervals.
 
 ```{r hab-soil,echo=FALSE,fig.height=6,fig.width=12}
@@ -83,9 +83,9 @@ par(op)
 
 ## Linear footprint relationships
 
-For linear footprint in northern Alberta. 
-The pairs of points show the change in relative abundance expected between the 
-average habitat with no linear footprint (left point) and average habitat when 
+For linear footprint in northern Alberta.
+The pairs of points show the change in relative abundance expected between the
+average habitat with no linear footprint (left point) and average habitat when
 10% linear footprint is present (right point).
 
 ```{r hab-lin,echo=FALSE,fig.height=6,fig.width=12}
@@ -110,22 +110,22 @@ class(z) <- c("c4idf", class(z))
 
 ## Relative abundance and prediction uncertainty
 
-Habitat association models, plus models describing how species varied 
-spatially and with climate gradients were used to predict species abundance in 
-1 km$^2$ spatial units under reference conditions. 
-Predictions of relative abundance of the species in each 1 km$^2$ unit were made 
-based on the vegetation and human footprint present in the 1 km$^2$ unit in 
-(_current condition_) and 
-after all human footprint in the 1 km$^2$ unit had been 'backfilled' based on native 
-vegetation in the surrounding area (_reference condition_). 
-Pixels depicted in red are predicted to 
-have the highest abundance for the species, grading through light tan to dark 
-blue where the species is predicted to be less abundant or absent. 
+Habitat association models, plus models describing how species varied
+spatially and with climate gradients were used to predict species abundance in
+1 km$^2$ spatial units under reference conditions.
+Predictions of relative abundance of the species in each 1 km$^2$ unit were made
+based on the vegetation and human footprint present in the 1 km$^2$ unit in
+(_current condition_) and
+after all human footprint in the 1 km$^2$ unit had been 'backfilled' based on native
+vegetation in the surrounding area (_reference condition_).
+Pixels depicted in red are predicted to
+have the highest abundance for the species, grading through light tan to dark
+blue where the species is predicted to be less abundant or absent.
 
-To highlight the degree of uncertainty in the models, 
-we estimated the prediction _standard error_ and _coefficient of variation_ 
-for each 10 km x 10 km units based on bootstrap predictions of current abundance. 
-10 km x 10 km units depicted in red have the higheststandard error, 
+To highlight the degree of uncertainty in the models,
+we estimated the prediction _standard error_ and _coefficient of variation_
+for each 10 km x 10 km units based on bootstrap predictions of current abundance.
+10 km x 10 km units depicted in red have the higheststandard error,
 while 10 km x 10 km units in dark green have the lowest.
 
 ```{r raster-plots,echo=FALSE,fig.height=12,fig.width=8}
@@ -146,19 +146,18 @@ par(op)
 
 Intactness compares the current and reference abundances in each pixel.
 
-For each 1 km$^2$ unit the % ratio between predicted current and reference 
-conditions was determined. In 1 km$^2$ units depicted in green the species 
-was predicted to have higher abundance under present conditions than under 
-reference conditions, with the opposite true for 1 km$^2$ units depicted in pink. 
-The intensity of green and pink depict the relative magnitude of increase or 
-decrease for the species between reference and current conditions. 
+For each 1 km$^2$ unit the % ratio between predicted current and reference
+conditions was determined. In 1 km$^2$ units depicted in green the species
+was predicted to have higher abundance under present conditions than under
+reference conditions, with the opposite true for 1 km$^2$ units depicted in pink.
+The intensity of green and pink depict the relative magnitude of increase or
+decrease for the species between reference and current conditions.
 
 ```{r raster-si2,echo=FALSE,fig.height=6,fig.width=4}
 col3 <- colorRampPalette(c("#C51B7D","#E9A3C9","#FDE0EF","#E6F5D0","#A1D76A","#4D9221"))(100)
 op <- par(mfrow=c(1,1), mar=c(1,1,1,1))
 plot(r[["SI2"]], col=col3, axes=FALSE, box=FALSE, main="Species intactness")
 par(op)
-
 ```
 
 The table shows provincial abundance totals and corresponding intactness values:
@@ -172,8 +171,8 @@ kable(df1, digits=2)
 
 ## Sector effects
 
-The effect of each type of human development (herein called a sector) 
-on a species relative abundance is the product of the area of the sector's 
+The effect of each type of human development (herein called a sector)
+on a species relative abundance is the product of the area of the sector's
 footprint, and the average "per unit area" effect of that sector's footprint
 on the species relative abundance (_unit effect_). The combination of the two
 results in the regional total effect on expected abundance of a species (_regional total effect_).
@@ -251,7 +250,6 @@ op <- par(mfrow=c(1,2), mar=c(1,1,1,1))
 plot(sqrt(rreg[["NC"]]), col=col1, axes=FALSE, box=FALSE, main="Current abundance in OSA")
 plot(sqrt(rreg[["NR"]]), col=col1, axes=FALSE, box=FALSE, main="Reference abundance in OSA")
 par(op)
-
 ```
 
 
