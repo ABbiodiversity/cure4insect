@@ -25,8 +25,6 @@ function(x, raw_boot=FALSE, limit=NULL, ...)
     }
     df <- data.frame(df, tmp)
     rownames(df) <- x$species
-    df$Model <- df$model_region
-    df$model_region <- NULL
     df$Mean <- x$mean
     df$Max <- x$max
     df$Limit <- limit
