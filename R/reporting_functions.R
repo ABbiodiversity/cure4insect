@@ -11,13 +11,15 @@ function(x, raw_boot=FALSE, limit=NULL, ...)
     Cm <- list()
     df <- data.frame(SpeciesID=x$species, Taxon=x$taxon)
     tmp <- data.frame(.c4if$SP[x$species, c("CommonName", "ScientificName",
-        "TSNID", "model_region")], .c4if$VER[x$taxon,c("version", "yr_first",
+        "TSNID", "model_north", "model_south", "model_region", "habitat_assoc", "native")],
+        .c4if$VER[x$taxon,c("version", "yr_first",
         "yr_last", "method", "hf", "veg", "model")])
     ## if full data not loaded, we get NULL
     if (nrow(tmp) < 1L) {
         #warning("load_common_data before flattening to avoid some NAs")
         tmp <- data.frame(CommonName=NA, ScientificName=NA,
-            TSNID=NA, model_region=NA,
+            TSNID=NA, model_north=NA, model_south=NA, model_region=NA,
+            habitat_assoc=NA, native=NA,
             version=NA, yr_first=NA, yr_last=NA, method=NA,
             hf=NA, veg=NA, model=NA)
     } else {
@@ -29,6 +31,7 @@ function(x, raw_boot=FALSE, limit=NULL, ...)
     df$Max <- x$max
     df$Limit <- limit
     KEEP <- x$mean >= x$max * limit
+    df$Keep <- KEEP
     if (!KEEP)
         Cm[[length(Cm)+1]] <- paste0("Regional mean abundance <",
             round(100*limit,1), "% of provincial maximum.")
