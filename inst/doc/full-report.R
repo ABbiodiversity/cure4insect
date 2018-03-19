@@ -3,6 +3,7 @@
 library(jsonlite)
 library(cure4insect)
 load_common_data()
+
 SPP <- c("AlderFlycatcher", "Achillea.millefolium")
 
 library(rgdal)
@@ -13,16 +14,15 @@ ID <- overlay_polygon(ply)
 #SPP <- get_all_species()
 #ID <- get_all_id()
 
-setwd("~/GoogleWork/abmi/c4i_experiments/_site")
+base <-"~/GoogleWork/abmi/c4i_experiments/_site"
 
 subset_common_data(ID, SPP)
+species <- SPP
+id <- ID
 #.c4if=cure4insect:::.c4if
 #.c4is=cure4insect:::.c4is
 
-## settings
-ver_info <- get_version_info()
-sub_info <- get_subset_info()
-sub_map <- make_subset_map()
+## species listing
 
 sptab <- get_species_table()[get_subset_species(),,drop=FALSE]
 sptab$Species <- as.character(sptab$Species)
@@ -38,17 +38,166 @@ sptab$display <- ifelse(as.character(sptab$Species) ==
     paste0(sptab$CommonName, " (", sptab$ScientificName, ")"))
 sptab$display <- as.character(sptab$display)
 
-f <- file("species/specieslist.js")
+f <- file(file.path(base, "species/specieslist.js"))
 js1 <- c("var species = ", toJSON(sptab$display),
     "\n\nvar link = ", toJSON(rownames(sptab)))
 cat(js1, file=f) # --> save this into specieslist.js
 close(f)
 
+## settings info
+ver_info <- get_version_info()
+sub_info <- get_subset_info()
+
+f <- file(file.path(base, "settings/settings.js"))
+cat("var selection =", toJSON(sub_info), file=f)
+close(f)
+
+toJSON(sub_info, "values", pretty=TRUE)
+toJSON(ver_info, "values", pretty=TRUE)
+#toJSON(ver_info[1,], "col", pretty=TRUE) # use this per species
+
+## settings images
+sub_map <- make_subset_map()
+#svg("settings/images/selection.svg", height=9, width=6)
+png(file.path(base, "settings/images/selection.png"),
+    height=900*2, width=600*2, res=72*2, pointsize = 18)
+op <- par(mar=c(0.5, 3, 1, 0))
+plot(sub_map, legend=FALSE, axes=FALSE, box=FALSE,
+    col=colorRampPalette(c("#e5f5f9", "#2ca25f"))(2))
+legend("bottomleft", bty="n", title="Legend", fill=c("#e5f5f9", "#2ca25f"),
+    legend=c("Not selected", "Selected"), border=NA)
+par(op)
+dev.off()
+
+## single species
+
+rt <- .read_raster_template()
+rmask <- sub_map
+rmask[rmask == 0] <- NA
+rreg0 <- mask(rt, rmask)
+rreg0 <- trim(rreg0, values = NA)
+ar <- diff(bbox(rreg0)[2,])/diff(bbox(rreg0)[1,])
+
+spp <- species[1]
+
+y <- load_species_data(spp)
+x <- calculate_results(y)
+
+z <- flatten(x)
+z$tnice <- switch(as.character(z$Taxon),
+    "birds"="Birds",
+    "lichens"="Lichens",
+    "mammals"="Mammals",
+    "mites"="Soil Mites",
+    "mosses"="Bryophytes",
+    "vplants"="Vascular plants")
+z$display <- ifelse(is.na(z$CommonName),
+    paste0(z$ScientificName),
+    paste0(z$CommonName, " (", z$ScientificName, ")"))
+f <- file(file.path(base, "species", spp, "data.js"))
+cat("var data =", toJSON(z, pretty=TRUE, digits=2), file=f)
+close(f)
+
+
+r <- rasterize_results(y)
+rreg <- mask(r, rmask)
+rreg <- trim(rreg, values = NA)
+
+col1 <- colorRampPalette(c('#ffffe5','#f7fcb9','#d9f0a3','#addd8e','#78c679',
+    '#41ab5d','#238443','#006837','#004529'))(100)
+col2 <- colorRampPalette(c('#fff7f3','#fde0dd','#fcc5c0','#fa9fb5','#f768a1',
+    '#dd3497','#ae017e','#7a0177','#49006a'))(100)
+col3 <- colorRampPalette(c('#762a83','#9970ab','#c2a5cf','#e7d4e8','#f7f7f7',
+    '#d9f0d3','#a6dba0','#5aae61','#1b7837'))(101)
+SIrange <- pmax(0, pmin(100, round(range(values(rreg[["SI"]]),na.rm=TRUE)))) + 1
+col3 <- col3[SIrange[1]:SIrange[2]]
+col4 <- colorRampPalette(c('#810f7c', '#ffffd4', '#006d2c'))(201)
+SI2range <- pmax(0, pmin(200, round(range(values(rreg[["SI2"]]),na.rm=TRUE)))) + 1
+col4 <- col4[SI2range[1]:SI2range[2]]
+Nmax1 <- max(values(rreg[["NC"]]),na.rm=TRUE)
+Nmax0 <- max(values(rreg[["NR"]]),na.rm=TRUE)
+Nmax <- max(Nmax1, Nmax0)
+values(rreg[["NC"]])[which(values(rreg[["NC"]]) == Nmax1)] <- Nmax
+values(rreg[["NR"]])[which(values(rreg[["NR"]]) == Nmax0)] <- Nmax
+
+
+png(file.path(base, "species", spp, "/images/map-nc.png"),
+    width=1000, height=1000*ar, res=72*2)
+op <- par(mar=c(0.5, 3, 1, 0))
+plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+plot(rreg[["NC"]], col=col1, add=TRUE)
+par(op)
+dev.off()
+
+png(file.path(base, "species", spp, "/images/map-nr.png"),
+    width=1000, height=1000*ar, res=72*2)
+op <- par(mar=c(0.5, 3, 1, 0))
+plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+plot(rreg[["NR"]], col=col1, add=TRUE)
+par(op)
+dev.off()
+
+png(file.path(base, "species", spp, "/images/map-se.png"),
+    width=1000, height=1000*ar, res=72*2)
+op <- par(mar=c(0.5, 3, 1, 0))
+plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+plot(rreg[["SE"]], col=col2, add=TRUE)
+par(op)
+dev.off()
+
+png(file.path(base, "species", spp, "/images/map-cv.png"),
+    width=1000, height=1000*ar, res=72*2)
+op <- par(mar=c(0.5, 3, 1, 0))
+plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+plot(rreg[["CV"]], col=col2, add=TRUE)
+par(op)
+dev.off()
+
+png(file.path(base, "species", spp, "/images/map-si.png"),
+    width=1000, height=1000*ar, res=72*2)
+op <- par(mar=c(0.5, 3, 1, 0))
+plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+plot(rreg[["SI"]], col=col3, add=TRUE)
+par(op)
+dev.off()
+
+png(file.path(base, "species", spp, "/images/map-si2.png"),
+    width=1000, height=1000*ar, res=72*2)
+op <- par(mar=c(0.5, 3, 1, 0))
+plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+plot(rreg[["SI2"]], col=col4, add=TRUE)
+par(op)
+dev.off()
+
+.plot_sector2(
+            Curr=x$sector["Current",],
+            Ref=x$sector["Reference",],
+            RefTotal=x$intactness["Reference", 1],
+            regional=FALSE, ylim=c(-100,100), main="Effects on population under footprint")
+
+png(file.path(base, "species", spp, "/images/sector-regional.png"),
+    width=1000, height=1000, res=72*2)
+plot_sector(x, type="regional", main="Effects on regional population",
+    ylim=c(-100, 100))
+dev.off()
+
+png(file.path(base, "species", spp, "/images/sector-underhf.png"),
+    width=1000, height=1000, res=72*2)
+plot_sector(x, type="underhf", "Effects on population under footprint",
+    ylim=c(-100, 100))
+dev.off()
+
+png(file.path(base, "species", spp, "/images/sector-unit.png"),
+    width=1000, height=1000, res=72*2)
+plot_sector(x, type="unit", "Regional effects per unit area")
+dev.off()
+
+
 ## 1.
 ## keep everything in zip
 ## unzip
-## save js data files (settings, species)
-## save images (settings)
+## OK -- save js data files (settings, species)
+## OK -- save images (settings)
 ## 2.
 ## use 1-spp template, create dir and /species/spp/index.html
 ## save images
