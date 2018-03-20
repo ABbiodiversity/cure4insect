@@ -115,7 +115,7 @@ $(document).ready(function() {
   $('#spp-search .typeahead').typeahead({
     hint: true,
     highlight: true,
-    minLength: 1
+    minLength: 0
   }, {
     name: 'species',
     source: substringMatcher(species),
@@ -138,7 +138,7 @@ $(document).ready(function() {
        return val === arrVal;
     });
   }
-  
+
   // links to species page
   $('#spp-select').pressEnter(function(){
     var spp = $("#spp-select").val();
