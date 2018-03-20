@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-  $("#footer").html('&copy; <a href="http://www.abmi.ca/">Alberta Biodiversity Monitoring Institute</a> (2014&ndash;' + (new Date()).getFullYear() + ') under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> license.');
+  $("#footer").html('&copy; <a href="http://www.abmi.ca/" target=_blank>Alberta Biodiversity Monitoring Institute</a> (2014&ndash;' + (new Date()).getFullYear() + ') under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target=_blank>CC BY-SA 4.0</a> license.<br/>Made with <a href="https://github.com/ABbiodiversity/cure4insect#readme" target=_blank>cure4insect</a>.');
 
   // launch modal
   $(".image-modal").click(function(){
