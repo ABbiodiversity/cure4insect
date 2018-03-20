@@ -1,11 +1,16 @@
 $(document).ready(function(){
 
   // data based rendering
-  $("#title").text(data[0].display + ' [' + data[0].tnice + ']');
+  $("#title").html(data[0].display + ' &ndash; ' + data[0].tnice);
   if (data[0].Keep == true) {
     $("#tag-si").addClass("is-success");
     var SI = Math.round(data[0].SI_Est);
-    $("#tag-si").text(SI + '%');
+    if (data[0].SI2_Est > 100) {
+      var arrow = '<span class="icon"><i class="fa fa-arrow-up"></i></span>'
+    } else {
+      var arrow = '<span class="icon"><i class="fa fa-arrow-down"></i></span>'
+    }
+    $("#tag-si").html('<span>' + SI + '%</span> ' + arrow);
     if (SI > 90) {
       $("#tag-si").addClass("is-success");
     } else {
@@ -41,5 +46,7 @@ $(document).ready(function(){
   } else {
     $("#message").text(data[0].Comments);
   }
+
+  $("#sppweb").attr("href", "http://species.abmi.ca/pages/species/" + data[0].Taxon + '/' + data[0].SpeciesID + '.html');
 
 });
