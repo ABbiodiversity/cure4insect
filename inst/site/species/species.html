@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ABMI Custom Reporting: Settings</title>
+  <link rel="stylesheet" type="text/css" href="../../assets/css/fontawesome-all.min.css" />
+  <link rel="stylesheet" type="text/css" href="../../assets/css/bulma.min.css" />
+  <link rel="stylesheet" type="text/css" href="../../assets/css/custom.css" />
+  <link rel="stylesheet" type="text/css" href="../../assets/css/fonts.css" />
+  <link rel="shortcut icon" href="../../favicon.ico">
+</head>
+<body>
+
+  <section class="hero is-primary is-bold is-small">
+    <div class="hero-head">
+      <nav class="navbar">
+        <div class="container">
+          <div class="navbar-brand">
+            <a class="navbar-item" href="http://abmi.ca" target=_blank>
+              <img src="../../assets/images/abmi-logo-white.png" alt="ABMI">
+            </a>
+            <span class="navbar-burger burger" data-target="navMenu">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </div>
+          <div id="navMenu" class="navbar-menu">
+            <div class="navbar-end">
+              <a class="navbar-item" href="../../index.html">
+                Home
+              </a>
+              <a class="navbar-item" href="../../report/index.html">
+                Report
+              </a>
+              <a class="navbar-item" href="../../species/index.html">
+                Species
+              </a>
+              <a class="navbar-item" href="../../Settings/index.html">
+                Settings
+              </a>
+              <a class="navbar-item" href="../../docs/index.html">
+                Docs
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <div class="hero-body">
+      <div class="container has-text-centered">
+        <h1 class="title" id="title"><h1>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="columns">
+      <div class="column">
+
+        <nav class="level">
+          <div class="level-item has-text-centered">
+            <p>
+              <div class="field is-grouped is-grouped-multiline">
+
+                <div class="control" id="SI">
+                  <div class="tags has-addons">
+                    <span class="tag is-dark">Intactness</span>
+                    <span class="tag" id="tag-si"></span>
+                  </div>
+                </div>
+
+                <div class="control">
+                  <div class="tags has-addons">
+                    <span class="tag is-info">North</span>
+                    <span class="tag" id="tag-north"></span>
+                  </div>
+                </div>
+
+                <div class="control">
+                  <div class="tags has-addons">
+                    <span class="tag is-info">South</span>
+                    <span class="tag" id="tag-south"></span>
+                  </div>
+                </div>
+
+                <div class="control">
+                  <div class="tags has-addons">
+                    <span class="tag is-primary">Version</span>
+                    <span class="tag is-warning" id="tag-version"></span>
+                  </div>
+                </div>
+
+                <div class="control">
+                  <div class="tags has-addons">
+                    <span class="tag is-primary">HF</span>
+                    <span class="tag is-warning" id="tag-hf">2014</span>
+                  </div>
+                </div>
+
+                <div class="control">
+                  <div class="tags has-addons">
+                    <span class="tag is-primary">Veg</span>
+                    <span class="tag is-warning" id="tag-veg"></span>
+                  </div>
+                </div>
+
+              </div>
+            </p>
+
+          </div>
+        </nav>
+
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="columns">
+
+      <div class="column is-10 is-offset-1" id="comments">
+        <article class="message is-danger">
+          <div class="message-header">
+            <p>
+              <span class="icon is-left">
+                <i class="fa fa-exclamation-triangle"></i>
+              </span>
+              Warning
+            </p>
+          </div>
+          <div class="message-body" id="message"></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+<!-- ACTUAL CONTENT START -->
+  <section id="results">
+
+    <div class="columns"> <!-- 1st row -->
+
+        <div class="card">
+          <div class="card-image">
+            <figure class="image image-modal" data-target="#modalMapNr">
+              <img src="./images/map-nr.png" alt="Reference abundance map">
+            </figure>
+            <div class="modal"  id="modalMapNr">
+              <div class="modal-background"></div>
+              <div class="modal-content">
+                <p class="image">
+                  <img src="./images/map-nr.png" alt="Reference abundance map">
+                </p>
+              </div>
+              <button class="modal-close is-large" aria-label="close"></button>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="content">
+              <p class="subtitle">Reference abundance map</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-image">
+            <figure class="image image-modal" data-target="#modalMapNc">
+              <img src="./images/map-nc.png" alt="Current abundance map">
+            </figure>
+            <div class="modal"  id="modalMapNc">
+              <div class="modal-background"></div>
+              <div class="modal-content">
+                <p class="image">
+                  <img src="./images/map-nc.png" alt="Current abundance map">
+                </p>
+              </div>
+              <button class="modal-close is-large" aria-label="close"></button>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="content">
+              <p class="subtitle">Current abundance map</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-image">
+            <figure class="image image-modal" data-target="#modalMapSi2">
+              <img src="./images/map-si2.png" alt="Species intactness map, 2-sided">
+            </figure>
+            <div class="modal"  id="modalMapSi2">
+              <div class="modal-background"></div>
+              <div class="modal-content">
+                <p class="image">
+                  <img src="./images/map-si2.png" alt="Species intactness map, 2-sided">
+                </p>
+              </div>
+              <button class="modal-close is-large" aria-label="close"></button>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="content">
+              <p class="subtitle">Species intactness map, 2-sided</p>
+            </div>
+          </div>
+        </div>
+
+    </div>
+
+    <div class="columns"> <!-- 2nd row -->
+
+      <div class="card">
+        <div class="card-image">
+          <figure class="image image-modal" data-target="#modalMapCv">
+            <img src="./images/map-cv.png" alt="Coefficient of variation map">
+          </figure>
+          <div class="modal"  id="modalMapCv">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+              <p class="image">
+                <img src="./images/map-cv.png" alt="Coefficient of variation map">
+              </p>
+            </div>
+            <button class="modal-close is-large" aria-label="close"></button>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="content">
+            <p class="subtitle">Coefficient of variation map</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-image">
+          <figure class="image image-modal" data-target="#modalMapSe">
+            <img src="./images/map-se.png" alt="Prediction standard error">
+          </figure>
+          <div class="modal" id="modalMapSe">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+              <p class="image">
+                <img src="./images/map-se.png" alt="Prediction standard error">
+              </p>
+            </div>
+            <button class="modal-close is-large" aria-label="close"></button>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="content">
+            <p class="subtitle">Prediction standard error</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-image">
+          <figure class="image image-modal" data-target="#modalMapSi">
+            <img src="./images/map-si.png" alt="Species intactness map">
+          </figure>
+          <div class="modal"  id="modalMapSi">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+              <p class="image">
+                <img src="./images/map-si.png" alt="Species intactness map">
+              </p>
+            </div>
+            <button class="modal-close is-large" aria-label="close"></button>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="content">
+            <p class="subtitle">Species intactness map</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="columns"> <!-- 3rd row -->
+
+      <div class="card">
+        <div class="card-image">
+          <figure class="image image-modal" data-target="#modalMapSectRegion">
+            <img src="./images/sector-unit.png" alt="Effects on regional population">
+          </figure>
+          <div class="modal"  id="modalMapSectRegion">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+              <p class="image">
+                <img src="./images/sector-unit.png" alt="Effects on regional population">
+              </p>
+            </div>
+            <button class="modal-close is-large" aria-label="close"></button>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="content">
+            <p class="subtitle">Effects on regional population</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-image">
+          <figure class="image image-modal" data-target="#modalMapSectUnderHf">
+            <img src="./images/sector-unit.png" alt="Effects on population under footprint">
+          </figure>
+          <div class="modal"  id="modalMapSectUnderHf">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+              <p class="image">
+                <img src="./images/sector-unit.png" alt="Effects on population under footprint">
+              </p>
+            </div>
+            <button class="modal-close is-large" aria-label="close"></button>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="content">
+            <p class="subtitle">Effects on population under footprint</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-image">
+          <figure class="image image-modal" data-target="#modalMapSectUnit">
+            <img src="./images/sector-unit.png" alt="Regional effects per unit area">
+          </figure>
+          <div class="modal"  id="modalMapSectUnit">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+              <p class="image">
+                <img src="./images/sector-unit.png" alt="Regional effects per unit area">
+              </p>
+            </div>
+            <button class="modal-close is-large" aria-label="close"></button>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="content">
+            <p class="subtitle">Regional effects per unit area</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+<!-- ACTUAL CONTENT END -->
+
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <p id="footer"></p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+<script type="text/javascript" src="../../assets/js/jquery.min.js"></script>
+<script type="text/javascript" src="../../assets/js/basic.js"></script>
+<script type="text/javascript" src="./data.js"></script>
+<script type="text/javascript" src="../../assets/js/species.js"></script>
+</html>
