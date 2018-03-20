@@ -4,7 +4,7 @@ $(document).ready(function(){
   $("#title").html(data[0].display + ' &ndash; ' + data[0].tnice);
   if (data[0].Keep == true) {
     $("#tag-si").addClass("is-success");
-    var SI = Math.round(data[0].SI_Est);
+    var SI = Math.round(10*data[0].SI_Est)/10;
     if (data[0].SI2_Est > 100) {
       var arrow = '<span class="icon"><i class="fa fa-arrow-up"></i></span>'
     } else {

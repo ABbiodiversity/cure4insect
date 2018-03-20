@@ -69,19 +69,19 @@
           <div class="level-item has-text-centered">
             <div>
               <p class="heading">Species</p>
-              <p class="title" id="info-species">911</p>
+              <p class="title" id="info-species"></p>
             </div>
           </div>
           <div class="level-item has-text-centered">
             <div>
               <p class="heading">Intactness</p>
-              <p class="title" id="info-intactness">92%</p>
+              <p class="title" id="info-intactness"></p>
             </div>
           </div>
           <div class="level-item has-text-centered">
             <div>
               <p class="heading">km<sup>2</sup> units</p>
-              <p class="title" id="info-area">1000</p>
+              <p class="title" id="info-area"></p>
             </div>
           </div>
         </nav>
@@ -221,4 +221,28 @@
 </body>
 <script type="text/javascript" src="../assets/js/jquery.min.js"></script>
 <script type="text/javascript" src="../assets/js/basic.js"></script>
+<script type="text/javascript" src="./results.js"></script>
+<script>
+$(document).ready(function(){
+
+  function addCommas(nStr)
+  {
+      nStr += '';
+      x = nStr.split('.');
+      x1 = x[0];
+      x2 = x.length > 1 ? '.' + x[1] : '';
+      var rgx = /(\d+)(\d{3})/;
+      while (rgx.test(x1)) {
+          x1 = x1.replace(rgx, '$1' + ',' + '$2');
+      }
+      return x1 + x2;
+  }
+  var SI = Math.round(10*results.intactness)/10;
+  console.log(SI + "%");
+  $("#info-species").append(results.species);
+  $("#info-intactness").append(SI + "%");
+  $("#info-area").append(addCommas(results.pixels));
+
+});
+</script>
 </html>
