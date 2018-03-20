@@ -47,9 +47,15 @@ close(f)
 ## settings info
 ver_info <- get_version_info()
 sub_info <- get_subset_info()
+ver <- read.dcf(file=system.file("DESCRIPTION", package="cure4insect"),
+    fields=c("Version", "Date"))
+pkg_ver <- paste0("cure4insect version ", ver[1], " (", ver[2], ")")
+sett <- list(species=unname(sub_info[1]), pixels=unname(sub_info[2]),
+    rversion=R.Version()$version.string,
+    version=pkg_ver, date=as.character(as.Date(Sys.time())))
 
 f <- file(file.path(base, "settings/settings.js"))
-cat("var selection =", toJSON(sub_info), file=f)
+cat("var settings =", toJSON(sett, pretty=TRUE), file=f)
 close(f)
 
 toJSON(sub_info, "values", pretty=TRUE)
@@ -208,6 +214,7 @@ dev.off()
 ## 4.
 ## zip everything
 ## ?? where to keep csv and raster objects ?? /data/ ?
+## save spatial ID list as well
 
 
 

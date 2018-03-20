@@ -83,7 +83,10 @@
 
   <section>
     <div class="columns">
-      <div class="column is-4 is-offset-4">
+      <div class="column is-4 is-offset-2">
+        <div class="notification is-info" id="version"></div>
+      </div>
+      <div class="column is-4">
         <div class="card">
           <div class="card-image">
             <figure class="image image-modal" data-target="#modalMapRichness">
@@ -136,8 +139,10 @@ $(document).ready(function(){
       }
       return x1 + x2;
   }
-  $("#info-species").append(selection[0]);
-  $("#info-area").append(addCommas(selection[1]));
+  $("#info-species").append(settings.species);
+  $("#info-area").append(addCommas(settings.pixels));
+  var ver = 'Custom report produced on ' + settings.date + ' with <a href="https://github.com/ABbiodiversity/cure4insect#readme" target=_blank>' + settings.version + '</a> and <a href="https://www.r-project.org/" target=_blank>' + settings.rversion + '</a>.';
+  $("#version").html(ver);
 
 });
 </script>
