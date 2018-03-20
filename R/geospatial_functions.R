@@ -279,6 +279,8 @@ function(object, xy, veg, soil, ...)
     OUT
 }
 
+## sentinel value used to add back NAs, but NA pattern can vary, so set to
+## some preset value (0 for abund, 100 for SI) instead
 .rasterize_multi <- function(y, type=c("richness", "intactness"), rt)
 {
     if (!is_loaded())
@@ -293,7 +295,7 @@ function(object, xy, veg, soil, ...)
     i <- match(rownames(KT), names(NC))
     KT$NC <- NC[i]
     #KT$NC[is.na(KT$NC)] <- -1
-    KT$NC[is.na(KT$NC)] <- -0
+    KT$NC[is.na(KT$NC)] <- 0
     if (type == "intactness") {
         NR <- rowSums(y$SA.Ref)
         SI <- 100 * pmin(NC, NR) / pmax(NC, NR)
@@ -302,7 +304,7 @@ function(object, xy, veg, soil, ...)
         KT$SI[is.na(KT$SI)] <- 100
     }
     r <- .make_raster(KT[,z], rc=KT, rt=rt)
-    r[r < 0] <- NA # sentinel values to NA
+    #r[r < 0] <- NA # sentinel values to NA
     r
 }
 
