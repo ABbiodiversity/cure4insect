@@ -318,8 +318,7 @@ path=NULL, version=NULL, clip=TRUE, limit=NULL)
     n <- length(SPP)
     KEEP <- rep(TRUE, n)
     rt <- .read_raster_template()
-    rmask <- .make_raster(ifelse(rownames(.c4if$KT) %in% rownames(.c4is$KTsub), 1, 0),
-        .c4if$KT, rt)
+    rmask <- make_subset_map()
     rmask[rmask == 0] <- NA
     ETA <- NULL
     if (.verbose())
