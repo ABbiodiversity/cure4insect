@@ -58,16 +58,129 @@
     </div>
   </section>
 
-  <section>
+
+  <div class="container">
     <div class="columns">
-      <div class="column is-8 is-offset-2">
-        <h2 class="title">Heading 1</h2>
-        <p>
-          Docs here...
-        </p>
+
+      <!-- START SIDEBAR -->
+      <div class="column is-3 is-offset-1">
+        <aside class="menu">
+          <p class="menu-label">Analyses</p>
+          <ul class="menu-list">
+            <li>
+              <a href="#data">Data</a>
+              <a href="#models">Models</a>
+              <ul>
+                <li><a href="#models-landcover">Land cover</a></li>
+                <li><a href="#models-spatial">Space & climate</a></li>
+              </ul>
+              <a href="#prediction">Prediction</a>
+            </li>
+          </ul>
+          <p class="menu-label">Summaries</p>
+          <ul class="menu-list">
+            <li>
+              <a href="#maps">Maps</a>
+              <ul>
+                <li><a href="#maps-abundance">Relative abundance</a></li>
+                <li><a href="#maps-intactness">Intactness</a></li>
+                <li><a href="#maps-richness">Species richness</a></li>
+                <li><a href="#maps-uncertainty">Uncertainty</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="#sector">Sector effects</a>
+              <ul>
+                <li><a href="#sector-total">Regional effects</a></li>
+                <li><a href="#sector-underhf">Under footprint</a></li>
+                <li><a href="#sector-unit">Per unit area effects</a></li>
+              </ul>
+            </li>
+          </ul>
+
+        </aside>
       </div>
+      <!-- END SIDEBAR -->
+
+      <!-- START CONTENT -->
+      <div class="column is-7">
+
+       <section>
+         <h2 class="title" id="intro">Introduction</h2>
+         <p>
+           This custom report represents a summary based on user-defined subsets of species and spatial prediction units, and the model results presented at <a href="http://species.abmi.ca" target=_blank>species.abmi.ca</a>.
+           The model outputs and predictions were summarized with the with <a href="https://github.com/ABbiodiversity/cure4insect#readme" target=_blank>cure4insect</a> <a href="https://www.r-project.org/">R</a> package
+           (see <a href="../settings/index.html">Settings</a>).
+         </p>
+       </section>
+
+       <section>
+         <h2 class="title" id="data">Data</h2>
+         <p>
+           Other text here
+         </p>
+        </section>
+
+        <section>
+          <h2 class="title" id="models">Models</h2>
+          <h2 class="subtitle" id="models-landcover">Land cover</h2>
+          <p>
+            Other text here
+          </p>
+          <h2 class="subtitle" id="models-spatial">Space and climate</h2>
+          <p>
+            Other text here
+          </p>
+         </section>
+
+         <section>
+           <h2 class="title" id="prediction">Prediction</h2>
+           <p>
+             Other text here
+           </p>
+          </section>
+
+          <section>
+            <h2 class="title" id="maps">Maps</h2>
+            <h2 class="subtitle" id="maps-abundance">Relative abundance</h2>
+            <p>
+              Other text here
+            </p>
+            <h2 class="subtitle" id="maps-intactness">Intactness</h2>
+            <p>
+              Other text here
+            </p>
+            <h2 class="subtitle" id="maps-richness">Species richness</h2>
+            <p>
+              Other text here
+            </p>
+            <h2 class="subtitle" id="maps-uncertainty">Uncertainty</h2>
+            <p>
+              Other text here
+            </p>
+           </section>
+
+           <section>
+             <h2 class="title" id="sector">Sector effects</h2>
+             <h2 class="subtitle" id="sector-total">Effects on regional population</h2>
+             <p>
+               Other text here
+             </p>
+             <h2 class="subtitle" id="sector-underhf">Effects on population under footprint</h2>
+             <p>
+               Other text here
+             </p>
+             <h2 class="subtitle" id="sector-unit">Regional effects per unit area</h2>
+             <p>
+               Other text here
+             </p>
+            </section>
+
+      </div>
+      <!-- END CONTENT -->
+
     </div>
-  </section>
+  </div>
 
   <footer class="footer">
     <div class="container">
