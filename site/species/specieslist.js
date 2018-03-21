@@ -1,0 +1,3 @@
+var species =  ["Blue Jay (Cyanocitta cristata)","Carex pellita","Eriophorum brachyantherum","Goodyera repens","Lathyrus ochroleucus","Lincoln's Sparrow (Melospiza lincolnii)","Linum lewisii","Salix pyrifolia","Salsola tragus/collina","Xanthoparmelia camtschadalis"] 
+
+var link =  ["BlueJay","Carex.pellita","Eriophorum.brachyantherum","Goodyera.repens","Lathyrus.ochroleucus","LincolnsSparrow","Linum.lewisii","Salix.pyrifolia","Salsola.tragus.collina","Xanthoparmelia.camtschadalis"]
