@@ -13,6 +13,7 @@
 \alias{.check}
 \alias{.combine_veg_soil}
 \alias{.validate_id}
+\alias{.verbose}
 \title{
 App Specific Functions and Internals
 }
@@ -37,6 +38,7 @@ app_test(...)
 .check(x, ref)
 .combine_veg_soil(ipa, veg, soil)
 .validate_id(id, type=c("km", "qs"))
+.verbose()
 }
 \arguments{
   \item{species, boot, path, version}{arguments passed to
