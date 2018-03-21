@@ -1,38 +1,43 @@
 ## this is a full report skeleton to be used as template
 #devtools::install_github("ABbiodiversity/cure4insect")
+
+## load libraries
 library(jsonlite)
 library(cure4insect)
+
+## load common data
 load_common_data()
 
-#SPP <- c("AlderFlycatcher", "Achillea.millefolium")
-SPP <- get_all_species("birds")
-#SPP <- sample(SPP, 10)
-
+## specify spatial subset
 library(rgdal)
 dsn <- system.file("extdata/OSA_bound.geojson", package="cure4insect")
 ply <- readOGR(dsn=dsn)
-ID <- overlay_polygon(ply)
+id <- overlay_polygon(ply)
 
-species <- SPP
-id <- ID
-#.c4if=cure4insect:::.c4if
-#.c4is=cure4insect:::.c4is
+## specify species subset
+#species <- c("AlderFlycatcher", "Achillea.millefolium") # 2 species
+#species <- get_all_species("birds") # all birds
+set.seed(234);species <- sample(get_all_species(), 10) # 10 random species
 
-base <-"~/GoogleWork/abmi/c4i_experiments/_testsite2"
+## specify output folder
+base <- "./_site" # this folder is created
+zipbase <- "." # put here the zipped results
+if (dir.exists(base))
+    unlink(base, recursive=TRUE)
+dir.create(base)
 
-
-## ------------- starts here ---------
-
+## apply subsets
 subset_common_data(id, species)
 
-## copy the files
+## specify resolution factor (>0)
+resol <- 2
 
+## copy the files
 file.copy(from=file.path(system.file(package="cure4insect"), "site", "."),
     to=base, recursive=TRUE)
 unlink(file.path(base, "species", "species.html"))
 
 ## species listing
-
 sptab <- get_species_table()[get_subset_species(),,drop=FALSE]
 sptab$Species <- as.character(sptab$Species)
 sptab$CommonName <- as.character(sptab$CommonName)
@@ -48,7 +53,6 @@ sptab$display <- ifelse(as.character(sptab$Species) ==
 sptab$display <- as.character(sptab$display)
 sptab <- sptab[order(sptab$display),]
 species <- rownames(sptab)
-
 f <- file(file.path(base, "species", "specieslist.js"))
 js1 <- c("var species = ", toJSON(sptab$display),
     "\n\nvar link = ", toJSON(rownames(sptab)))
@@ -64,7 +68,6 @@ pkg_ver <- paste0("cure4insect version ", ver[1], " (", ver[2], ")")
 sett <- list(species=unname(sub_info[1]), pixels=unname(sub_info[2]),
     rversion=R.Version()$version.string,
     version=pkg_ver, date=as.character(as.Date(Sys.time())))
-
 f <- file(file.path(base, "settings", "settings.js"))
 cat("var settings =", toJSON(sett, pretty=TRUE), file=f)
 close(f)
@@ -72,9 +75,8 @@ close(f)
 ## settings images
 sub_map <- make_subset_map()
 dir.create(file.path(base, "settings", "images"))
-#svg("settings/images/selection.svg", height=9, width=6)
 png(file.path(base, "settings", "images", "selection.png"),
-    height=900*2, width=600*2, res=72*2, pointsize = 18)
+    height=900*2, width=600*2, res=72*resol, pointsize = 18)
 op <- par(mar=c(0.5, 3, 1, 0))
 plot(sub_map, legend=FALSE, axes=FALSE, box=FALSE,
     col=colorRampPalette(c("#e5f5f9", "#2ca25f"))(2))
@@ -84,7 +86,6 @@ par(op)
 dev.off()
 
 ## single species setup
-
 rt <- .read_raster_template()
 rmask <- sub_map
 rmask[rmask == 0] <- NA
@@ -92,28 +93,28 @@ rreg0 <- mask(rt, rmask)
 rreg0 <- trim(rreg0, values = NA)
 ar <- diff(bbox(rreg0)[2,])/diff(bbox(rreg0)[1,])
 
+## empty objects to store the results
 resx <- list() # store list results
 res <- list() # store flat results
 r_si <- NULL # SI map
 r_ri <- NULL # richness map
 KEEP <- rep(TRUE, length(species))
 
-
+## loop over species
 for (i in seq_along(species)) {
-
-    cat("* ", i, "/", length(species), " ", species[i], "\n", sep="")
-    flush.console()
-
     spp <- species[i]
-
+    cat("* ", i, "/", length(species), " ", spp, "\n", sep="")
+    flush.console()
+    ## species folder
     dir.create(file.path(base, "species", spp), showWarnings=FALSE)
     dir.create(file.path(base, "species", spp, "images"), showWarnings=FALSE)
     file.copy(from=file.path(system.file(package="cure4insect"), "site", "species", "species.html"),
         to=file.path(base, "species", spp, "index.html"))
-
+    ## load species data
     y <- load_species_data(spp)
+    ## intactness & sector effects
     x <- calculate_results(y)
-
+    ## flatten results and write js object
     z <- flatten(x)
     z$tnice <- switch(as.character(z$Taxon),
         "birds"="Birds",
@@ -128,12 +129,11 @@ for (i in seq_along(species)) {
     f <- file(file.path(base, "species", spp, "data.js"))
     cat("var data =", toJSON(z, pretty=TRUE, digits=2), file=f)
     close(f)
-
+    ## rasterize species data
     r <- rasterize_results(y)
     rreg <- mask(r, rmask)
-    #rreg <- trim(rreg, values = NA)
     rreg <- crop(rreg, extent(rreg0))
-
+    ## color settings
     col1 <- colorRampPalette(c('#ffffe5','#fff7bc','#fee391','#fec44f','#fe9929',
         '#ec7014','#cc4c02','#993404','#662506'))(100)
     col2 <- colorRampPalette(c('#fff7f3','#fde0dd','#fcc5c0','#fa9fb5','#f768a1',
@@ -151,9 +151,9 @@ for (i in seq_along(species)) {
     values(rreg[["NC"]])[which(values(rreg[["NC"]]) == Nmax1)] <- Nmax
     values(rreg[["NR"]])[which(values(rreg[["NR"]]) == Nmax0)] <- Nmax
 
-
+    ## save images
     png(file.path(base, "species", spp, "images", "map-nc.png"),
-        width=1000, height=1000*ar, res=72*2)
+        width=1000, height=1000*ar, res=72*resol)
     op <- par(mar=c(0.5, 3, 1, 0))
     plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
     plot(rreg[["NC"]], col=col1, add=TRUE)
@@ -161,7 +161,7 @@ for (i in seq_along(species)) {
     dev.off()
 
     png(file.path(base, "species", spp, "images", "map-nr.png"),
-        width=1000, height=1000*ar, res=72*2)
+        width=1000, height=1000*ar, res=72*resol)
     op <- par(mar=c(0.5, 3, 1, 0))
     plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
     plot(rreg[["NR"]], col=col1, add=TRUE)
@@ -169,7 +169,7 @@ for (i in seq_along(species)) {
     dev.off()
 
     png(file.path(base, "species", spp, "images", "map-se.png"),
-        width=1000, height=1000*ar, res=72*2)
+        width=1000, height=1000*ar, res=72*resol)
     op <- par(mar=c(0.5, 3, 1, 0))
     plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
     plot(rreg[["SE"]], col=col2, add=TRUE)
@@ -177,7 +177,7 @@ for (i in seq_along(species)) {
     dev.off()
 
     png(file.path(base, "species", spp, "images", "map-cv.png"),
-        width=1000, height=1000*ar, res=72*2)
+        width=1000, height=1000*ar, res=72*resol)
     op <- par(mar=c(0.5, 3, 1, 0))
     plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
     plot(rreg[["CV"]], col=col2, add=TRUE)
@@ -185,7 +185,7 @@ for (i in seq_along(species)) {
     dev.off()
 
     png(file.path(base, "species", spp, "images", "map-si.png"),
-        width=1000, height=1000*ar, res=72*2)
+        width=1000, height=1000*ar, res=72*resol)
     op <- par(mar=c(0.5, 3, 1, 0))
     plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
     plot(rreg[["SI"]], col=col3, add=TRUE)
@@ -193,7 +193,7 @@ for (i in seq_along(species)) {
     dev.off()
 
     png(file.path(base, "species", spp, "images", "map-si2.png"),
-        width=1000, height=1000*ar, res=72*2)
+        width=1000, height=1000*ar, res=72*resol)
     op <- par(mar=c(0.5, 3, 1, 0))
     plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
     plot(rreg[["SI2"]], col=col4, add=TRUE)
@@ -201,28 +201,27 @@ for (i in seq_along(species)) {
     dev.off()
 
     png(file.path(base, "species", spp, "images", "sector-regional.png"),
-        width=1000, height=1000, res=72*2)
+        width=1000, height=1000, res=72*resol)
     plot_sector(x, type="regional", main="Effects on regional population",
         ylim=c(-100, 100))
     dev.off()
 
     png(file.path(base, "species", spp, "images", "sector-underhf.png"),
-        width=1000, height=1000, res=72*2)
+        width=1000, height=1000, res=72*resol)
     plot_sector(x, type="underhf", "Effects on population under footprint",
         ylim=c(-100, 100))
     dev.off()
 
     png(file.path(base, "species", spp, "images", "sector-unit.png"),
-        width=1000, height=1000, res=72*2)
+        width=1000, height=1000, res=72*resol)
     plot_sector(x, type="unit", "Regional effects per unit area")
     dev.off()
 
     ## storing results
-
     resx[[spp]] <- x
     res[[spp]] <- z
     KEEP[i] <- z$Keep
-
+    ## finishing intactness raster
     if (is.null(r_si)) {
         r_si <- rreg[["SI"]]
         r_si[is.na(r_si)] <- 100
@@ -234,7 +233,7 @@ for (i in seq_along(species)) {
         if (z$Keep)
             r_si <- r_si + tmp
     }
-
+    ## finishing richness raster
     if (is.null(r_ri)) {
         r_ri <- rreg[["NC"]]
         r_ri[is.na(r_ri)] <- 0
@@ -247,18 +246,16 @@ for (i in seq_along(species)) {
             tmp2 <- 1-exp(-1*tmp2)
         r_ri <- r_ri + tmp2
     }
-
-
 }
-
+## multi-species rasters
 r_si <- r_si / sum(KEEP)
 r_si <- mask(r_si, rreg0)
 r_ri <- mask(r_ri, rreg0)
 rr <- stack(list(Intactness=r_si, Richness=r_ri))
+## write raster data as geo tif
 dir.create(file.path(base, "data"), showWarnings=FALSE)
-
 writeRaster(rr, file.path(base, "data", "multispecies_results.tif"))
-
+## finalize and save species table and report details
 zz <- do.call(rbind, res)
 class(zz) <- c("c4idf", class(z))
 rept <- list(species=unname(sub_info[1]), pixels=unname(sub_info[2]),
@@ -266,11 +263,11 @@ rept <- list(species=unname(sub_info[1]), pixels=unname(sub_info[2]),
 write.csv(zz, row.names=FALSE, file=file.path(base, "data", "species_results.csv"))
 sel_tab <- data.frame(ID=get_subset_id())
 write.csv(sel_tab, row.names=FALSE, file=file.path(base, "data", "spatial_subset_id.csv"))
-
 f3 <- file(file.path(base, "report", "results.js"))
 cat("var results =", toJSON(rept, pretty=TRUE), file=f3)
 close(f3)
 
+## save muti species images
 dir.create(file.path(base, "report", "images"), showWarnings=FALSE)
 
 col3 <- colorRampPalette(c('#762a83','#9970ab','#c2a5cf','#e7d4e8','#f7f7f7',
@@ -278,7 +275,7 @@ col3 <- colorRampPalette(c('#762a83','#9970ab','#c2a5cf','#e7d4e8','#f7f7f7',
 SIrange <- pmax(0, pmin(100, round(range(values(r_si),na.rm=TRUE)))) + 1
 col3 <- col3[SIrange[1]:SIrange[2]]
 png(file.path(base, "report", "images", "multi-map-intactness.png"),
-    width=1000, height=1000*ar, res=72*2)
+    width=1000, height=1000*ar, res=72*resol)
 op <- par(mar=c(0.5, 3, 1, 0))
 plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
 plot(r_si, col=col3, add=TRUE)
@@ -288,7 +285,7 @@ dev.off()
 col5 <- colorRampPalette(c('#fff7fb','#ece2f0','#d0d1e6','#a6bddb','#67a9cf',
     '#3690c0','#02818a','#016c59','#014636'))(100)
 png(file.path(base, "report", "images", "multi-map-richness.png"),
-    width=1000, height=1000*ar, res=72*2)
+    width=1000, height=1000*ar, res=72*resol)
 op <- par(mar=c(0.5, 3, 1, 0))
 plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
 plot(r_ri, col=col5, add=TRUE)
@@ -296,39 +293,25 @@ par(op)
 dev.off()
 
 png(file.path(base, "report", "images", "multi-sector-total.png"),
-    width=1000, height=1000, res=72*2)
+    width=1000, height=1000, res=72*resol)
 plot_sector(zz, type="regional", main="Effects on regional population",
     ylim=c(-100, 100))
 dev.off()
 
 png(file.path(base, "report", "images", "multi-sector-underhf.png"),
-    width=1000, height=1000, res=72*2)
+    width=1000, height=1000, res=72*resol)
 plot_sector(zz, type="underhf", "Effects on population under footprint",
     ylim=c(-100, 100))
 dev.off()
 
 png(file.path(base, "report", "images", "multi-sector-unit.png"),
-    width=1000, height=1000, res=72*2)
+    width=1000, height=1000, res=72*resol)
 plot_sector(zz, type="unit", "Regional effects per unit area")
 dev.off()
 
+## zip the output & clean up
+#zip(file.path(zipbase, "_site.zip"), file.path(base))
+#unlink(base, recursive=TRUE)
 
-
-## 1.
-## keep everything in zip
-## unzip
-## OK -- save js data files (settings, species)
-## OK -- save images (settings)
-## 2.
-## OK -- use 1-spp template, create dir and /species/spp/index.html
-## OK -- save images
-## OK -- this should be done as part of the loop
-## 3.
-## OK -- finally calculate multi-species stats and richn/SI maps
-## OK -- save images and data
-## 4.
-## zip everything
-## ?? where to keep csv and raster objects ?? /data/ ?
-## OK -- save spatial ID list as well
-
+## done.
 
