@@ -1,11 +1,9 @@
 ## single species stuff
-library(knitr)
-(f1 <- system.file("doc", "example-species-report.Rmd", package = "cure4insect"))
-knit(f1)
+#library(knitr)
+#knit(system.file("doc", "example-species-report.Rmd", package = "cure4insect"))
 
 ## multi species stuff
-(f2 <- system.file("doc", "custom-report.R", package = "cure4insect"))
-source(f2)
+#source(system.file("doc", "custom-report.R", package = "cure4insect"))
 
 ## poly level prediction
 ## ... to be added ...
