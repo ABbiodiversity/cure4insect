@@ -52,12 +52,40 @@
     <div class="hero-body">
       <div class="container has-text-centered">
         <h1 class="title" id="title"><h1>
-          <p class="control has-text-centered">
-            <a class="button is-success is-inverted is-outlined" id="sppweb" target=_blank>
-              <span>Go to species profile</span>
-              <span class="icon"><i class="fa fa-arrow-right"></i></span>
-            </a>
-          </p>
+
+        <nav class="level">
+          <div class="level-item has-text-centered">
+            <div>
+              <p>
+                <a class="button is-success is-inverted is-outlined" id="spp-previous">
+                  <span class="icon"><i class="fa fa-chevron-left"></i></span>
+                  <span>Previous species</span>
+                </a>
+              </p>
+            </div>
+          </div>
+          <div class="level-item has-text-centered">
+            <div>
+              <p>
+                <a class="button is-success is-inverted is-outlined" id="sppweb" target=_blank>
+                  <span>Go to species profile</span>
+                  <span class="icon"><i class="fa fa-arrow-right"></i></span>
+                </a>
+              </p>
+            </div>
+          </div>
+          <div class="level-item has-text-centered">
+            <div>
+              <p>
+                <a class="button is-success is-inverted is-outlined" id="spp-next">
+                  <span>Next species</span>
+                  <span class="icon"><i class="fa fa-chevron-right"></i></span>
+                </a>
+              </p>
+            </div>
+          </div>
+        </nav>
+
       </div>
     </div>
   </section>
@@ -371,4 +399,5 @@
 <script type="text/javascript" src="../../assets/js/basic.js"></script>
 <script type="text/javascript" src="./data.js"></script>
 <script type="text/javascript" src="../../assets/js/species.js"></script>
+<script type="text/javascript" src="../specieslist.js"></script>
 </html>
