@@ -29,6 +29,10 @@ devtools::install_github("ABbiodiversity/cure4insect")
 
 ## Examples
 
+[Example species report](https://abbiodiversity.github.io/cure4insect/example-species-report.html)
+
+[Example custom report](https://abbiodiversity.github.io/cure4insect/site/)
+
 Load the package:
 
 ```R
