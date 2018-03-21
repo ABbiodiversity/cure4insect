@@ -9,9 +9,20 @@ library(cure4insect)
 load_common_data()
 
 ## specify spatial subset
-library(rgdal)
-dsn <- system.file("extdata/OSA_bound.geojson", package="cure4insect")
-ply <- readOGR(dsn=dsn)
+## -- use OSA bound
+#library(rgdal)
+#dsn <- system.file("extdata/OSA_bound.geojson", package="cure4insect")
+#ply <- readOGR(dsn=dsn)
+## -- use a simple polygon boundary
+xy <- matrix(c(
+    -117.791807, 57.159552,
+    -113.617002, 56.279422,
+    -115.748350, 55.228470,
+    -114.408018, 54.200443,
+    -118.648740, 54.825449,
+    -117.791807, 57.159552), ncol=2, byrow=TRUE)
+ply <- SpatialPolygons(list(Polygons(list(Polygon(xy)), "x")), 1L)
+proj4string(ply) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 id <- overlay_polygon(ply)
 
 ## specify species subset
@@ -22,6 +33,7 @@ set.seed(234);species <- sample(get_all_species(), 10) # 10 random species
 ## specify output folder
 base <- "./_site" # this folder is created
 zipbase <- "." # put here the zipped results
+if (.verbose()) cat("output directory", base, "\n")
 if (dir.exists(base))
     unlink(base, recursive=TRUE)
 dir.create(base)
@@ -33,11 +45,13 @@ subset_common_data(id, species)
 resol <- 2
 
 ## copy the files
+if (.verbose()) cat("copying files\n")
 file.copy(from=file.path(system.file(package="cure4insect"), "site", "."),
     to=base, recursive=TRUE)
 unlink(file.path(base, "species", "species.html"))
 
 ## species listing
+if (.verbose()) cat("writing species listings\n")
 sptab <- get_species_table()[get_subset_species(),,drop=FALSE]
 sptab$Species <- as.character(sptab$Species)
 sptab$CommonName <- as.character(sptab$CommonName)
@@ -60,6 +74,7 @@ cat(js1, file=f) # --> save this into specieslist.js
 close(f)
 
 ## settings info
+if (.verbose()) cat("writing info\n")
 ver_info <- get_version_info()
 sub_info <- get_subset_info()
 ver <- read.dcf(file=system.file("DESCRIPTION", package="cure4insect"),
@@ -72,7 +87,8 @@ f <- file(file.path(base, "settings", "settings.js"))
 cat("var settings =", toJSON(sett, pretty=TRUE), file=f)
 close(f)
 
-## settings images
+## subset map
+if (.verbose()) cat("making subset map\n")
 sub_map <- make_subset_map()
 dir.create(file.path(base, "settings", "images"))
 png(file.path(base, "settings", "images", "selection.png"),
@@ -86,6 +102,7 @@ par(op)
 dev.off()
 
 ## single species setup
+if (.verbose()) cat("spatial mask and output setup\n")
 rt <- .read_raster_template()
 rmask <- sub_map
 rmask[rmask == 0] <- NA
@@ -101,18 +118,23 @@ r_ri <- NULL # richness map
 KEEP <- rep(TRUE, length(species))
 
 ## loop over species
+if (.verbose()) cat("loop over species\n")
 for (i in seq_along(species)) {
     spp <- species[i]
-    cat("* ", i, "/", length(species), " ", spp, "\n", sep="")
+    if (.verbose())
+        cat("* ", i, "/", length(species), " ", spp, "\n", sep="")
     flush.console()
     ## species folder
+    if (.verbose()) cat("\t- setting up species folder\n"); flush.console()
     dir.create(file.path(base, "species", spp), showWarnings=FALSE)
     dir.create(file.path(base, "species", spp, "images"), showWarnings=FALSE)
     file.copy(from=file.path(system.file(package="cure4insect"), "site", "species", "species.html"),
         to=file.path(base, "species", spp, "index.html"))
     ## load species data
+    if (.verbose()) cat("\t- loading species data\n"); flush.console()
     y <- load_species_data(spp)
     ## intactness & sector effects
+    if (.verbose()) cat("\t- calculating species summaries\n"); flush.console()
     x <- calculate_results(y)
     ## flatten results and write js object
     z <- flatten(x)
@@ -130,6 +152,7 @@ for (i in seq_along(species)) {
     cat("var data =", toJSON(z, pretty=TRUE, digits=2), file=f)
     close(f)
     ## rasterize species data
+    if (.verbose()) cat("\t- rasterizing species data\n"); flush.console()
     r <- rasterize_results(y)
     rreg <- mask(r, rmask)
     rreg <- crop(rreg, extent(rreg0))
@@ -152,6 +175,7 @@ for (i in seq_along(species)) {
     values(rreg[["NR"]])[which(values(rreg[["NR"]]) == Nmax0)] <- Nmax
 
     ## save images
+    if (.verbose()) cat("\t- saving species images\n"); flush.console()
     png(file.path(base, "species", spp, "images", "map-nc.png"),
         width=1000, height=1000*ar, res=72*resol)
     op <- par(mar=c(0.5, 3, 1, 0))
@@ -218,6 +242,7 @@ for (i in seq_along(species)) {
     dev.off()
 
     ## storing results
+    if (.verbose()) cat("\t- finishing results\n"); flush.console()
     resx[[spp]] <- x
     res[[spp]] <- z
     KEEP[i] <- z$Keep
@@ -248,6 +273,7 @@ for (i in seq_along(species)) {
     }
 }
 ## multi-species rasters
+if (.verbose()) cat("multi-species rasters\n")
 r_si <- r_si / sum(KEEP)
 r_si <- mask(r_si, rreg0)
 r_ri <- mask(r_ri, rreg0)
@@ -268,6 +294,7 @@ cat("var results =", toJSON(rept, pretty=TRUE), file=f3)
 close(f3)
 
 ## save muti species images
+if (.verbose()) cat("multi-species images\n")
 dir.create(file.path(base, "report", "images"), showWarnings=FALSE)
 
 col3 <- colorRampPalette(c('#762a83','#9970ab','#c2a5cf','#e7d4e8','#f7f7f7',
@@ -313,5 +340,7 @@ dev.off()
 #zip(file.path(zipbase, "_site.zip"), file.path(base))
 #unlink(base, recursive=TRUE)
 
-## done.
+## done
+if (.verbose()) cat("done\n\n")
+
 
