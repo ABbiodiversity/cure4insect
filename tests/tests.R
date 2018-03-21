@@ -3,7 +3,7 @@
 #knit(system.file("doc", "example-species-report.Rmd", package = "cure4insect"))
 
 ## multi species stuff
-#source(system.file("doc", "custom-report.R", package = "cure4insect"))
+source(system.file("doc", "custom-report.R", package = "cure4insect"))
 
 ## poly level prediction
 ## ... to be added ...
