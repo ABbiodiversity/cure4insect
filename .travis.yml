@@ -4,9 +4,9 @@ cache: packages
 branches:
   only:
     - master
-dist: trusty
-addons:
-  apt:
-    packages:
-      - libgdal-dev
-      - libproj-dev
+#dist: trusty
+#addons:
+#  apt:
+#    packages:
+#      - libgdal-dev
+#      - libproj-dev
