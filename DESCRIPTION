@@ -19,4 +19,4 @@ LazyData: true
 Depends: sp, raster
 Imports: Matrix, intrval, pbapply (>= 1.3-4), KernSmooth,
   base64enc, mefa4, sendmailR, parallel
-Suggests: knitr, jsonlite, spelling, hunspell
+Suggests: knitr, jsonlite, spelling, hunspell, rgdal
