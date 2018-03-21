@@ -61,7 +61,6 @@ ylim <- c(0, max(hab_veg, hab_soil_nt, hab_soil_tr))
 plot_abundance(species, type="veg_coef", ylim=ylim)
 ```
 
-
 ## Habitat associations in southern Alberta
 
 Models were used to show how species, relative abundance differed among soil
@@ -70,7 +69,7 @@ Alberta. Due to natural disturbances and vegetation succession,
 varying amounts of aspen and other trees may be present on each soil type;
 the presence/absence of trees greatly affects the presence and abundance of
 many biota. As such, information is presented twice for southern Alberta:
-once for sites with trees present, and onec for sites without trees present.
+once for sites with trees present, and once for sites without trees present.
 Predicted species abundance in each soil/human footprint type is shown with bars.
 Vertical lines indicate 90% confidence intervals.
 
@@ -125,7 +124,7 @@ blue where the species is predicted to be less abundant or absent.
 To highlight the degree of uncertainty in the models,
 we estimated the prediction _standard error_ and _coefficient of variation_
 for each 10 km x 10 km units based on bootstrap predictions of current abundance.
-10 km x 10 km units depicted in red have the higheststandard error,
+10 km x 10 km units depicted in red have the highest standard error,
 while 10 km x 10 km units in dark green have the lowest.
 
 ```{r raster-plots,echo=FALSE,fig.height=12,fig.width=8}
@@ -140,7 +139,6 @@ plot(r[["SE"]], col=col2, axes=FALSE, box=FALSE, main="Stadard error (current)")
 plot(r[["CV"]], col=col2, axes=FALSE, box=FALSE, main="Coef. of variation (current)")
 par(op)
 ```
-
 
 ## Species intactness
 
@@ -220,7 +218,7 @@ par(op)
 # Regional summaries
 
 The region of interest can be defined based for example on a spatial polygon.
-Based on thespatial subset, we summarize abundance, intactness, and sector effects.
+Based on the spatial subset, we summarize abundance, intactness, and sector effects.
 
 ```{r spid,echo=FALSE,results='hide'}
 ply <- readOGR(dsn=system.file("extdata/OSA_bound.geojson", package="cure4insect"))
@@ -252,14 +250,11 @@ plot(sqrt(rreg[["NR"]]), col=col1, axes=FALSE, box=FALSE, main="Reference abunda
 par(op)
 ```
 
-
-
 ```{r intactness-table-reg,echo=FALSE,results='asis'}
 df3 <- data.frame(xreg$intactness)
 colnames(df3)[2:3] <- c("Lower", "Upper")
 kable(df3, digits=2)
 ```
-
 
 ```{r sector-table-reg,echo=FALSE,results='asis'}
 df4 <- data.frame(xreg$sector)[,-1]
