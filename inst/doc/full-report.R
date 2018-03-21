@@ -5,8 +5,8 @@ library(cure4insect)
 load_common_data()
 
 #SPP <- c("AlderFlycatcher", "Achillea.millefolium")
-SPP <- get_all_species()
-SPP <- sample(SPP, 10)
+SPP <- get_all_species("birds")
+#SPP <- sample(SPP, 10)
 
 library(rgdal)
 dsn <- system.file("extdata/OSA_bound.geojson", package="cure4insect")
@@ -18,7 +18,7 @@ id <- ID
 #.c4if=cure4insect:::.c4if
 #.c4is=cure4insect:::.c4is
 
-base <-"~/GoogleWork/abmi/c4i_experiments/_testsite"
+base <-"~/GoogleWork/abmi/c4i_experiments/_testsite2"
 
 
 ## ------------- starts here ---------
