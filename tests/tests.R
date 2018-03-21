@@ -1,6 +1,6 @@
 ## single species stuff
-library(knitr)
-knit(system.file("doc", "example-species-report.Rmd", package = "cure4insect"))
+#library(knitr)
+#knit(system.file("doc", "example-species-report.Rmd", package = "cure4insect"))
 
 ## multi species stuff
 source(system.file("doc", "custom-report.R", package = "cure4insect"))
