@@ -4,6 +4,7 @@
 ## load libraries
 library(jsonlite)
 library(cure4insect)
+#opar <- set_options(path = "w:/reports")
 
 ## load common data
 load_common_data()
@@ -40,6 +41,10 @@ dir.create(base)
 
 ## apply subsets
 subset_common_data(id, species)
+get_subset_info()
+
+str(id <- get_subset_id())
+str(species <- get_subset_species())
 
 ## specify resolution factor (>0)
 resol <- 2
