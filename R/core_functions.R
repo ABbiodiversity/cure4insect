@@ -341,6 +341,8 @@ function(taxon="all", habitat, status)
 }
 
 .select_id <- function(mregion="both", nr=NULL, nsr=NULL, luf=NULL) {
+    if (!is_loaded())
+        stop("common data needed: use load_common_data")
     if (is.null(nr))
         nr <- levels(.c4if$KT$reg_nr)
     if (is.null(nsr))
