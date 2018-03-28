@@ -343,23 +343,22 @@ function(taxon="all", habitat, status)
 .select_id <- function(mregion="both", nr=NULL, nsr=NULL, luf=NULL) {
     if (!is_loaded())
         stop("common data needed: use load_common_data")
-    if (is.null(nr))
-        nr <- levels(.c4if$KT$reg_nr)
-    if (is.null(nsr))
-        nsr <- levels(.c4if$KT$reg_nsr)
-    if (is.null(luf))
-        luf <- levels(.c4if$KT$reg_luf)
     mregion <- match.arg(mregion, c("both", "north", "south"))
-    nr <- match.arg(nr, levels(.c4if$KT$reg_nr), several.ok=TRUE)
-    nsr <- match.arg(nsr, levels(.c4if$KT$reg_nsr), several.ok=TRUE)
-    luf <- match.arg(luf, levels(.c4if$KT$reg_luf), several.ok=TRUE)
-    keep <- rep(FALSE, nrow(.c4if$KT))
-    keep[.c4if$KT$reg_nr %in% nr] <- TRUE
-    keep[.c4if$KT$reg_nsr %in% nsr] <- TRUE
-    keep[.c4if$KT$reg_luf %in% luf] <- TRUE
-    ## mregion to override selection
+    keep <- rep(TRUE, nrow(.c4if$KT))
+    if (!is.null(nr)) {
+        nr <- match.arg(nr, levels(.c4if$KT$reg_nr), several.ok=TRUE)
+        keep[.c4if$KT$reg_nr %ni% nr] <- FALSE
+    }
+    if (!is.null(nsr)) {
+        nsr <- match.arg(nsr, levels(.c4if$KT$reg_nsr), several.ok=TRUE)
+        keep[.c4if$KT$reg_nsr %ni% nsr] <- FALSE
+    }
+    if (!is.null(luf)) {
+        luf <- match.arg(luf, levels(.c4if$KT$reg_luf), several.ok=TRUE)
+        keep[.c4if$KT$reg_luf %ni% luf] <- FALSE
+    }
+    ## mregion to override selection outside of model region
     if (mregion != "both") {
-        #ss <- rep(FALSE, nrow(.c4if$KT))
         if (mregion == "north") {
             ss <- .c4if$KT$reg_nr != "Grassland"
         } else {

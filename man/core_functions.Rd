@@ -365,6 +365,11 @@ subset_common_data(id=QSID, species=Spp)
 y <- load_species_data(Spp)
 flatten(calculate_results(y))
 
+## using pre-defined management regions
+ID <- get_all_id(nr=c("Boreal", "Foothills"))
+subset_common_data(id=ID)
+plot(make_subset_map())
+
 ## workflow with multiple species ----------------
 load_common_data() # use as before
 ## id and species can be defined using text files
