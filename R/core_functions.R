@@ -340,8 +340,43 @@ function(taxon="all", habitat, status)
     out[keep,,drop=FALSE]
 }
 
-get_all_id <- function()
-    rownames(coordinates(get_id_locations()))
+.select_id <- function(mregion="both", nr=NULL, nsr=NULL, luf=NULL) {
+    if (is.null(nr))
+        nr <- levels(.c4if$KT$reg_nr)
+    if (is.null(nsr))
+        nsr <- levels(.c4if$KT$reg_nsr)
+    if (is.null(luf))
+        luf <- levels(.c4if$KT$reg_luf)
+    mregion <- match.arg(mregion, c("both", "north", "south"))
+    nr <- match.arg(nr, levels(.c4if$KT$reg_nr), several.ok=TRUE)
+    nsr <- match.arg(nsr, levels(.c4if$KT$reg_nsr), several.ok=TRUE)
+    luf <- match.arg(luf, levels(.c4if$KT$reg_luf), several.ok=TRUE)
+    keep <- rep(FALSE, nrow(.c4if$KT))
+    keep[.c4if$KT$reg_nr %in% nr] <- TRUE
+    keep[.c4if$KT$reg_nsr %in% nsr] <- TRUE
+    keep[.c4if$KT$reg_luf %in% luf] <- TRUE
+    ## mregion to override selection
+    if (mregion != "both") {
+        #ss <- rep(FALSE, nrow(.c4if$KT))
+        if (mregion == "north") {
+            ss <- .c4if$KT$reg_nr != "Grassland"
+        } else {
+            ss <- .c4if$KT$reg_nr %in% c("Grassland", "Parkland") |
+                .c4if$KT$reg_nsr == "Dry Mixedwood"
+            ss[.c4if$KT$reg_nsr == "Dry Mixedwood" &
+                coordinates(.c4if$XY)[,2] > 56.7] <- FALSE
+        }
+        keep <- keep & ss
+    }
+    keep
+}
+
+get_id_table <- function(mregion="both", nr=NULL, nsr=NULL, luf=NULL) {
+    .c4if$KT[.select_id(mregion, nr, nsr, luf),,drop=FALSE]
+}
+
+get_all_id <- function(mregion="both", nr=NULL, nsr=NULL, luf=NULL)
+    rownames(.c4if$KT)[.select_id(mregion, nr, nsr, luf)]
 
 get_all_species <- function(taxon="all", habitat, status)
     rownames(get_species_table(taxon, habitat, status))

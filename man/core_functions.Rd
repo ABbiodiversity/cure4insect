@@ -33,6 +33,7 @@
 \alias{get_subset_info}
 \alias{get_subset_id}
 \alias{get_subset_species}
+\alias{get_id_table}
 \title{
 Core Functions for Custom Reporting
 }
@@ -63,9 +64,10 @@ custom_report(id=NULL, species="all",
 
 set_options(...)
 overlay_polygon(ply)
-get_all_id()
+get_all_id(mregion="both", nr=NULL, nsr=NULL, luf=NULL)
 get_all_species(taxon = "all", habitat, status)
 get_id_locations()
+get_id_table(mregion="both", nr=NULL, nsr=NULL, luf=NULL)
 get_species_table(taxon = "all", habitat, status)
 get_version_info()
 get_all_qsid()
@@ -179,6 +181,13 @@ expert based habitat associations in Alberta.
   \item{status}{
 character, one of \code{"native"} or \code{"nonnative"} to indicate
 expert based status in Alberta.
+}
+  \item{mregion}{
+character, modeling region (\code{"both"}, \code{"north"}, or \code{"south"}).
+}
+  \item{nr, nsr, luf}{
+character vector, narural regions (nr), natural subregions (nsr), and
+land use framework regions (luf) of Alberta.
 }
   \item{ply}{
 an object of class 'SpatialPolygons' defined by the 'sp' package.

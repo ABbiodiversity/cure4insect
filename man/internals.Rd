@@ -14,6 +14,7 @@
 \alias{.combine_veg_soil}
 \alias{.validate_id}
 \alias{.verbose}
+\alias{.select_id}
 \title{
 App Specific Functions and Internals
 }
@@ -39,6 +40,7 @@ app_test(...)
 .combine_veg_soil(ipa, veg, soil)
 .validate_id(id, type=c("km", "qs"))
 .verbose()
+.select_id(mregion="both", nr=NULL, nsr=NULL, luf=NULL)
 }
 \arguments{
   \item{species, boot, path, version}{arguments passed to
@@ -60,6 +62,7 @@ app_test(...)
     against the \code{ref}erence list of possible values.}
   \item{ipa, veg, soil}{calculates a weighted average of \code{veg}
     and \code{soil} based models based on probability of aspen (\code{ipa}).}
+  \item{mregion, nr, nsr, luf}{regions.}
   \item{\dots}{arguments passed to underlying functions.}
 }
 \details{

@@ -11,6 +11,7 @@ export(
     set_options,
     overlay_polygon,
     get_all_id,
+    get_id_table,
     get_all_species,
     get_id_locations,
     get_species_table,
@@ -46,7 +47,8 @@ export(
     .check,
     .combine_veg_soil,
     .validate_id,
-    .verbose)
+    .verbose,
+    .select_id)
 
 S3method(flatten, c4iraw)
 S3method(plot_sector, c4iraw)
