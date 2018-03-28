@@ -70,6 +70,13 @@ x
 flatten(x)
 ```
 
+Spatial `id` can be specified as planning/management region:
+
+```R
+ID <- get_all_id(nr=c("Boreal", "Foothills"))
+ID <- get_all_id(luf="North Saskatchewan")
+```
+
 Alternatively, `id` can refer to quarter sections
 using the `"MER-RGE-TWP-SEC-QS"` format:
 

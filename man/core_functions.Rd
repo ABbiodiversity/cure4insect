@@ -365,8 +365,9 @@ subset_common_data(id=QSID, species=Spp)
 y <- load_species_data(Spp)
 flatten(calculate_results(y))
 
-## using pre-defined management regions
-ID <- get_all_id(nr=c("Boreal", "Foothills"))
+## using pre-defined planning/management regions
+#ID <- get_all_id(nr=c("Boreal", "Foothills"))
+ID <- get_all_id(luf="North Saskatchewan")
 subset_common_data(id=ID)
 plot(make_subset_map())
 
