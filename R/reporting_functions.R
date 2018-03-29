@@ -32,11 +32,18 @@ function(x, raw_boot=FALSE, limit=NULL, ...)
     df$Mean <- x$mean
     df$Max <- x$max
     df$Limit <- limit
+    df$Predicted <- x$predicted
     KEEP <- x$mean >= x$max * limit
     df$Keep <- KEEP
-    if (!KEEP)
-        Cm[[length(Cm)+1]] <- paste0("Regional mean abundance <",
-            round(100*limit,1), "% of provincial maximum.")
+    if (!KEEP) {
+        msg <- if (x$predicted) {
+            paste0("Regional mean abundance <",
+                 round(100*limit,1), "% of provincial maximum.")
+        } else {
+            "No overlap between selected spatial subset and modelled species range."
+        }
+        Cm[[length(Cm)+1]] <- msg
+    }
     if (!x$boot) {
         df$CI_Level <- NA
         Cm[[length(Cm)+1]] <- "Confidence intervals were not requested."
@@ -57,8 +64,9 @@ function(x, raw_boot=FALSE, limit=NULL, ...)
     df$SI2_Est <- x$intactness["Intactness2", 1]
     df$SI2_LCL <- x$intactness["Intactness2", 2]
     df$SI2_UCL <- x$intactness["Intactness2", 3]
-    if (x$boot && x$intactness["Intactness2",1] %)(% x$intactness["Intactness2",2:3])
-        Cm[[length(Cm)+1]] <- "Two-sided intactness estimate is outside of CI."
+    if (x$predicted && x$boot &&
+        x$intactness["Intactness2",1] %)(% x$intactness["Intactness2",2:3])
+            Cm[[length(Cm)+1]] <- "Two-sided intactness estimate is outside of CI."
     z <- x$sector
     z[is.na(z)] <- 0
     fd <- matrix(t(z), 1)
