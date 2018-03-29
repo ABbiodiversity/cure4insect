@@ -27,6 +27,8 @@ function(x, raw_boot=FALSE, limit=NULL, ...)
     }
     df <- data.frame(df, tmp)
     rownames(df) <- x$species
+    df$model_north <- x$model_north
+    df$model_south <- x$model_south
     df$Mean <- x$mean
     df$Max <- x$max
     df$Limit <- limit

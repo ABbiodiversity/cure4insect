@@ -27,7 +27,8 @@ used by users.
 app_read_csv(...)
 app_test(...)
 
-.load_species_data(species, boot=TRUE, path=NULL, version=NULL, taxon)
+.load_species_data(species, boot=TRUE, path=NULL, version=NULL,
+    taxon, model_north, model_south)
 .calculate_results(y, level=0.9, .c4is)
 .calculate_limit(y, limit=NULL)
 .report_all_by1(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
@@ -45,7 +46,8 @@ app_test(...)
 \arguments{
   \item{species, boot, path, version}{arguments passed to
     \code{\link{load_species_data}} and other functions.}
-  \item{taxon}{taxonomic group required for the correct path.}
+  \item{taxon, model_north, model_south}{taxonomic group required for the correct
+    path, and logical values indicating north and south model results.}
   \item{y, level}{arguments passed to \code{\link{calculate_results}}
     and other functions.}
   \item{.c4is}{the subset environment \code{as.list(.c4is)}.}

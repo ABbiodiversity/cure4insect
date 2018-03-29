@@ -128,11 +128,15 @@ function(species, boot=TRUE, path=NULL, version=NULL)
     if (is.null(version))
         version <- opts$version
     taxon <- as.character(.c4if$SP[species, "taxon"])
+    model_north <- .c4if$SP[species, "model_north"]
+    model_south <- .c4if$SP[species, "model_south"]
     .load_species_data(species=species,
-        boot=boot, path=path, version=version, taxon=taxon)
+        boot=boot, path=path, version=version, taxon=taxon,
+        model_north=model_north, model_south=model_south)
 }
 .load_species_data <-
-function(species, boot=TRUE, path=NULL, version=NULL, taxon)
+function(species, boot=TRUE, path=NULL, version=NULL,
+taxon, model_north, model_south)
 {
     opts <- getOption("cure4insect")
     if (is.null(path))
@@ -142,6 +146,8 @@ function(species, boot=TRUE, path=NULL, version=NULL, taxon)
     y <- new.env()
     assign("species", species, envir=y)
     assign("taxon", taxon, envir=y)
+    assign("model_north", model_north, envir=y)
+    assign("model_south", model_south, envir=y)
     assign("boot", boot, envir=y)
     fn1 <- file.path(path, version, "results", taxon, "sector", paste0(species, ".RData"))
     fn2 <- file.path(path, version, "results", taxon, "boot", paste0(species, ".RData"))
@@ -236,6 +242,8 @@ function(y, level=0.9, .c4is)
         max=MAX,
         mean=MEAN,
         level=level,
+        model_north=y$model_north,
+        model_south=y$model_south,
         boot=y$boot,
         boot_current=CB,
         boot_reference=RB,
