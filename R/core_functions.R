@@ -107,13 +107,15 @@ function(id=NULL, species="all")
     if (!.validate_id(id, type="km"))
         stop("spatial id not valid")
     id10 <- sort(unique(as.character(.c4if$KT[id, "Row10_Col10"])))
-    assign("KTsub", .c4if$KT[id,,drop=FALSE],
+    KT <- .c4if$KT
+    ## South: >= 0; North: <= 0
+    KT$mregion <- as.integer(-1*.select_id("north") + .select_id("south"))
+    assign("KTsub", KT[id,,drop=FALSE],
         envir=.c4is)
     assign("A_2012", Matrix::colSums(.c4if$KA_2012[id,,drop=FALSE]),
         envir=.c4is)
     assign("A_2014", Matrix::colSums(.c4if$KA_2014[id,,drop=FALSE]),
         envir=.c4is)
-
     invisible(NULL)
 }
 
@@ -184,21 +186,35 @@ function(y, level=0.9, .c4is)
     cn <- c("Native", "Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")
     a <- c(0.5*(1-level), 1-0.5*(1-level))
     MAX <- max(quantile(rowSums(y$SA.Curr), 0.99), quantile(rowSums(y$SA.Ref), 0.99))
-    PIX <- rownames(.c4is$KTsub)
-    ## Rockies and unmodelled regions should be excluded
+    KTsub <- .c4is$KTsub
+    ## Rockies for non-birds and unmodelled regions excluded
+    if (y$taxon != "birds")
+        KTsub <- KTsub[KTsub$reg_nr %ni% "Rocky Mountain",,drop=FALSE]
+    ## South: >= 0; North: <= 0
+    if (!all(c(y$model_north, y$model_south))) {
+        KTsub <- if (y$model_north) {
+            KTsub[KTsub$mregion <= 0,,drop=FALSE]
+        } else {
+            KTsub[KTsub$mregion >= 0,,drop=FALSE]
+        }
+    }
+    PIX <- rownames(KTsub)
     PIX <- PIX[PIX %in% rownames(y$SA.Curr)]
     SA.Curr <- y$SA.Curr[PIX,cn]
     SA.Ref <- y$SA.Ref[PIX,cn]
     ## subset can have 0 rows when outside of modeled range:
     ## this leads to mean(numeric(0))=NaN but should be 0
+    ## the variable predicted has the info about this fact
     if (length(PIX) > 0) {
         cr <- rowSums(SA.Curr)
         rf <- rowSums(SA.Ref)
         MEAN_cr <- mean(cr[cr <= quantile(cr, 0.99)])
         MEAN_rf <- mean(rf[rf <= quantile(rf, 0.99)])
         MEAN <- max(MEAN_cr, MEAN_rf)
+        predicted <- TRUE
     } else {
         MEAN <- 0
+        predicted <- FALSE
     }
     CS <- colSums(SA.Curr)
     RS <- colSums(SA.Ref)
@@ -207,7 +223,7 @@ function(y, level=0.9, .c4is)
     SI <- 100 * min(NC, NR) / max(NC, NR)
     SI2 <- if (NC <= NR) SI else 200 - SI
     if (y$boot) {
-        KTsubsub <- .c4is$KTsub[PIX,,drop=FALSE]
+        KTsubsub <- KTsub[PIX,,drop=FALSE]
         Curr.Boot <- y$Curr.Boot
         Ref.Boot <- y$Ref.Boot
         KTsubsub <- KTsubsub[KTsubsub$Row10_Col10 %in% rownames(Curr.Boot),,drop=FALSE]
@@ -242,6 +258,7 @@ function(y, level=0.9, .c4is)
         max=MAX,
         mean=MEAN,
         level=level,
+        predicted=predicted,
         model_north=y$model_north,
         model_south=y$model_south,
         boot=y$boot,
@@ -272,7 +289,19 @@ function(y, limit=NULL)
         stop("limit value must be between in [0, 1]")
     cn <- c("Native", "Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")
     MAX <- max(quantile(rowSums(y$SA.Curr), 0.99), quantile(rowSums(y$SA.Ref), 0.99))
-    PIX <- rownames(.c4is$KTsub)
+    KTsub <- .c4is$KTsub
+    ## Rockies for non-birds and unmodelled regions excluded
+    if (y$taxon != "birds")
+        KTsub <- KTsub[KTsub$reg_nr %ni% "Rocky Mountain",,drop=FALSE]
+    ## South: >= 0; North: <= 0
+    if (!all(c(y$model_north, y$model_south))) {
+        KTsub <- if (y$model_north) {
+            KTsub[KTsub$mregion <= 0,,drop=FALSE]
+        } else {
+            KTsub[KTsub$mregion >= 0,,drop=FALSE]
+        }
+    }
+    PIX <- rownames(KTsub)
     ## Rockies and unmodelled regions should be excluded
     PIX <- PIX[PIX %in% rownames(y$SA.Curr)]
     SA.Curr <- y$SA.Curr[PIX,cn]
@@ -285,13 +314,16 @@ function(y, limit=NULL)
         MEAN_cr <- mean(cr[cr <= quantile(cr, 0.99)])
         MEAN_rf <- mean(rf[rf <= quantile(rf, 0.99)])
         MEAN <- max(MEAN_cr, MEAN_rf)
+        predicted <- TRUE
     } else {
         MEAN <- 0
+        predicted <- FALSE
     }
     list(
         max=MAX,
         mean=MEAN,
         limit=limit,
+        predicted=predicted,
         keep=MEAN >= MAX * limit)
 }
 

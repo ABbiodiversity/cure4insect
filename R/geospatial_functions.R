@@ -43,7 +43,20 @@ rasterize_results <- function(y)
     KT$NR <- NR[i]
     KT$SI <- SI[i]
     KT$SI2 <- SI2[i]
-
+    nr <- levels(.c4if$KT$reg_nr)
+    if (y$taxon != "birds")
+        nr <- nr[nr %ni% "Rocky Mountain"]
+    if (!all(c(y$model_north, y$model_south))) {
+        ss <- !.select_id(if (y$model_north) "north" else "south", nr=nr)
+    } else {
+        ss <- !.select_id("both", nr=nr)
+    }
+    if (any(ss)) {
+        KT$NC[ss] <- NA
+        KT$NR[ss] <- NA
+        KT$SI[ss] <- NA
+        KT$SI2[ss] <- NA
+    }
     if (y$boot) {
         CB <- y$Curr.Boot
         SE <- apply(CB, 1, sd)
@@ -51,6 +64,10 @@ rasterize_results <- function(y)
         j <- match(KT$Row10_Col10, rownames(CB))
         KT$SE <- SE[j]
         KT$CV <- CV[j]
+        if (any(ss)) {
+            KT$SE[ss] <- NA
+            KT$CV[ss] <- NA
+        }
     } else {
         KT$SE <- NA
         KT$CV <- NA
