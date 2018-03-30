@@ -118,7 +118,9 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
     fun <- function(z, boot=NULL, path=NULL, version=NULL, level=0.9, .c4is) {
         .calculate_results(.load_species_data(z,
             boot=boot, path=path, version=version,
-            taxon=as.character(.c4is$SPsub[z, "taxon"])),
+            taxon=as.character(.c4is$SPsub[z, "taxon"]),
+            model_north=.c4is$SPsub[z, "model_north"],
+            model_south=.c4is$SPsub[z, "model_south"]),
             level=level, .c4is=.c4is)
     }
     OUT <- pblapply(SPP, fun, boot=boot, path=path, version=version,
