@@ -12,9 +12,13 @@ Biodiversity Monitoring Institute (ABMI)](http://abmi.ca/)
 in collaboration with the
 [Boreal Avian Modelling (BAM) Project](http://www.borealbirds.ca/).
 
+* [Example species report](https://abbiodiversity.github.io/cure4insect/example-species-report.html)
+* [Custom report](https://abbiodiversity.github.io/cure4insect/site/)
+* [Web app](http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/)
+
 ## License
 
-The estimates, predictions, and related documentation are &copy; ABMI (2014&ndash;2017) under a [CC BY-SA 4.0 license](http://creativecommons.org/licenses/by-sa/4.0/).
+The estimates, predictions, and related documentation are &copy; ABMI (2014&ndash;2018) under a [CC BY-SA 4.0 license](http://creativecommons.org/licenses/by-sa/4.0/).
 
 The R package itself is licensed under [MIT license](https://github.com/ABbiodiversity/cure4insect/blob/master/LICENSE.md) &copy; 2018 Peter Solymos & ABMI.
 
@@ -26,12 +30,6 @@ please file an [issue](https://github.com/ABbiodiversity/cure4insect/issues).
 ```R
 devtools::install_github("ABbiodiversity/cure4insect")
 ```
-
-## Examples
-
-* [Example species report](https://abbiodiversity.github.io/cure4insect/example-species-report.html)
-* [Custom report](https://abbiodiversity.github.io/cure4insect/site/)
-* [Web app](http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/)
 
 ## Usage
 
