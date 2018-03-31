@@ -362,7 +362,7 @@ function(taxon="all", habitat, status)
     taxon <- match.arg(taxon, c("all","birds","lichens","mammals",
         "mites","mosses","vplants"), several.ok=TRUE)
     out <- .c4if$SP
-    keep <- if (taxon == "all")
+    keep <- if (length(taxon) > 1 && taxon == "all")
         rep(TRUE, nrow(out)) else out$taxon %in% taxon
     if (!missing(habitat)) {
         habitat <- match.arg(habitat, c("upland", "lowland"))
