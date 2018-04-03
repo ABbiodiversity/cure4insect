@@ -65,7 +65,7 @@ custom_report(id=NULL, species="all",
 set_options(...)
 overlay_polygon(ply)
 get_all_id(mregion="both", nr=NULL, nsr=NULL, luf=NULL)
-get_all_species(taxon = "all", habitat, status)
+get_all_species(taxon = "all", mregion="both", habitat, status)
 get_id_locations()
 get_id_table(mregion="both", nr=NULL, nsr=NULL, luf=NULL)
 get_species_table(taxon = "all", habitat, status)

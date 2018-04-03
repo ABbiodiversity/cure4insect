@@ -56,7 +56,7 @@ function(id=NULL, species="all")
     if (!is.null(dim(species))) # if provided as table, use 1st col
         species <- as.character(species[,1L])
     vals <- c("all","birds","lichens","mammals","mites","mosses","vplants",
-        "upland", "lowland", "native", "nonnat")
+        "upland", "lowland", "native", "nonnat", "north", "south")
     x <- .c4if$SP
     if (length(species) == 1L && tolower(species)  %in% vals) {
         if (species %in%  c("all", "birds","lichens","mammals","mites","mosses","vplants"))
@@ -65,6 +65,8 @@ function(id=NULL, species="all")
             SPPfull <- get_all_species(habitat=species)
         if (species %in% c("native", "nonnat"))
             SPPfull <- get_all_species(status=species)
+        if (species %in% c("north", "south"))
+            SPPfull <- get_all_species(mregion=species)
     } else {
         SPPfull <- species
         if (any(SPPfull %ni% rownames(x)))
@@ -357,7 +359,7 @@ get_id_locations <- function() {
 }
 
 get_species_table <-
-function(taxon="all", habitat, status)
+function(taxon="all", mregion="both", habitat, status)
 {
     if (!is_loaded())
         stop("common data needed: use load_common_data")
@@ -366,6 +368,11 @@ function(taxon="all", habitat, status)
     out <- .c4if$SP
     keep <- if (length(taxon) == 1 && taxon == "all")
         rep(TRUE, nrow(out)) else out$taxon %in% taxon
+    mregion <- match.arg(mregion, c("both", "north", "south"))
+    if (mregion != "both") {
+        keep <- if (mregion == "north")
+            keep & out$model_north else keep & out$model_south
+    }
     if (!missing(habitat)) {
         habitat <- match.arg(habitat, c("upland", "lowland"))
         keep <- if (habitat == "upland") {
