@@ -150,7 +150,7 @@ function(Curr, Ref, Area, RefTotal, main, col, ylim, ylab, xlab, ...)
         y[4:5]<-mean(y[4:5])+(c(-0.015,0.015)*(ymax-ymin))[rank(y[4:5])]
     text(q,y,paste(ifelse(total.effect>0,"+",""),
         sprintf("%.1f",total.effect),"%",sep=""),col="darkblue",cex=1.4)
-    mtext(side=3,line=1,at=0,adj=0, main, cex=1.4,col="grey40")
+    mtext(side=3,line=2,at=0,adj=0, main, cex=1.4,col="grey40")
     invisible(rbind(total=total.effect, unit=unit.effect, area=Area[sectors]))
 }
 
@@ -212,7 +212,7 @@ function(Curr, Ref, RefTotal, regional=TRUE, main, col, ylim, ylab, ...)
     if (abs(y[3]-y[4])<0.05*(ymax-ymin))
         y[3:4]<-mean(y[3:4])+(c(-0.015,0.015)*(ymax-ymin))[rank(y[3:4])]
     text(1:5,y,paste(sprintf("%.1f",total.effect0),"%",sep=""),col="darkblue",cex=1.2)
-    mtext(side=3,line=1,at=0,adj=0, main, cex=1.4,col="grey40")
+    mtext(side=3,line=2,at=0,adj=0, main, cex=1.4,col="grey40")
     invisible(total.effect)
 }
 
@@ -289,7 +289,7 @@ function(x, method="kde", main, ylab, col, ylim, ...)
     }
     title(ylab=ylab, cex=1.3, col="grey40")
     mtext(side=1,at=1:5,sector.names,col=c1,cex=1.3,adj=0.5,line=0.5)
-    mtext(side=3, at=0, adj=0, main, col="grey30")
+    mtext(side=3, line=2, at=0, adj=0, main, col="grey30")
     op <- par(xpd = TRUE)
     on.exit(par(op), add=TRUE)
     outp <- unlist(outp)

@@ -39,6 +39,9 @@ if (dir.exists(base))
     unlink(base, recursive=TRUE)
 dir.create(base)
 
+## FALSE --> no single species maps/plots are saved
+save_spp_figs <- TRUE
+
 ## apply subsets
 subset_common_data(id, species)
 get_subset_info()
@@ -180,71 +183,75 @@ for (i in seq_along(species)) {
     values(rreg[["NR"]])[which(values(rreg[["NR"]]) == Nmax0)] <- Nmax
 
     ## save images
-    if (.verbose()) cat("\t- saving species images\n"); flush.console()
-    png(file.path(base, "species", spp, "images", "map-nc.png"),
-        width=1000, height=1000*ar, res=72*resol)
-    op <- par(mar=c(0.5, 3, 1, 0))
-    plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
-    plot(rreg[["NC"]], col=col1, add=TRUE)
-    par(op)
-    dev.off()
+    if (save_spp_figs) {
 
-    png(file.path(base, "species", spp, "images", "map-nr.png"),
-        width=1000, height=1000*ar, res=72*resol)
-    op <- par(mar=c(0.5, 3, 1, 0))
-    plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
-    plot(rreg[["NR"]], col=col1, add=TRUE)
-    par(op)
-    dev.off()
+        if (.verbose()) cat("\t- saving species images\n"); flush.console()
+        png(file.path(base, "species", spp, "images", "map-nc.png"),
+            width=1000, height=1000*ar, res=72*resol)
+        op <- par(mar=c(0.5, 3, 1, 0))
+        plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+        plot(rreg[["NC"]], col=col1, add=TRUE)
+        par(op)
+        dev.off()
 
-    png(file.path(base, "species", spp, "images", "map-se.png"),
-        width=1000, height=1000*ar, res=72*resol)
-    op <- par(mar=c(0.5, 3, 1, 0))
-    plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
-    plot(rreg[["SE"]], col=col2, add=TRUE)
-    par(op)
-    dev.off()
+        png(file.path(base, "species", spp, "images", "map-nr.png"),
+            width=1000, height=1000*ar, res=72*resol)
+        op <- par(mar=c(0.5, 3, 1, 0))
+        plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+        plot(rreg[["NR"]], col=col1, add=TRUE)
+        par(op)
+        dev.off()
 
-    png(file.path(base, "species", spp, "images", "map-cv.png"),
-        width=1000, height=1000*ar, res=72*resol)
-    op <- par(mar=c(0.5, 3, 1, 0))
-    plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
-    plot(rreg[["CV"]], col=col2, add=TRUE)
-    par(op)
-    dev.off()
+        png(file.path(base, "species", spp, "images", "map-se.png"),
+            width=1000, height=1000*ar, res=72*resol)
+        op <- par(mar=c(0.5, 3, 1, 0))
+        plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+        plot(rreg[["SE"]], col=col2, add=TRUE)
+        par(op)
+        dev.off()
 
-    png(file.path(base, "species", spp, "images", "map-si.png"),
-        width=1000, height=1000*ar, res=72*resol)
-    op <- par(mar=c(0.5, 3, 1, 0))
-    plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
-    plot(rreg[["SI"]], col=col3, add=TRUE)
-    par(op)
-    dev.off()
+        png(file.path(base, "species", spp, "images", "map-cv.png"),
+            width=1000, height=1000*ar, res=72*resol)
+        op <- par(mar=c(0.5, 3, 1, 0))
+        plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+        plot(rreg[["CV"]], col=col2, add=TRUE)
+        par(op)
+        dev.off()
 
-    png(file.path(base, "species", spp, "images", "map-si2.png"),
-        width=1000, height=1000*ar, res=72*resol)
-    op <- par(mar=c(0.5, 3, 1, 0))
-    plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
-    plot(rreg[["SI2"]], col=col4, add=TRUE)
-    par(op)
-    dev.off()
+        png(file.path(base, "species", spp, "images", "map-si.png"),
+            width=1000, height=1000*ar, res=72*resol)
+        op <- par(mar=c(0.5, 3, 1, 0))
+        plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+        plot(rreg[["SI"]], col=col3, add=TRUE)
+        par(op)
+        dev.off()
 
-    png(file.path(base, "species", spp, "images", "sector-regional.png"),
-        width=1000, height=1000, res=72*resol)
-    plot_sector(x, type="regional", main="Effects on regional population",
-        ylim=c(-100, 100))
-    dev.off()
+        png(file.path(base, "species", spp, "images", "map-si2.png"),
+            width=1000, height=1000*ar, res=72*resol)
+        op <- par(mar=c(0.5, 3, 1, 0))
+        plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+        plot(rreg[["SI2"]], col=col4, add=TRUE)
+        par(op)
+        dev.off()
 
-    png(file.path(base, "species", spp, "images", "sector-underhf.png"),
-        width=1000, height=1000, res=72*resol)
-    plot_sector(x, type="underhf", "Effects on population under footprint",
-        ylim=c(-100, 100))
-    dev.off()
+        png(file.path(base, "species", spp, "images", "sector-regional.png"),
+            width=1000, height=1000, res=72*resol)
+        plot_sector(x, type="regional", main="Effects on regional population",
+            ylim=c(-100, 100))
+        dev.off()
 
-    png(file.path(base, "species", spp, "images", "sector-unit.png"),
-        width=1000, height=1000, res=72*resol)
-    plot_sector(x, type="unit", "Regional effects per unit area")
-    dev.off()
+        png(file.path(base, "species", spp, "images", "sector-underhf.png"),
+            width=1000, height=1000, res=72*resol)
+        plot_sector(x, type="underhf", "Effects on population under footprint",
+            ylim=c(-100, 100))
+        dev.off()
+
+        png(file.path(base, "species", spp, "images", "sector-unit.png"),
+            width=1000, height=1000, res=72*resol)
+        plot_sector(x, type="unit", "Regional effects per unit area")
+        dev.off()
+
+    }
 
     ## storing results
     if (.verbose()) cat("\t- finishing results\n"); flush.console()
