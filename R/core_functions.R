@@ -428,8 +428,8 @@ get_id_table <- function(mregion="both", nr=NULL, nsr=NULL, luf=NULL) {
 get_all_id <- function(mregion="both", nr=NULL, nsr=NULL, luf=NULL)
     rownames(.c4if$KT)[.select_id(mregion, nr, nsr, luf)]
 
-get_all_species <- function(taxon="all", habitat, status)
-    rownames(get_species_table(taxon, habitat, status))
+get_all_species <- function(taxon="all", mregion="both", habitat, status)
+    rownames(get_species_table(taxon, mregion, habitat, status))
 
 .verbose <- function() {
     x <- getOption("cure4insect")$verbose
