@@ -52,11 +52,6 @@ function(id=NULL, species="all")
 {
     if (!is_loaded())
         stop("common data needed: use load_common_data")
-    if (.verbose()) {
-        cat("arranging subsets\n")
-        flush.console()
-    }
-    clear_subset_data()
 
     if (!is.null(dim(species))) # if provided as table, use 1st col
         species <- as.character(species[,1L])
@@ -78,10 +73,6 @@ function(id=NULL, species="all")
     SPPfull <- rownames(x)[rownames(x) %in% SPPfull]
     if (length(SPPfull) <= 0)
         stop("no species selected")
-    assign("SPfull", x,
-        envir=.c4is)
-    assign("SPsub", x[SPPfull,,drop=FALSE],
-        envir=.c4is)
 
     if (is.null(id))
         id <- rownames(.c4if$KT)
@@ -110,11 +101,22 @@ function(id=NULL, species="all")
     KT <- .c4if$KT
     ## South: >= 0; North: <= 0
     KT$mregion <- as.integer(-1*.select_id("north") + .select_id("south"))
+
+    ## assignment happens only if all checks passed
+    if (.verbose()) {
+        cat("arranging subsets\n")
+        flush.console()
+    }
+    clear_subset_data()
     assign("KTsub", KT[id,,drop=FALSE],
         envir=.c4is)
     assign("A_2012", Matrix::colSums(.c4if$KA_2012[id,,drop=FALSE]),
         envir=.c4is)
     assign("A_2014", Matrix::colSums(.c4if$KA_2014[id,,drop=FALSE]),
+        envir=.c4is)
+    assign("SPfull", x,
+        envir=.c4is)
+    assign("SPsub", x[SPPfull,,drop=FALSE],
         envir=.c4is)
     invisible(NULL)
 }
@@ -362,7 +364,7 @@ function(taxon="all", habitat, status)
     taxon <- match.arg(taxon, c("all","birds","lichens","mammals",
         "mites","mosses","vplants"), several.ok=TRUE)
     out <- .c4if$SP
-    keep <- if (length(taxon) > 1 && taxon == "all")
+    keep <- if (length(taxon) == 1 && taxon == "all")
         rep(TRUE, nrow(out)) else out$taxon %in% taxon
     if (!missing(habitat)) {
         habitat <- match.arg(habitat, c("upland", "lowland"))
