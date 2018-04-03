@@ -2,6 +2,7 @@
 #devtools::install_github("ABbiodiversity/cure4insect")
 
 ## load libraries
+library(mefa4)
 library(jsonlite)
 library(cure4insect)
 #opar <- set_options(path = "w:/reports")
@@ -25,11 +26,34 @@ xy <- matrix(c(
 ply <- SpatialPolygons(list(Polygons(list(Polygon(xy)), "x")), 1L)
 proj4string(ply) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 id <- overlay_polygon(ply)
+#id <- get_all_id(mregion="north")
 
 ## specify species subset
 #species <- c("AlderFlycatcher", "Achillea.millefolium") # 2 species
 #species <- get_all_species("birds") # all birds
 set.seed(234);species <- sample(get_all_species(), 10) # 10 random species
+## 33 OF birds
+#species <- c("BaltimoreOriole", "BaybreastedWarbler", "BlackpollWarbler",
+#    "BlackthroatedGreenWarbler", "BlueheadedVireo", "BorealChickadee",
+#    "BrownCreeper", "CanadaWarbler", "CapeMayWarbler", "EveningGrosbeak",
+#    "GoldencrownedKinglet", "HairyWoodpecker", "LeastFlycatcher",
+#    "MagnoliaWarbler", "NorthernWaterthrush", "PhiladelphiaVireo",
+#    "PileatedWoodpecker", "PineSiskin", "PurpleFinch", "RedbreastedNuthatch",
+#    "RedCrossbill", "RosebreastedGrosbeak", "RubycrownedKinglet",
+#    "SwainsonsThrush", "VariedThrush", "WarblingVireo", "WesternTanager",
+#    "WesternWoodPewee", "WhitebreastedNuthatch", "WhitewingedCrossbill",
+#    "WinterWren", "YellowbelliedSapsucker", "YellowrumpedWarbler")
+
+## FALSE --> no single species maps/plots are saved
+save_spp_figs <- TRUE
+## setting limit
+limit <- 0.01
+
+## subregions to evaluate in/out for species based on limit
+TAB <- get_id_table()
+regs <- interaction(TAB$reg_luf, TAB$reg_nsr, sep="_", drop=TRUE)
+#regs <- as.factor(rep("ALL", nrow(TAB))) # use this if no subregions defined
+#regs <- TAB$reg_nsr
 
 ## specify output folder
 base <- "./_site" # this folder is created
@@ -38,9 +62,6 @@ if (.verbose()) cat("output directory", base, "\n")
 if (dir.exists(base))
     unlink(base, recursive=TRUE)
 dir.create(base)
-
-## FALSE --> no single species maps/plots are saved
-save_spp_figs <- TRUE
 
 ## apply subsets
 subset_common_data(id, species)
@@ -51,6 +72,9 @@ str(species <- get_subset_species())
 
 ## specify resolution factor (>0)
 resol <- 2
+## bg color (water, NA)
+BG <- "#41526d" # dark
+#BG <- "#6baed6" # light
 
 ## copy the files
 if (.verbose()) cat("copying files\n")
@@ -145,7 +169,7 @@ for (i in seq_along(species)) {
     if (.verbose()) cat("\t- calculating species summaries\n"); flush.console()
     x <- calculate_results(y)
     ## flatten results and write js object
-    z <- flatten(x)
+    z <- flatten(x, limit=limit)
     z$tnice <- switch(as.character(z$Taxon),
         "birds"="Birds",
         "lichens"="Lichens",
@@ -189,7 +213,7 @@ for (i in seq_along(species)) {
         png(file.path(base, "species", spp, "images", "map-nc.png"),
             width=1000, height=1000*ar, res=72*resol)
         op <- par(mar=c(0.5, 3, 1, 0))
-        plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+        plot(rreg0, col=BG, axes=FALSE, box=FALSE, legend=FALSE)
         plot(rreg[["NC"]], col=col1, add=TRUE)
         par(op)
         dev.off()
@@ -197,7 +221,7 @@ for (i in seq_along(species)) {
         png(file.path(base, "species", spp, "images", "map-nr.png"),
             width=1000, height=1000*ar, res=72*resol)
         op <- par(mar=c(0.5, 3, 1, 0))
-        plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+        plot(rreg0, col=BG, axes=FALSE, box=FALSE, legend=FALSE)
         plot(rreg[["NR"]], col=col1, add=TRUE)
         par(op)
         dev.off()
@@ -205,7 +229,7 @@ for (i in seq_along(species)) {
         png(file.path(base, "species", spp, "images", "map-se.png"),
             width=1000, height=1000*ar, res=72*resol)
         op <- par(mar=c(0.5, 3, 1, 0))
-        plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+        plot(rreg0, col=BG, axes=FALSE, box=FALSE, legend=FALSE)
         plot(rreg[["SE"]], col=col2, add=TRUE)
         par(op)
         dev.off()
@@ -213,7 +237,7 @@ for (i in seq_along(species)) {
         png(file.path(base, "species", spp, "images", "map-cv.png"),
             width=1000, height=1000*ar, res=72*resol)
         op <- par(mar=c(0.5, 3, 1, 0))
-        plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+        plot(rreg0, col=BG, axes=FALSE, box=FALSE, legend=FALSE)
         plot(rreg[["CV"]], col=col2, add=TRUE)
         par(op)
         dev.off()
@@ -221,7 +245,7 @@ for (i in seq_along(species)) {
         png(file.path(base, "species", spp, "images", "map-si.png"),
             width=1000, height=1000*ar, res=72*resol)
         op <- par(mar=c(0.5, 3, 1, 0))
-        plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+        plot(rreg0, col=BG, axes=FALSE, box=FALSE, legend=FALSE)
         plot(rreg[["SI"]], col=col3, add=TRUE)
         par(op)
         dev.off()
@@ -229,7 +253,7 @@ for (i in seq_along(species)) {
         png(file.path(base, "species", spp, "images", "map-si2.png"),
             width=1000, height=1000*ar, res=72*resol)
         op <- par(mar=c(0.5, 3, 1, 0))
-        plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+        plot(rreg0, col=BG, axes=FALSE, box=FALSE, legend=FALSE)
         plot(rreg[["SI2"]], col=col4, add=TRUE)
         par(op)
         dev.off()
@@ -258,17 +282,34 @@ for (i in seq_along(species)) {
     resx[[spp]] <- x
     res[[spp]] <- z
     KEEP[i] <- z$Keep
+
+    ## use object regs to evaluate in/out by smaller regions
+    DAT <- cbind(NR=rowSums(y$SA.Ref), NC=rowSums(y$SA.Curr))
+    DAT <- DAT[match(rownames(TAB), rownames(DAT)),]
+    DAT[is.na(DAT)] <- 0
+    MEAN <- apply(groupMeans(DAT, 1, regs), 1, max)
+    IO <- ifelse(MEAN >= x$max * limit, 1, 0)
+    IO <- IO[match(regs, names(IO))]
+    rio <- .make_raster(IO, TAB, rt)
+    #rio <- mask(rio, rmask)
+    rio <- crop(rio, extent(rreg0))
+
     ## finishing intactness raster
     if (is.null(r_si)) {
         r_si <- rreg[["SI"]]
         r_si[is.na(r_si)] <- 100
         if (!z$Keep)
             r_si[!is.na(values(r_si))] <- 0
+        r_si <- r_si * rio
+        IOsum <- rio
     } else {
         tmp <- rreg[["SI"]]
         tmp[is.na(tmp)] <- 100
-        if (z$Keep)
+        tmp <- tmp * rio
+        if (z$Keep) {
             r_si <- r_si + tmp
+            IOsum <- IOsum + rio
+        }
     }
     ## finishing richness raster
     if (is.null(r_ri)) {
@@ -286,9 +327,11 @@ for (i in seq_along(species)) {
 }
 ## multi-species rasters
 if (.verbose()) cat("multi-species rasters\n")
-r_si <- r_si / sum(KEEP)
+#r_si <- r_si / sum(KEEP)
+r_si <- r_si / IOsum
 r_si <- mask(r_si, rreg0)
 r_ri <- mask(r_ri, rreg0)
+
 rr <- stack(list(Intactness=r_si, Richness=r_ri))
 ## write raster data as geo tif
 dir.create(file.path(base, "data"), showWarnings=FALSE)
@@ -316,7 +359,7 @@ col3 <- col3[SIrange[1]:SIrange[2]]
 png(file.path(base, "report", "images", "multi-map-intactness.png"),
     width=1000, height=1000*ar, res=72*resol)
 op <- par(mar=c(0.5, 3, 1, 0))
-plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+plot(rreg0, col=BG, axes=FALSE, box=FALSE, legend=FALSE)
 plot(r_si, col=col3, add=TRUE)
 par(op)
 dev.off()
@@ -326,7 +369,7 @@ col5 <- colorRampPalette(c('#fff7fb','#ece2f0','#d0d1e6','#a6bddb','#67a9cf',
 png(file.path(base, "report", "images", "multi-map-richness.png"),
     width=1000, height=1000*ar, res=72*resol)
 op <- par(mar=c(0.5, 3, 1, 0))
-plot(rreg0, col="#6baed6", axes=FALSE, box=FALSE, legend=FALSE)
+plot(rreg0, col=BG, axes=FALSE, box=FALSE, legend=FALSE)
 plot(r_ri, col=col5, add=TRUE)
 par(op)
 dev.off()
