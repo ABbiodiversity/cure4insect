@@ -332,7 +332,7 @@ r_si <- r_si / IOsum
 r_si <- mask(r_si, rreg0)
 r_ri <- mask(r_ri, rreg0)
 
-rr <- stack(list(Intactness=r_si, Richness=r_ri))
+rr <- stack(list(Intactness=r_si, Richness=r_ri, SppInSI=IOsum))
 ## write raster data as geo tif
 dir.create(file.path(base, "data"), showWarnings=FALSE)
 writeRaster(rr, file.path(base, "data", "multispecies_results.tif"))
