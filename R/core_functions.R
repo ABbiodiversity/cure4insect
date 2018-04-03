@@ -91,6 +91,8 @@ function(id=NULL, species="all")
         id <- as.character(id[,1L])
     if (!is.character(id))
         id <- as.character(id)
+    if (length(id) <= 0)
+        stop("no spatial IDs selected")
     ## QS-to-km mapping
     if (.validate_id(id, type="qs")) {
          if (.verbose()) {
@@ -102,8 +104,6 @@ function(id=NULL, species="all")
     ## validating Row_Col IDs
     id <- id[id %in% rownames(.c4if$KT)]
     id <- sort(id)
-    if (length(id) <= 0)
-        stop("no spatial IDs selected")
     if (!.validate_id(id, type="km"))
         stop("spatial id not valid")
     id10 <- sort(unique(as.character(.c4if$KT[id, "Row10_Col10"])))
