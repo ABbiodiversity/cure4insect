@@ -305,6 +305,8 @@ function(x, method="kde", main, ylab, col, ylim, ...)
 plot_abundance <-
 function(species, type, plot=TRUE, paspen=0, ...)
 {
+    if (!is_loaded())
+        stop("common data needed: use load_common_data")
     switch(match.arg(type, c("veg_coef", "veg_lin", "soil_coef", "soil_lin")),
         "veg_coef"=.plot_abundance_veg(species, plot, ...),
         "veg_lin"=.plot_abundance_lin(species, plot, veg=TRUE, ...),
