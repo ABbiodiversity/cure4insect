@@ -184,5 +184,9 @@ function(species, xy, veg, soil, path=NULL, version=NULL, ...)
 {
     load_common_data(path=path, version=version)
     object <- load_spclim_data(species=species, path=path, version=version)
+    if (!is.missing(veg))
+        veg <- as.factor(veg)
+    if (!is.missing(soil))
+        veg <- as.factor(soil)
     predict(object, xy=xy, veg=veg, soil=soil, ...)
 }
