@@ -182,13 +182,28 @@ function(ipa, veg, soil)
     ipa * veg + (1 - ipa) * soil
 }
 
+.tr_xy <- function(xy) {
+    if (inherits(xy, "SpatialPoints"))
+        return(xy)
+    if (is.null(dim(xy)))
+        stop("xy must be a SpatialPoints or a matrix-like object")
+    if (ncol(xy) != 2L)
+        stop("xy must have 2 columns (lon, lat)")
+    xy <- as.data.frame(xy)
+    colnames(xy) <- c("X", "Y")
+    coordinates(xy) <- ~ X + Y
+    proj4string(xy) <- proj4string(.c4if$XY)
+    xy
+}
+
 ## handle soft lin aspect through an option for birds:
 ## coef approach does not require rf, early seral does ???
 predict.c4ispclim <-
 function(object, xy, veg, soil, ...)
 {
-    if (!inherits(xy, "SpatialPoints"))
-        stop("xy must be of class SpatialPoints")
+#    if (!inherits(xy, "SpatialPoints"))
+#        stop("xy must be of class SpatialPoints")
+    xy <- .tr_xy(xy)
     ## coefs in object are on log/logit scale, need linkinv
     fi <- if (object$taxon == "birds")
         poisson("log")$linkinv else binomial("logit")$linkinv
@@ -245,8 +260,9 @@ predict_mat <- function (object, ...)
 predict_mat.c4ispclim <-
 function(object, xy, veg, soil, ...)
 {
-    if (!inherits(xy, "SpatialPoints"))
-        stop("xy must be of class SpatialPoints")
+#    if (!inherits(xy, "SpatialPoints"))
+#        stop("xy must be of class SpatialPoints")
+    xy <- .tr_xy(xy)
     ## coefs in object are on log/logit scale, need linkinv
     fi <- if (object$taxon == "birds")
         poisson("log")$linkinv else binomial("logit")$linkinv
