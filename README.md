@@ -359,7 +359,7 @@ Access spatially explicit and land cover specific prediction for a species
 using the `custom_predict` function:
 
 ```shell
-curl http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/R/custom_predict/tab \
+curl http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/R/custom_predict/json \
 -H "Content-Type: application/json" -d \
 '{"species":"AlderFlycatcher", "xy":[[-114.4493,58.4651]], "veg":"Mixedwood80"}'
 ```
