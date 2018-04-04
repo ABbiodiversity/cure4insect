@@ -12,7 +12,8 @@ Biodiversity Monitoring Institute (ABMI)](http://abmi.ca/)
 in collaboration with the
 [Boreal Avian Modelling (BAM) Project](http://www.borealbirds.ca/).
 
-* [Example species report](https://abbiodiversity.github.io/cure4insect/example-species-report.html)
+* [Few slides about the motivations](https://abbiodiversity.github.io/cure4insect/intro/)
+* [Example species report](https://abbiodiversity.github.io/cure4insect/example/)
 * [Custom report](https://abbiodiversity.github.io/cure4insect/site/)
 * [Web app](http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/)
 
