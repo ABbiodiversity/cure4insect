@@ -350,7 +350,7 @@ To get more control over the results, use the [API](https://www.opencpu.org/api.
 Make a request using the `custom_report` function:
 
 ```shell
-curl http://sc-dev.abmi.ca/ocpu/library/cure4insect/R/custom_report/csv \
+curl http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/R/custom_report/csv \
 -H "Content-Type: application/json" -d \
 '{"id":["182_362", "182_363"], "species":["AlderFlycatcher", "Achillea.millefolium"]}'
 ```
@@ -359,19 +359,10 @@ Access spatially explicit and land cover specific prediction for a species
 using the `custom_predict` function:
 
 ```shell
-curl http://sc-dev.abmi.ca/ocpu/library/cure4insect/R/custom_predict/tab \
+curl http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/R/custom_predict/tab \
 -H "Content-Type: application/json" -d \
 '{"species":"AlderFlycatcher", "xy":[[-114.4493,58.4651]], "veg":"Mixedwood80"}'
 ```
-
-Get the numbers behind habitat associations plot for a species:
-
-```shell
-curl http://sc-dev.abmi.ca/ocpu/library/cure4insect/R/plot_abundance/json \
--H "Content-Type: application/json" -d \
-'{"species":"AlderFlycatcher", "type":"veg_coef", "plot":false}'
-```
-
 
 ## Explore single and multi-species results
 
