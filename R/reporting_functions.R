@@ -178,3 +178,11 @@ raw_boot=FALSE, limit=NULL)
     class(rval) <- c("c4idf", "data.frame")
     rval
 }
+
+custom_predict <-
+function(species, xy, veg, soil, path=NULL, version=NULL, ...)
+{
+    load_common_data(path=path, version=version)
+    object <- load_spclim_data(species=species, path=path, version=version)
+    predict(object, xy=xy, veg=veg, soil=soil, ...)
+}

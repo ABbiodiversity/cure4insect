@@ -8,6 +8,7 @@ export(
     flatten,
     report_all,
     custom_report,
+    custom_predict,
     set_options,
     overlay_polygon,
     get_all_id,

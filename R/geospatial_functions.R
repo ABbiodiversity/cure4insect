@@ -91,7 +91,7 @@ rasterize_results <- function(y)
 }
 
 load_spclim_data <-
-function(species, boot=TRUE, path=NULL, version=NULL)
+function(species, path=NULL, version=NULL)
 {
     if (!is_loaded())
         stop("common data needed: use load_common_data")

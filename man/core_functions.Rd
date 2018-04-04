@@ -11,6 +11,7 @@
 \alias{flatten.c4iraw}
 \alias{report_all}
 \alias{custom_report}
+\alias{custom_predict}
 \alias{set_options}
 \alias{get_all_id}
 \alias{get_all_species}
@@ -61,6 +62,8 @@ custom_report(id=NULL, species="all",
     path=NULL, version=NULL, address=NULL,
     boot=TRUE, level=0.9, cores=NULL,
     raw_boot=FALSE, limit=NULL)
+custom_predict(species, xy, veg, soil,
+    path=NULL, version=NULL, ...)
 
 set_options(...)
 overlay_polygon(ply)
@@ -77,7 +80,7 @@ get_subset_info()
 get_subset_id()
 get_subset_species()
 
-load_spclim_data(species, boot=TRUE, path=NULL, version=NULL)
+load_spclim_data(species, path=NULL, version=NULL)
 get_levels()
 \method{predict}{c4ispclim}(object, xy, veg, soil, ...)
 predict_mat(object, ...)
