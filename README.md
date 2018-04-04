@@ -266,9 +266,6 @@ r2 <- make_multispecies_map("intactness")
 
 ```R
 load_common_data()
-## see bird species codes
-sptab <- get_species_table()
-rownames(sptab)[sptab$taxon == "birds"]
 ## pick Ovenbird
 species <- "Ovenbird"
 object <- load_spclim_data(species)
