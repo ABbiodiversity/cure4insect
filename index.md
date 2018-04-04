@@ -12,9 +12,14 @@ Biodiversity Monitoring Institute (ABMI)](http://abmi.ca/)
 in collaboration with the
 [Boreal Avian Modelling (BAM) Project](http://www.borealbirds.ca/).
 
+* [Few slides about the motivations](https://abbiodiversity.github.io/cure4insect/intro/)
+* [Example species report](https://abbiodiversity.github.io/cure4insect/example/)
+* [Custom report](https://abbiodiversity.github.io/cure4insect/site/)
+* [Web app](http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/)
+
 ## License
 
-The estimates, predictions, and related documentation are &copy; ABMI (2014&ndash;2017) under a [CC BY-SA 4.0 license](http://creativecommons.org/licenses/by-sa/4.0/).
+The estimates, predictions, and related documentation are &copy; ABMI (2014&ndash;2018) under a [CC BY-SA 4.0 license](http://creativecommons.org/licenses/by-sa/4.0/).
 
 The R package itself is licensed under [MIT license](https://github.com/ABbiodiversity/cure4insect/blob/master/LICENSE.md) &copy; 2018 Peter Solymos & ABMI.
 
@@ -27,11 +32,7 @@ please file an [issue](https://github.com/ABbiodiversity/cure4insect/issues).
 devtools::install_github("ABbiodiversity/cure4insect")
 ```
 
-## Examples
-
-[Example species report](https://abbiodiversity.github.io/cure4insect/example-species-report.html)
-
-[Example custom report](https://abbiodiversity.github.io/cure4insect/site/)
+## Usage
 
 Load the package:
 
@@ -47,25 +48,44 @@ library(cure4insect)
 ```R
 load_common_data()
 
-## here is how to inspect all possible spatial and species IDs
-str(get_all_id())
-str(get_all_species())
-plot(xy <- get_id_locations(), pch=".")
-summary(xy)
-str(get_species_table())
-
-## define spatial and species IDs
+## define spatial and species IDs (subsets)
 Spp <- "Ovenbird"
 ID <- c("182_362", "182_363", "182_364", "182_365", "182_366", "182_367",
     "182_368", "182_369", "182_370", "182_371", "182_372")
 
 subset_common_data(id=ID, species=Spp)
+## check subsets
+str(get_subset_id())
+str(get_subset_species())
+
+## load species data
 y <- load_species_data(Spp)
 
 ## calculate results and flatten to a 1-liner
 x <- calculate_results(y)
 x
 flatten(x)
+```
+
+#### Spatial subset specifications
+
+Here is how to inspect all possible spatial IDs:
+
+```R
+str(get_all_id())
+plot(xy <- get_id_locations(), pch=".")
+summary(xy)
+```
+
+Spatial `id` can be specified as planning/management region:
+
+```R
+## Natural Regions
+ID <- get_all_id(nr=c("Boreal", "Foothills"))
+## Natural Subregions
+ID <- get_all_id(nsr="Lower Boreal Highlands")
+## Land Use Framework regions
+ID <- get_all_id(luf="North Saskatchewan")
 ```
 
 Alternatively, `id` can refer to quarter sections
@@ -75,10 +95,6 @@ using the `"MER-RGE-TWP-SEC-QS"` format:
 Spp <- "Ovenbird"
 QSID <- c("4-12-1-2-SE", "4-12-1-2-SW", "4-12-1-3-SE", "4-12-1-3-SW")
 qs2km(QSID) # corresponding Row_Col IDs
-
-subset_common_data(id=QSID, species=Spp)
-y <- load_species_data(Spp)
-flatten(calculate_results(y))
 ```
 
 #### Workflow with multiple species
@@ -95,7 +111,29 @@ str(xx)
 do.call(rbind, lapply(xx, flatten))
 ```
 
-Wrapper function:
+#### Species subset specifications
+
+Here is how to inspect all possible species IDs
+
+```R
+str(get_all_species())
+str(get_species_table())
+```
+
+Select one or more taxonomic group
+(mammals, birds, mites, mosses, lichens, vpalnst),
+and fiter for habitat and status:
+
+```R
+## birds and mammals
+str(get_all_species(taxon=c("birds", "mammals")))
+## all upland species
+str(get_all_species(taxon="all", habitat="upland"))
+## nonnative vascular plants
+str(get_all_species(taxon="vplants", status="nonnative"))
+```
+
+#### Wrapper functions
 
 * `species="all"` runs all species
 * `species="mites"` runs all mite species
@@ -313,22 +351,12 @@ curl http://sc-dev.abmi.ca/ocpu/library/cure4insect/R/custom_report/csv \
 '{"id":["182_362", "182_363"], "species":["AlderFlycatcher", "Achillea.millefolium"]}'
 ```
 
+## Explore single and multi-species results
 
-## Vision
+To get similar output to
+[this](https://abbiodiversity.github.io/cure4insect/site/),
+run script from this file:
 
-The package can be used to use a local copy of the organized
-data and check the results, bulk produce png/pdf figures:
-everything that relates to predictions.
-
-Create a Docker container (instead of zip download)
-with all the data, so that
-it can be deployed as a micro-service (moving things around),
-or use locally through Kitematic
-(faster to download only once and then use the local copy).
-
-#### Todo
-
-* attachment to include: metadata, readme, IDs, batch figures (zipped)
-* make containerized version for local use
-* define color schemes and plotting functionality with default thresholds and some legends?
-* add spclim prediction support for sparse matrix based composition data
+```R
+file.show(system.file("doc/custom-report.R", package="cure4insect"))
+```
