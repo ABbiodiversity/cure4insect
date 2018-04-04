@@ -1,5 +1,5 @@
 var results = {
   "species": [10],
-  "pixels": [166250],
-  "intactness": [72.0312]
+  "pixels": [56644],
+  "intactness": [61.7907]
 }
