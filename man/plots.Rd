@@ -12,9 +12,9 @@ Plots the sector effects for a single or a group of species.
 \usage{
 plot_sector(x, ...)
 \method{plot_sector}{c4iraw}(x,
-    type=c("unit", "regional", "underhf"), main, ylab, ...)
+    type=c("unit", "regional", "underhf"), main, ylab, subset=NULL, ...)
 \method{plot_sector}{c4idf}(x,
-    type=c("unit", "regional", "underhf"), main, ylab, ...)
+    type=c("unit", "regional", "underhf"), main, ylab, subset=NULL, ...)
 
 plot_abundance(species, type, plot=TRUE, paspen=0, ...)
 }
@@ -34,6 +34,9 @@ the default is to use the species ID.
 }
   \item{ylab}{
 character, optional label for the y axis.
+}
+  \item{subset}{
+subset of sectors to be plotted, can be any suitable index.
 }
   \item{plot}{
 logical, if a plot is to be drawn.
