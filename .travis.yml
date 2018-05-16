@@ -1,9 +1,11 @@
 language: r
 sudo: false
 cache: packages
+
 branches:
   only:
     - master
+
 dist: trusty
 addons:
   apt:
