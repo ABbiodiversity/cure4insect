@@ -642,3 +642,113 @@ function(species, plot=TRUE, veg=TRUE, ylim, main, xlab, ylab, ...)
     }
     invisible(out)
 }
+
+## plots intactness violinplots
+.vaseplot <-
+function(x, by=NULL, method="kde", main, ylab, col, ylim, at=NULL, ...)
+{
+    method <- match.arg(method, c("kde", "fft", "hist"))
+    if (missing(main))
+        main <- ""
+    if (missing(ylab))
+        ylab <- ""
+    by <- as.factor(by)
+    j <- seq_len(nlevels(by))
+    if (missing(col))
+         col <- "tan3"
+    c1 <- rep(col, length(j))[j]
+
+    if (!missing(ylim)) {
+        ymin <- ylim[1]
+        ymax <- ylim[2]
+    } else {
+        ymin <- min(x)
+        ymax <- max(x)
+        ylim <- c(ymin, ymax)
+    }
+    off <- 0.25
+    a <- 1-0.5-off
+    b <- length(j)+0.5+off
+    v <- 0.1
+    yax <- pretty(c(ymin,ymax))
+    op <- par(las=1)
+    on.exit(par(op), add=TRUE)
+    plot(0, type="n", xaxs="i", yaxs = "i", ylim=c(ymin,ymax), xlim=c(a, b),
+        axes=FALSE, ann=FALSE)
+    polygon(c(a,a,b,b), c(ymin, ymax, ymax, ymin), col="grey88", border="grey88")
+    segments(x0=rep(a, length(yax)), x1=rep(b,length(yax)),y0=yax, col="white")
+    axis(2, yax, yax, tick=FALSE)
+    rug(yax, side=2, ticksize=0.01, col="grey40", quiet=TRUE)
+    lines(c(a,a), c(ymin, ymax), col="grey40", lwd=1)
+    if (!is.null(at))
+        lines(c(a,b), c(at, at), col="grey40", lwd=2)
+    outp <- list() # higher
+    outn <- list() # lower
+    for (i in seq_along(j)) {
+        xx <- sort(x[by == levels(by)[i]])
+        k <- xx %[]% ylim
+        outp[[i]] <- sum(xx > ymax)
+        outn[[i]] <- sum(xx < ymin)
+        st <- boxplot.stats(xx)
+        s <- st$stats
+        ## skip if no data in ylim range
+        if (sum(k) > 0) {
+            if (method == "kde")
+                d <- bkde(xx[k]) # uses Normal kernel
+            if (method == "fft")
+                d <- density(xx[k]) # uses FFT
+            if (method == "hist") {
+                h <- hist(xx[k], plot=FALSE)
+                xv <- rep(h$breaks, each=2)
+                yv <- c(0, rep(h$density, each=2), 0)
+            } else {
+                xv <- d$x
+                yv <- d$y
+                jj <- xv >= min(xx) & xv <= max(xx)
+                xv <- xv[jj]
+                yv <- yv[jj]
+            }
+            yv <- 0.4 * yv / max(yv)
+            polygon(c(-yv, rev(yv))+i, c(xv, rev(xv)), col=c1[i], border=c1[i])
+            polygon(c(-v,-v,v,v)+i, s[c(2,4,4,2)], col="#40404080", border=NA)
+            lines(c(-v,v)+i, s[c(3,3)], lwd=2, col="grey30")
+        }
+    }
+    title(ylab=ylab, cex=1.3, col="grey40")
+    mtext(side=1,at=seq_along(j),levels(by),col=c1,cex=1.3,adj=0.5,line=0.5)
+    mtext(side=3, line=2, at=0, adj=0, main, col="grey30")
+    op <- par(xpd = TRUE)
+    on.exit(par(op), add=TRUE)
+    outp <- unlist(outp)
+    points(seq_along(j), rep(ymax+diff(ylim)*0.025, length(j)), pch=19,
+        cex=ifelse(outp==0, 0, 0.5+2*outp/max(outp)), col=c1)
+    outn <- unlist(outn)
+    points(seq_along(j), rep(ymin-diff(ylim)*0.025, length(j)), pch=19,
+        cex=ifelse(outn==0, 0, 0.5+2*outn/max(outn)), col=c1)
+    invisible(data.frame(x=x, by=by))
+}
+
+plot_intactness <- function(x, ...)
+    UseMethod("plot_intactness")
+
+plot_intactness.c4idf <-
+function(x, type=c("SI", "SI2"), col, ...)
+{
+    type <- match.arg(type)
+    by <- x$Taxon
+    if (missing(col))
+        col <- c('#1b9e77','#d95f02','#7570b3','#e7298a','#66a61e','#e6ab02')
+    col <- rep(col, nlevels(by))[seq_len(nlevels(by))]
+    if (type == "SI") {
+        ylim <- c(0, 100)
+        ylab <- "Intactness (%)"
+        xx <- x$SI_Est
+        at <- NULL
+    } else {
+        ylim <- c(0, 200)
+        ylab <- "Intactness, two-sided (%)"
+        xx <- x$SI2_Est
+        at <- 100
+    }
+    .vaseplot(xx, by, ylim=ylim, ylab=ylab, col=col, at=at, ...)
+}

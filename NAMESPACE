@@ -19,6 +19,7 @@ export(
     is_loaded,
     plot_sector,
     plot_abundance,
+    plot_intactness,
     rasterize_results,
     load_spclim_data,
     combine_veg_soil,

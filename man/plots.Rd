@@ -1,7 +1,9 @@
 \name{plot_sector}
 \alias{plot_sector}
+\alias{plot_intactness}
 \alias{plot_sector.c4iraw}
 \alias{plot_sector.c4idf}
+\alias{plot_intactness.c4idf}
 \alias{plot_abundance}
 \title{
 Abundance and Sector Effects Plots
@@ -15,6 +17,9 @@ plot_sector(x, ...)
     type=c("unit", "regional", "underhf"), main, ylab, subset=NULL, ...)
 \method{plot_sector}{c4idf}(x,
     type=c("unit", "regional", "underhf"), main, ylab, subset=NULL, ...)
+
+plot_intactness(x, ...)
+\method{plot_intactness}{c4idf}(x, type=c("SI", "SI2), col, ...)
 
 plot_abundance(species, type, plot=TRUE, paspen=0, ...)
 }
@@ -45,6 +50,9 @@ logical, if a plot is to be drawn.
 numeric in [0, 1], the probability of aspen occurrence (proxy for climatic
 suitability for treed vegetation).
 }
+  \item{col}{
+color.
+}
   \item{\dots}{
 other possible arguments passed to underlying functions,
 e.g. \code{ylim}, \code{xlab}, \code{ylab},
@@ -67,11 +75,14 @@ The single species sector effect plots are different kinds of bar plots.
 The multi-species plot represents violin (carrot, vase) plots
 based on kernel density, fast Fourier transform, or binning (histogram).
 
-More here about types of abundance plots:
+Intactness plots are either one sided (0-100\%, \code{"SI"}),
+or two-sided (0-200\%, \code{"SI2"}) differentiating increased (>100\%)
+and decreaser (<100\%) species.
+
+Abundance plots depend on the \code{type} argument:
 \code{"veg_coef"} type abundance plots show relative abundances across
 various land cover (incl. disturbance) classes,
 \code{"soil_coef"} shows relative abundance by soil and disturbance types.
-
 The \code{"veg_lin"} and \code{"soil_lin"} types show average relative abundances
 compared to 10\% vegetated (soft) and non-vegetated (hard) linear disturbance.
 }
@@ -98,6 +109,9 @@ class(z) <- c("c4idf", class(z))
 plot_sector(z, "unit") # all species
 plot_sector(z[1:100,], "regional") # use a subset
 plot_sector(z, "underhf", method="hist") # binned version
+
+plot_intactness(z, "SI")
+plot_intactness(z, "SI2")
 
 \dontrun{
 ## land cover associations
