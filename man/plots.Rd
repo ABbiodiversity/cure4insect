@@ -19,7 +19,7 @@ plot_sector(x, ...)
     type=c("unit", "regional", "underhf"), main, ylab, subset=NULL, ...)
 
 plot_intactness(x, ...)
-\method{plot_intactness}{c4idf}(x, type=c("SI", "SI2), col, ...)
+\method{plot_intactness}{c4idf}(x, type=c("SI", "SI2"), col, ...)
 
 plot_abundance(species, type, plot=TRUE, paspen=0, ...)
 }
