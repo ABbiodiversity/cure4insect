@@ -55,6 +55,7 @@ export(
 S3method(flatten, c4iraw)
 S3method(plot_sector, c4iraw)
 S3method(plot_sector, c4idf)
+S3method(plot_intactness, c4idf)
 S3method(predict, c4ispclim)
 S3method(predict_mat, c4ispclim)
 

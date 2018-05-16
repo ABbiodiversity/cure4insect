@@ -121,7 +121,7 @@ str(get_species_table())
 ```
 
 Select one or more taxonomic group
-(mammals, birds, mites, mosses, lichens, vpalnst), 
+(mammals, birds, mites, mosses, lichens, vpalnst),
 and fiter for habitat and status:
 
 ```R
@@ -177,7 +177,7 @@ as.list(drop(read.dcf(file=system.file("config/defaults.conf",
 package="cure4insect"))))
 ```
 
-#### Sector effects plots
+#### Sector effects and intactness plots
 
 ```R
 ## *res*ults from calculate_results, all province, all species
@@ -192,6 +192,9 @@ class(z) <- c("c4idf", class(z))
 plot_sector(z, "unit") # all species
 plot_sector(z[1:100,], "regional") # use a subset
 plot_sector(z, "underhf", method="hist") # binned version
+
+plot_intactness(z, "SI")
+plot_intactness(z, "SI2", method="hist")
 ```
 
 #### Determining spatial IDs based on spatial polygons
@@ -366,8 +369,8 @@ curl http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/R/custom_predict
 
 ## Explore single and multi-species results
 
-To get similar output to 
-[this](https://abbiodiversity.github.io/cure4insect/site/), 
+To get similar output to
+[this](https://abbiodiversity.github.io/cure4insect/site/),
 run script from this file:
 
 ```R

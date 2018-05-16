@@ -1,8 +1,8 @@
 \name{plot_sector}
 \alias{plot_sector}
-\alias{plot_intactness}
 \alias{plot_sector.c4iraw}
 \alias{plot_sector.c4idf}
+\alias{plot_intactness}
 \alias{plot_intactness.c4idf}
 \alias{plot_abundance}
 \title{
@@ -111,7 +111,7 @@ plot_sector(z[1:100,], "regional") # use a subset
 plot_sector(z, "underhf", method="hist") # binned version
 
 plot_intactness(z, "SI")
-plot_intactness(z, "SI2")
+plot_intactness(z, "SI2", method="hist")
 
 \dontrun{
 ## land cover associations
