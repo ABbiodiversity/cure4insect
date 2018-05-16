@@ -102,7 +102,7 @@ function(Curr, Ref, Area, RefTotal, main, col, ylim, ylab, xlab, subset=NULL, ..
     sector.names <- c("Agriculture","Forestry","Energy","RuralUrban","Transport")
     j <- seq_along(sectors)
     c1 <- if (!missing(col))
-        rep(col, length(sector))[j] else c("tan3","palegreen4","indianred3",
+        rep(col, length(sectors))[j] else c("tan3","palegreen4","indianred3",
                                            "skyblue3","slateblue2")
     Curr[is.na(Curr)] <- 0
     Ref[is.na(Ref)] <- 0
@@ -190,7 +190,7 @@ function(Curr, Ref, RefTotal, regional=TRUE, main, col, ylim, ylab, subset=NULL,
     Ref[is.na(Ref)] <- 0
     j <- seq_along(sectors)
     c1 <- if (!missing(col))
-        rep(col, length(sector))[j] else c("tan3","palegreen4","indianred3",
+        rep(col, length(sectors))[j] else c("tan3","palegreen4","indianred3",
                                            "skyblue3","slateblue2")
     total.effect <- if (regional)
         100 * (Curr - Ref)/RefTotal else 100 * (Curr - Ref)/Ref
@@ -264,7 +264,7 @@ function(x, method="kde", main, ylab, col, ylim, subset=NULL, ...)
     sector.names <- c("Agriculture","Forestry","Energy","RuralUrban","Transport")
     j <- seq_along(sectors)
     c1 <- if (!missing(col))
-        rep(col, length(sector))[j] else c("tan3","palegreen4","indianred3",
+        rep(col, length(sectors))[j] else c("tan3","palegreen4","indianred3",
                                            "skyblue3","slateblue2")
     if (!is.null(subset)) {
         j <- if (is.character(subset))
