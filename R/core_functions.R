@@ -204,8 +204,8 @@ function(y, level=0.9, .c4is)
     }
     PIX <- rownames(KTsub)
     PIX <- PIX[PIX %in% rownames(y$SA.Curr)]
-    SA.Curr <- y$SA.Curr[PIX,cn]
-    SA.Ref <- y$SA.Ref[PIX,cn]
+    SA.Curr <- y$SA.Curr[PIX,cn,drop=FALSE]
+    SA.Ref <- y$SA.Ref[PIX,cn,drop=FALSE]
     ## subset can have 0 rows when outside of modeled range:
     ## this leads to mean(numeric(0))=NaN but should be 0
     ## the variable predicted has the info about this fact
