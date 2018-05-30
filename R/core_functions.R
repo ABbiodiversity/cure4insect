@@ -234,8 +234,8 @@ function(y, level=0.9, .c4is)
         PIX10 <- unique(as.character(KTsubsub$Row10_Col10))
         Curr.Boot <- Curr.Boot[PIX10,,drop=FALSE]
         Ref.Boot <- Ref.Boot[PIX10,,drop=FALSE]
-        Curr.Boot <- Curr.Boot[match(KTsubsub$Row10_Col10, rownames(Curr.Boot)),]
-        Ref.Boot <- Ref.Boot[match(KTsubsub$Row10_Col10, rownames(Ref.Boot)),]
+        Curr.Boot <- Curr.Boot[match(KTsubsub$Row10_Col10, rownames(Curr.Boot)),,drop=FALSE]
+        Ref.Boot <- Ref.Boot[match(KTsubsub$Row10_Col10, rownames(Ref.Boot)),,drop=FALSE]
         CB <- colSums(Curr.Boot)
         RB <- colSums(Ref.Boot)
         SIB <- 100 * pmin(CB, RB) / pmax(CB, RB)
