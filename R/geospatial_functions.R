@@ -8,7 +8,7 @@ function(ply)
         ply <- spTransform(ply, proj4string(XY))
     if (.verbose())
         cat("running spatial overlay\n")
-    o <- over(XY, ply)
+    o <- over(XY, as(ply, "SpatialPolygons"))
     rownames(coordinates(XY))[!is.na(o)]
 }
 
