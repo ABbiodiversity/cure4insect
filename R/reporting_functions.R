@@ -51,22 +51,39 @@ function(x, raw_boot=FALSE, limit=NULL, ...)
         df$CI_Level <- x$level
     }
     df$Abund_Curr_Est <- x$intactness["Current", 1]
-    df$Abund_Curr_LCL <- x$intactness["Current", 2]
-    df$Abund_Curr_UCL <- x$intactness["Current", 3]
-    if (x$boot && x$intactness["Current",1] %)(% x$intactness["Current",2:3])
-        Cm[[length(Cm)+1]] <- "Current abundance estimate is outside of CI: region probably too small."
+    if (df$Abund_Curr_Est == 0) {
+        df$Abund_Curr_LCL <- 0
+        df$Abund_Curr_UCL <- 0
+    } else {
+        df$Abund_Curr_LCL <- x$intactness["Current", 2]
+        df$Abund_Curr_UCL <- x$intactness["Current", 3]
+        if (x$boot && x$intactness["Current",1] %)(% x$intactness["Current",2:3])
+            Cm[[length(Cm)+1]] <- "Current abundance estimate is outside of CI: region probably too small."
+    }
     df$Abund_Ref_Est <- x$intactness["Reference", 1]
-    df$Abund_Ref_LCL <- x$intactness["Reference", 2]
-    df$Abund_Ref_UCL <- x$intactness["Reference", 3]
-    if (x$boot && x$intactness["Reference",1] %)(% x$intactness["Reference",2:3])
-        Cm[[length(Cm)+1]] <- "Reference abundance estimate is outside of CI: region probably too small."
-    df$SI_Est <- x$intactness["Intactness", 1]
-    df$SI2_Est <- x$intactness["Intactness2", 1]
-    df$SI2_LCL <- x$intactness["Intactness2", 2]
-    df$SI2_UCL <- x$intactness["Intactness2", 3]
-    if (x$predicted && x$boot &&
-        x$intactness["Intactness2",1] %)(% x$intactness["Intactness2",2:3])
-            Cm[[length(Cm)+1]] <- "Two-sided intactness estimate is outside of CI."
+    if (df$Abund_Ref_Est == 0) {
+        df$Abund_Ref_LCL <- 0
+        df$Abund_Ref_UCL <- 0
+    } else {
+        df$Abund_Ref_LCL <- x$intactness["Reference", 2]
+        df$Abund_Ref_UCL <- x$intactness["Reference", 3]
+        if (x$boot && x$intactness["Reference",1] %)(% x$intactness["Reference",2:3])
+            Cm[[length(Cm)+1]] <- "Reference abundance estimate is outside of CI: region probably too small."
+    }
+    if (is.na(x$intactness["Intactness", 1])) {
+        df$SI_Est <- NA
+        df$SI2_Est <- NA
+        df$SI2_LCL <- NA
+        df$SI2_UCL <- NA
+    } else {
+        df$SI_Est <- x$intactness["Intactness", 1]
+        df$SI2_Est <- x$intactness["Intactness2", 1]
+        df$SI2_LCL <- x$intactness["Intactness2", 2]
+        df$SI2_UCL <- x$intactness["Intactness2", 3]
+        if (x$predicted && x$boot &&
+            x$intactness["Intactness2",1] %)(% x$intactness["Intactness2",2:3])
+                Cm[[length(Cm)+1]] <- "Two-sided intactness estimate is outside of CI."
+    }
     z <- x$sector
     z[is.na(z)] <- 0
     fd <- matrix(t(z), 1)
