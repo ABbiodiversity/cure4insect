@@ -42,8 +42,8 @@ library(cure4insect)
 
 #### Workflow with 1 species
 
-`id` is a vector of Row_Col IDs of 1km pixels,
-`species` is a vector if species IDs:
+`id` is a vector of `Row_Col` type IDs of 1 km<sup>2</sup> pixels,
+`species` is a vector of species IDs:
 
 ```R
 load_common_data()
@@ -69,7 +69,7 @@ flatten(x)
 
 #### Spatial subset specifications
 
-Here is how to inspect all possible spatial IDs:
+All the possible spatial IDs can be inspected as:
 
 ```R
 str(get_all_id())
@@ -77,7 +77,7 @@ plot(xy <- get_id_locations(), pch=".")
 summary(xy)
 ```
 
-Spatial `id` can be specified as planning/management region:
+Spatial IDs can be specified as planning/management regions:
 
 ```R
 ## Natural Regions
@@ -89,13 +89,17 @@ ID <- get_all_id(luf="North Saskatchewan")
 ```
 
 Alternatively, `id` can refer to quarter sections
-using the `"MER-RGE-TWP-SEC-QS"` format:
+using the `MER-RGE-TWP-SEC-QS` format:
 
 ```R
 Spp <- "Ovenbird"
 QSID <- c("4-12-1-2-SE", "4-12-1-2-SW", "4-12-1-3-SE", "4-12-1-3-SW")
 qs2km(QSID) # corresponding Row_Col IDs
 ```
+
+The `subset_common_data` function recognizes `MER-RGE-TWP-SEC-QS` type 
+spatial IDs and onvert those to the `Row_Col` format using
+the nearest 1 km<sup>2</sup> pixels.
 
 #### Workflow with multiple species
 
@@ -104,7 +108,9 @@ qs2km(QSID) # corresponding Row_Col IDs
 ```R
 load_common_data()
 Spp <- read.table(system.file("extdata/species.txt", package="cure4insect"))
+str(Spp)
 ID <- read.table(system.file("extdata/pixels.txt", package="cure4insect"))
+str(ID)
 subset_common_data(id=ID, species=Spp)
 xx <- report_all()
 str(xx)
@@ -120,7 +126,7 @@ str(get_all_species())
 str(get_species_table())
 ```
 
-Select one or more taxonomic group
+Select one or more taxonomic groups
 (mammals, birds, mites, mosses, lichens, vpalnst),
 and fiter for habitat and status:
 
@@ -174,7 +180,7 @@ A few more words about options:
 getOption("cure4insect")
 ## change configs in this file to make it permanent for a given installation
 as.list(drop(read.dcf(file=system.file("config/defaults.conf",
-package="cure4insect"))))
+    package="cure4insect"))))
 ```
 
 #### Sector effects and intactness plots
@@ -204,16 +210,21 @@ plot_intactness(z, "SI2", method="hist")
 ```R
 library(rgdal)
 dsn <- system.file("extdata/polygon.geojson", package="cure4insect")
+cat(readLines(dsn), sep="\n")
 ply <- readOGR(dsn=dsn)
 subset_common_data(id=ply, species=Spp)
+plot(make_subset_map())
 xx2 <- report_all()
 ```
 
-Spatial IDs of the 1km x 1km spatial pixel units are to be used for the custom summaries.
-The Row_Col field defines the IDs and links the raster cells in the [geodatabase](http://ftp.public.abmi.ca/species.abmi.ca/gis/Grid1km_working.gdb.zip)
+Spatial IDs of the 1 km<sup>2</sup> spatial pixel units are to be 
+used for the custom summaries.
+The `Row_Col` field defines the IDs and links the raster cells to the [geodatabase](http://ftp.public.abmi.ca/species.abmi.ca/gis/Grid1km_working.gdb.zip)
 or [CSV](http://ftp.public.abmi.ca/species.abmi.ca/gis/Grid1km_working.csv.zip}) (with latitude/longitude in [NAD_1983_10TM_AEP_Forest](http://spatialreference.org/ref/epsg/3402/) projection).
 
-For the web application, use your favourite GIS software, or in R use this:
+For the [web application](http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/),
+use your favourite GIS software, or in R use this to get the spatial IDs 
+written into a text file:
 
 ```R
 library(rgdal)
@@ -243,9 +254,9 @@ the spatial selection.
 
 The result is a raster stack object with the following layers:
 
-* NC, NR: current and reference abundance,
-* SI, SI2: one- and two-sided intactness,
-* SE, CV: bootstrap based standard error and coefficient of variation
+* `NC`, `NR`: current and reference abundance,
+* `SI`, `SI2`: one- and two-sided intactness,
+* `SE`, `CV`: bootstrap based standard error and coefficient of variation
 estimates for current abundance.
 
 ```R
@@ -253,7 +264,8 @@ load_common_data()
 y <- load_species_data("Ovenbird")
 r <- rasterize_results(y)
 plot(r, "NC") # current abundance map
-plot(r, "SE") # standadr errors for current abundance
+col <- colorRampPalette(c("darkgreen","yellow","red"))(250)
+plot(r, "SE", col=col) # standadr errors for current abundance
 ```
 
 It is possible to make multi-species maps as well:
@@ -267,60 +279,118 @@ r2 <- make_multispecies_map("intactness")
 
 #### Spatially explicit (polygon level) predictions
 
+The 1 km<sup>2</sup> level predictions provide mean abundance per pixel.
+Sometimes we need finer detail, e.g. when making predictions as part of
+spatially explicit simulations.
+
+First we load the spatial/climate related component of the predictions
+(which is a raster object):
+
 ```R
 load_common_data()
-## pick Ovenbird
-species <- "Ovenbird"
+species <- "Achillea.millefolium"
 object <- load_spclim_data(species)
+```
 
-## vegetation/disturbance classes: use as factor
-## might need to make a crosswalk, use e.g. mefa4::reclass
-(veg <- as.factor(get_levels()$veg))
+The spatial component is then combined with the land cover component
+describing vegetation/disturbance/soil classes as a factor.
 
-## for each veg class value, need to have
-## spatial locations (can repeat the same value,
-## but avoid duplicate rownames)
-## use the sp package to get SpatialPoints as here:
+```R
+## original levels
+levels(veg <- as.factor(get_levels()$veg))
+levels(soil <- as.factor(get_levels()$soil))
+```
+Sometimes it is best to create a crosswalk table and 
+reclassify using e.g. the `mefa4::reclass` function:
+
+```R
+(rc <- data.frame(In=c("pine5", "decid15", "urban", "industrial"),
+    Out=c("Pine0", "Deciduous10", "UrbInd", "UrbInd")))
+mefa4::reclass(c("pine5", "pine5", "decid15", "urban", "industrial"), rc)
+```
+
+We need to have spatial locations for each land cover value
+(same value can be repeated, but but avoid duplicate rownames).
+We use the **sp** package to make a SpatialPoints object:
+
+```R
 XY <- get_id_locations()
 coords <- coordinates(XY)[10^5,,drop=FALSE]
 rownames(coords) <- NULL
 xy <- data.frame(coords[rep(1, length(veg)),])
 coordinates(xy) <- ~ POINT_X + POINT_Y
 proj4string(xy) <- proj4string(XY)
+```
 
-## predict
+Now we are ready to make the predictions:
+
+```R
 pred <- predict(object, xy=xy, veg=veg)
 summary(pred)
 ```
 
-A more succinct version
+The `predict` function returns a data frame with columns `veg`, `soil`, and 
+`comb` (combines `veg` and `soil` based on aspen probability of occurrence 
+using `combine_veg_soil` as a weighted average based on 
+probability of aspen occurrence). 
+
+For some species, either the `veg` or `soil` based estimates are unavailable: 
+`predict` returns `NA` for these and the combined results will be `NA` as well.
+
+The next line is a more succinct version that loads the species data as well,
+but we can't reuse the species data after:
 
 ```R
 pred <- custom_predict(species, xy=xy, veg=veg)
 ```
 
-Using composition data in spatial grids as input:
+Another was of making predictions is to define a spatial grid, and quantify 
+land cover as proportion of the land cover types in each grid cell.
+This is how we can use multivariate input data in a spatial grid
+(totally unrealistic data set just for illustration,
+but user has to make sure the numbers are meaningful):
 
 ```R
 xy <- xy[1:10,]
-## unrealistic data set for illustration
-mveg <- matrix(0, 10, 6)
-colnames(mveg) <- veg[c(1:6 * 10)]
-mveg[] <- rpois(60, 10) * rbinom(60, 1, 0.2)
+mveg <- matrix(0, 10, 8)
+colnames(mveg) <- veg[c(1:8 * 10)]
+mveg[] <- rpois(80, 10) * rbinom(80, 1, 0.2)
 mveg[rowSums(mveg)==0,1] <- 1 # avoid 0 row sum
+mveg
+
 msoil <- matrix(0, 10, 6)
 colnames(msoil) <- get_levels()$soil[1:6]
 msoil[] <- rpois(60, 10) * rbinom(60, 1, 0.4)
 msoil[rowSums(msoil)==0,1] <- 1 # avoid 0 row sum
-
-## output matrics are abundances
-prmat1 <- predict_mat(object, xy, mveg, msoil)
-
-## mean abundance per spatial unit
-prmat2 <- predict_mat(object, xy, mveg/rowSums(mveg), msoil/rowSums(msoil))
+msoil
 ```
 
-Combining vegetation and soil based predictions:
+Because we used areas (not proportions) we get the output as 
+two matrices containing abundances (density times area) corresdonding to the
+vegetation and soil matrices:
+
+```R
+(prmat1 <- predict_mat(object, xy, mveg, msoil))
+```
+
+Row sums give the total abundance at each location, 
+column sums give the total abundance in a land cover type over all locations:
+
+```R
+rowSums(prmat1$veg)
+colSums(prmat1$veg)
+```
+
+Using proportions in the input matrices gives mean abundance per spatial unit
+as output:
+
+```R
+(prmat2 <- predict_mat(object, xy, mveg/rowSums(mveg), msoil/rowSums(msoil)))
+```
+
+Combining vegetation and soil based predictions returns a vector,
+i.e. the aspen probability weighted average of the vegetation and soil
+based total abundances:
 
 ```R
 combine_veg_soil(xy, rowSums(prmat2$veg), rowSums(prmat2$soil))
