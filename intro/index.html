@@ -74,11 +74,41 @@
 <body>
 <textarea id="source">
 
-name: inverse
-layout: true
-class: center, middle, inverse
+## Needs for cumulative effects management
+
+--
+- Quantifying species' responses to multiple disturbances;
+
+--
+- predicting 'habitat supply' as a function of current/past/future landscape conditions;
+
+--
+- also good to have an idea about uncertainty.
+
 ---
-template: inverse
+
+## Intactness
+
+__Species Intactness__:
+- ratio of _Current_ and _Reference_ abundance within a region.
+
+
+--
+__Guild/Taxon Intactness__:
+- simple average of Species Intactness values for a group of species in a taxonomic group.
+
+---
+
+## Attributing effects to industrial sectors
+
+- Agriculture,
+- forestry,
+- oil and gas (extraction & exploration),
+- urban/rural residences and infrastructure,
+- transportation,
+- misc. (e.g. hydro features).
+
+---
 
 ## cure4insect
 
@@ -87,7 +117,6 @@ template: inverse
 > &mdash; _The Metamorphosis by Franz Kafka_
 
 ---
-layout: false
 
 ## cure4insect
 
@@ -119,7 +148,7 @@ layout: false
 - And LUF x Natural Subregions,
 
 --
-- and OSA,
+- and Oil Sands areas,
 
 --
 - and Caribou ranges,
@@ -132,43 +161,27 @@ layout: false
 
 ---
 
-## Keep DRY, not WET
+## Us and them
+
+- Species website maintenance overhead has kept increasing - we needed a better handle on our own stuff.
 
 --
+- Others rely on downloadable csv/xlsx files for spatial data which is not optimal - we need a single source and a system to give users different formats.
 
-- Stuff on species website is mirrored on data portal.
-
---
-- Others rely on downloadable csv/xlsx files too.
-
---
-- Maintenance overhead kept increasing.
-
---
-- We were often lost among versions.
 
 ---
 
-## Reproducibility
+## Best features
 
 --
-- Others (like GoA) want to replicate what we do,
+__Keep DRY, not WET__:
+- write a reproducible workflows and updat as needed.
+
 
 --
-- just for fun / independent validation,
-
---
-- or because their layers/scenarios are walled.
-
----
-
-## Separation of concerns
-
---
-- We do stats and maintain a single source.
-
---
-- You are free to change the colors!
+__Separation of concerns__:
+- we do stats and maintain a single source,
+- you change the colors as you like.
 
 
 
