@@ -3,8 +3,8 @@ function(address=NULL, mimepart=NULL)
 {
     if (!is.null(address)) {
         sender <- getOption("cure4insect")$sender
-        subject <- "Custom Report"
-        body <- list("Hi,\n\nYour custom report results are attached.\n\nWith regards,\n\nthe ABMI Science")
+        subject <- getOption("cure4insect")$subject
+        body <- list(getOption("cure4insect")$body)
         if (!is.null(mimepart))
             body[[2]] <- mime_part(mimepart, paste0("Custom_Report_", Sys.Date()))
         sent <- try(sendmail(sprintf("<%s>", sender),
