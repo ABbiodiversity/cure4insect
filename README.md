@@ -405,6 +405,16 @@ file for a worked example of visualizations available in the package:
 file.show(system.file("doc/example-species-report.Rmd", package="cure4insect"))
 ```
 
+It is possible to render the R markdown file with a species ID argument,
+thus programmatically producing reports for multiple species:
+
+```R
+library(rmarkdown)
+render(system.file("doc/example-species-report.Rmd",
+    package="cure4insect"), 
+    params = list(species = "Ovenbird"))
+```
+
 Habitat associations as shown on the [species.abmi.ca](http://species.abmi.ca/) website:
 
 ```R

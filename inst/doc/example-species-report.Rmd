@@ -11,6 +11,8 @@ documentclass: article
 fontsize: 12pt
 classoption: letterpaper
 urlcolor: blue
+params:
+  species: "AlderFlycatcher"
 ---
 
 ```{r preamble,results='hide',echo=FALSE,warning=FALSE,message=FALSE}
@@ -20,24 +22,27 @@ library(knitr)
 library(rgdal)
 set_options(verbose=0)
 load_common_data()
-```
 
-# Introduction
-
-This example species report has been produced using the
-**cure4insect** [R](https://www.r-project.org/) package
-which a decision support tool that provides an interface to enable
-custom reporting for intactness and sector effects
-based on estimates and predictions created by the [Alberta
-Biodiversity Monitoring Institute (ABMI)](http://abmi.ca/).
-
-```{r settings,results='asis',echo=FALSE}
-species <- "AlderFlycatcher"
+species <- params$species
 info <- as.list(get_species_table()[species, c("SpeciesID", "CommonName", "ScientificName", "TSNID")])
 info <- lapply(info, as.character)
 info[["SpeciesID"]] <- paste0("`\"", info[["SpeciesID"]], "\"`")
 info[["ScientificName"]] <- paste0("_", info[["ScientificName"]], "_")
 names(info) <- c("Species ID", "Common name", "Scientific name", "TSN ID")
+```
+
+# Introduction
+
+This example report has been produced using the
+**cure4insect** [R](https://www.r-project.org/) package
+which a decision support tool that provides an interface to enable
+custom reporting for intactness and sector effects
+based on estimates and predictions created by the [Alberta
+Biodiversity Monitoring Institute (ABMI)](http://abmi.ca/)
+in collaboration with the
+[Boreal Avian Modelling (BAM) Project](http://www.borealbirds.ca/).
+
+```{r settings,results='asis',echo=FALSE}
 for (i in 1:length(info))
     cat("* ", names(info)[i], ": ", info[[i]], "\n", sep="")
 ```
