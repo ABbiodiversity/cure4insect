@@ -19,7 +19,7 @@ in collaboration with the
 
 ## License
 
-The estimates, predictions, and related documentation are &copy; ABMI (2014&ndash;2018) under a [CC BY-SA 4.0 license](http://creativecommons.org/licenses/by-sa/4.0/).
+The estimates, predictions, and related documentation are &copy; ABMI and BAM (2014&ndash;2018) under a [CC BY-SA 4.0 license](http://creativecommons.org/licenses/by-sa/4.0/).
 
 The R package itself is licensed under [MIT license](https://github.com/ABbiodiversity/cure4insect/blob/master/LICENSE.md) &copy; 2018 Peter Solymos & ABMI.
 
@@ -97,7 +97,7 @@ QSID <- c("4-12-1-2-SE", "4-12-1-2-SW", "4-12-1-3-SE", "4-12-1-3-SW")
 qs2km(QSID) # corresponding Row_Col IDs
 ```
 
-The `subset_common_data` function recognizes `MER-RGE-TWP-SEC-QS` type 
+The `subset_common_data` function recognizes `MER-RGE-TWP-SEC-QS` type
 spatial IDs and onvert those to the `Row_Col` format using
 the nearest 1 km<sup>2</sup> pixels.
 
@@ -217,13 +217,13 @@ plot(make_subset_map())
 xx2 <- report_all()
 ```
 
-Spatial IDs of the 1 km<sup>2</sup> spatial pixel units are to be 
+Spatial IDs of the 1 km<sup>2</sup> spatial pixel units are to be
 used for the custom summaries.
 The `Row_Col` field defines the IDs and links the raster cells to the [geodatabase](http://ftp.public.abmi.ca/species.abmi.ca/gis/Grid1km_working.gdb.zip)
 or [CSV](http://ftp.public.abmi.ca/species.abmi.ca/gis/Grid1km_working.csv.zip}) (with latitude/longitude in [NAD_1983_10TM_AEP_Forest](http://spatialreference.org/ref/epsg/3402/) projection).
 
 For the [web application](http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/),
-use your favourite GIS software, or in R use this to get the spatial IDs 
+use your favourite GIS software, or in R use this to get the spatial IDs
 written into a text file:
 
 ```R
@@ -300,7 +300,7 @@ describing vegetation/disturbance/soil classes as a factor.
 levels(veg <- as.factor(get_levels()$veg))
 levels(soil <- as.factor(get_levels()$soil))
 ```
-Sometimes it is best to create a crosswalk table and 
+Sometimes it is best to create a crosswalk table and
 reclassify using e.g. the `mefa4::reclass` function:
 
 ```R
@@ -329,12 +329,12 @@ pred <- predict(object, xy=xy, veg=veg)
 summary(pred)
 ```
 
-The `predict` function returns a data frame with columns `veg`, `soil`, and 
-`comb` (combines `veg` and `soil` based on aspen probability of occurrence 
-using `combine_veg_soil` as a weighted average based on 
-probability of aspen occurrence). 
+The `predict` function returns a data frame with columns `veg`, `soil`, and
+`comb` (combines `veg` and `soil` based on aspen probability of occurrence
+using `combine_veg_soil` as a weighted average based on
+probability of aspen occurrence).
 
-For some species, either the `veg` or `soil` based estimates are unavailable: 
+For some species, either the `veg` or `soil` based estimates are unavailable:
 `predict` returns `NA` for these and the combined results will be `NA` as well.
 
 The next line is a more succinct version that loads the species data as well,
@@ -344,7 +344,7 @@ but we can't reuse the species data after:
 pred <- custom_predict(species, xy=xy, veg=veg)
 ```
 
-Another was of making predictions is to define a spatial grid, and quantify 
+Another was of making predictions is to define a spatial grid, and quantify
 land cover as proportion of the land cover types in each grid cell.
 This is how we can use multivariate input data in a spatial grid
 (totally unrealistic data set just for illustration,
@@ -365,7 +365,7 @@ msoil[rowSums(msoil)==0,1] <- 1 # avoid 0 row sum
 msoil
 ```
 
-Because we used areas (not proportions) we get the output as 
+Because we used areas (not proportions) we get the output as
 two matrices containing abundances (density times area) corresdonding to the
 vegetation and soil matrices:
 
@@ -373,7 +373,7 @@ vegetation and soil matrices:
 (prmat1 <- predict_mat(object, xy, mveg, msoil))
 ```
 
-Row sums give the total abundance at each location, 
+Row sums give the total abundance at each location,
 column sums give the total abundance in a land cover type over all locations:
 
 ```R
