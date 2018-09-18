@@ -340,7 +340,7 @@ writeRaster(rr, file.path(base, "data", "multispecies_results.tif"))
 zz <- do.call(rbind, res)
 class(zz) <- c("c4idf", class(z))
 rept <- list(species=unname(sub_info[1]), pixels=unname(sub_info[2]),
-    intactness=mean(zz$SI_Est))
+    intactness=mean(zz$SI_Est[zz$Keep]))
 write.csv(zz, row.names=FALSE, file=file.path(base, "data", "species_results.csv"))
 sel_tab <- data.frame(ID=get_subset_id())
 write.csv(sel_tab, row.names=FALSE, file=file.path(base, "data", "spatial_subset_id.csv"))
