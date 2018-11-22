@@ -384,7 +384,7 @@ path=NULL, version=NULL, clip=TRUE, limit=NULL)
         MSG <- sprintf("(%.1f%s)", 100*LIM$mean / LIM$max, "%")
     }
     if (type == "richness" && as.character(.c4is$SPsub[SPP[1L], "taxon"]) == "birds")
-            r0 <- 1-exp(-1*r0)
+            r0 <- p_bird(r0, area="ha", pair_adj=2)
     dt <- proc.time()[3] - t0
     cat(", elapsed:", getTimeAsString(dt), MSG, "\n")
     ETA <- (n - i) * dt / i
@@ -405,7 +405,7 @@ path=NULL, version=NULL, clip=TRUE, limit=NULL)
                 r <- mask(r, rmask)
             if (type == "richness" &&
                 as.character(.c4is$SPsub[SPP[1L], "taxon"]) == "birds")
-                    r <- 1-exp(-1*r)
+                    r <- p_bird(r, area="ha", pair_adj=2)
             r0 <- r + r0
             MSG <- sprintf("(%.1f%s)", 100*LIM$mean / LIM$max, "%")
         }

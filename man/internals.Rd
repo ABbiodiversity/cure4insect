@@ -15,6 +15,7 @@
 \alias{.validate_id}
 \alias{.verbose}
 \alias{.select_id}
+\alias{p_bird}
 \title{
 App Specific Functions and Internals
 }
@@ -42,6 +43,7 @@ app_test(...)
 .validate_id(id, type=c("km", "qs"))
 .verbose()
 .select_id(mregion="both", nr=NULL, nsr=NULL, luf=NULL)
+p_bird(D, area=c("ha", "km"), pair_adj=2)
 }
 \arguments{
   \item{species, boot, path, version}{arguments passed to
@@ -65,6 +67,8 @@ app_test(...)
   \item{ipa, veg, soil}{calculates a weighted average of \code{veg}
     and \code{soil} based models based on probability of aspen (\code{ipa}).}
   \item{mregion, nr, nsr, luf}{regions.}
+  \item{D, area, pair_adj}{density, scale, and pair adjustment 
+    to turn bird densities into probability of observing non-zero count.}
   \item{\dots}{arguments passed to underlying functions.}
 }
 \details{

@@ -316,12 +316,12 @@ for (i in seq_along(species)) {
         r_ri <- rreg[["NC"]]
         r_ri[is.na(r_ri)] <- 0
         if (z$Taxon=="birds")
-            r_ri <- 1-exp(-1*r_ri)
+            r_ri <- p_bird(r_ri, area="ha", pair_adj=2)
     } else {
         tmp2 <- rreg[["NC"]]
         tmp2[is.na(tmp2)] <- 0
         if (z$Taxon=="birds")
-            tmp2 <- 1-exp(-1*tmp2)
+            tmp2 <- p_bird(tmp2, area="ha", pair_adj=2)
         r_ri <- r_ri + tmp2
     }
 }

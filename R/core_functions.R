@@ -579,3 +579,11 @@ get_subset_id <- function()
 
 get_subset_species <- function()
     rownames(.c4is$SPsub)
+
+## turn bird density into P(Y>0)
+p_bird <- function(D, area=c("ha", "km"), pair_adj=2) {
+    A <- switch(match.arg(area),
+        "km" = 100,
+        "ha" = 1)
+    1 - exp(-D * A * pair_adj)
+}
