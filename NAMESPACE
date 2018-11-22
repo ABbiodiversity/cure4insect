@@ -32,7 +32,8 @@ export(
     qs2km,
     get_subset_info,
     get_subset_id,
-    get_subset_species)
+    get_subset_species,
+    p_bird)
 
 export(
     app_read_csv,
