@@ -21,6 +21,8 @@ library(cure4insect)
 library(knitr)
 library(rgdal)
 set_options(verbose=0)
+#set_options(path = "d:/abmi/reports")
+
 load_common_data()
 
 species <- params$species
