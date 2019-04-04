@@ -106,14 +106,16 @@ function(species, path=NULL, version=NULL)
     if (taxon == "birds") {
         if (spinfo$model_north) {
             cveg <- .c4if$CFbirds$joint$veg[species,] # log scale
-            cveg["SoftLin"] <- log(mean(exp(cveg[c("Shrub", "GrassHerb")])))
+            if (version == "2017")
+				cveg["SoftLin"] <- log(mean(exp(cveg[c("Shrub", "GrassHerb")])))
             cveg["HardLin"] <- -10
         } else {
             cveg <- NULL
         }
         if (spinfo$model_south) {
             csoil <- .c4if$CFbirds$joint$soil[species,] # log scale
-            csoil["SoftLin"] <- log(mean(exp(csoil), na.rm=TRUE)) # SoftLin is NA
+            if (version == "2017")
+				csoil["SoftLin"] <- log(mean(exp(csoil), na.rm=TRUE)) # SoftLin is NA
             csoil["HardLin"] <- -10
             caspen <- .c4if$CFbirds$joint$paspen[species,]
         } else {
@@ -138,6 +140,7 @@ function(species, path=NULL, version=NULL)
     cveg <- cveg[get_levels()$veg]
     csoil <- csoil[get_levels()$soil]
     y <- new.env()
+    assign("version", version, envir=y)
     assign("species", species, envir=y)
     assign("taxon", taxon, envir=y)
     assign("cveg", cveg, envir=y)
@@ -226,7 +229,7 @@ function(object, xy, veg, soil, ...)
             .check(veg, names(object$cveg))
             iveg <- extract(object$rveg, xy)
             OUT$veg <- fi(object$cveg[match(veg, names(object$cveg))] + iveg)
-            if (any(veg == "SoftLin") && object$taxon == "birds") {
+            if (any(veg == "SoftLin") && object$taxon == "birds" && object$version == "2017") {
                 warning("veg contained SoftLin: check your assumptions")
                 OUT$veg[veg == "SoftLin"] <- NA
             }
@@ -245,7 +248,7 @@ function(object, xy, veg, soil, ...)
             ipa <- extract(rpa, xy)
             OUT$soil <- fi(object$csoil[match(soil, names(object$csoil))] +
                 object$caspen * ipa + isoil)
-            if (any(soil == "SoftLin") && object$taxon == "birds") {
+            if (any(soil == "SoftLin") && object$taxon == "birds" && object$version == "2017") {
                 warning("soil contained SoftLin: check your assumptions")
                 OUT$soil[soil == "SoftLin"] <- NA
             }
@@ -283,7 +286,7 @@ function(object, xy, veg, soil, ...)
             imatv <- t(array(iveg, dim(veg), dimnames(veg)))
             mveg <- object$cveg[match(colnames(veg), names(object$cveg))]
             Nveg <- fi(t(mveg + imatv)) * veg
-            if (any(colnames(veg) == "SoftLin") && object$taxon == "birds") {
+            if (any(colnames(veg) == "SoftLin") && object$taxon == "birds" && object$version == "2017") {
                 warning("veg contained SoftLin: check your assumptions")
                 Nveg[,colnames(veg) == "SoftLin"] <- NA
             }
@@ -305,7 +308,7 @@ function(object, xy, veg, soil, ...)
             imats <- t(array(object$caspen * ipa + isoil, dim(soil), dimnames(soil)))
             msoil <- object$csoil[match(colnames(soil), names(object$csoil))]
             Nsoil <- fi(t(msoil + imats)) * soil
-            if (any(colnames(soil) == "SoftLin") && object$taxon == "birds") {
+            if (any(colnames(soil) == "SoftLin") && object$taxon == "birds" && object$version == "2017") {
                 warning("soil contained SoftLin: check your assumptions")
                 Nsoil[,colnames(soil) == "SoftLin"] <- NA
             }
