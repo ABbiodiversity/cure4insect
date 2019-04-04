@@ -7,11 +7,28 @@ if(getRversion() >= "2.15.1")
 #.c4if=cure4insect:::.c4if
 #.c4is=cure4insect:::.c4is
 
+## this function figues out the right footprint area version
+## depending on version and taxon
+.get_KA <- function(version, taxon) {
+    if (version == "2017") {
+        KA <- if (taxon == "birds")
+            "KA_2012" else "KA_2014"
+    }
+    if (version == "2018") {
+        KA <- "KA_2016"
+    }
+    KA
+}
+
 ## load data set that is common (full grid and species)
 ## KA_2012, KA_2014: sector areas by 1km unit
 ## KT: 10km unit mapping to 1km units
 ## XY: coordinates of 1km units
 ## SP: species lookup table
+## CF: coefficients
+## CFbirds: joint coefficients for birds
+## QT2KT: quarter section to km grid crosswalk (nearest)
+## VER: version information
 clear_common_data <- function()
     rm(list=ls(envir=.c4if), envir=.c4if)
 load_common_data <-
@@ -112,10 +129,15 @@ function(id=NULL, species="all")
     clear_subset_data()
     assign("KTsub", KT[id,,drop=FALSE],
         envir=.c4is)
-    assign("A_2012", Matrix::colSums(.c4if$KA_2012[id,,drop=FALSE]),
-        envir=.c4is)
-    assign("A_2014", Matrix::colSums(.c4if$KA_2014[id,,drop=FALSE]),
-        envir=.c4is)
+    if (version == "2017") {
+        assign("A_2012", Matrix::colSums(.c4if$KA_2012[id,,drop=FALSE]),
+            envir=.c4is)
+        assign("A_2014", Matrix::colSums(.c4if$KA_2014[id,,drop=FALSE]),
+            envir=.c4is)
+    } else {
+        assign("A_2016", Matrix::colSums(.c4if$KA_2016[id,,drop=FALSE]),
+            envir=.c4is)
+    }
     assign("SPfull", x,
         envir=.c4is)
     assign("SPsub", x[SPPfull,,drop=FALSE],
@@ -402,11 +424,10 @@ function(y, limit=0)
     Sector_UnderHF <- (100 * (CS - RS) / RS)[-1]
 
     ## sector area reflects model region and nsr based subset!
-    KA <- if (y$taxon == "birds") {
-        Matrix::colSums(.c4if$KA_2012[PIX,,drop=FALSE])
-    } else {
-        Matrix::colSums(.c4if$KA_2014[PIX,,drop=FALSE])
-    }
+    KA_version <- .get_KA(
+        version=getOption("cure4insect")$version,
+        taxon=y$taxon)
+    KA <- Matrix::colSums(.c4if[[KA_version]][PIX,,drop=FALSE])
 
     Sector_Area <- (100 * KA / sum(KA))[names(Sector_Total)]
     Sector_Unit <- 100 * Sector_Total / Sector_Area
