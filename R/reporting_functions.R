@@ -107,7 +107,7 @@ function(x, raw_boot=FALSE, limit=NULL, ...)
 }
 
 report_all <-
-function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
+function(boot=NULL, path=NULL, version=NULL, level=0.9, cores=NULL)
 {
     if (!is_loaded())
         stop("common data needed: use load_common_data")
@@ -149,7 +149,7 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
 
 ## this is for testing: i.e. looking into failed requests (cores ignored)
 .report_all_by1 <-
-function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
+function(boot=NULL, path=NULL, version=NULL, level=0.9, cores=NULL)
 {
     if (!is_loaded())
         stop("common data needed: use load_common_data")
@@ -180,7 +180,7 @@ function(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
 custom_report <-
 function(id=NULL, species="all",
 path=NULL, version=NULL,
-address=NULL, boot=TRUE,
+address=NULL, boot=NULL,
 level=0.9, cores=NULL,
 raw_boot=FALSE, limit=NULL)
 {

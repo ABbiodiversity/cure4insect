@@ -152,13 +152,15 @@ function(id=NULL, species="all")
 ## load data for a species
 ## avoid somehow common data: only spp table needed
 load_species_data <-
-function(species, boot=TRUE, path=NULL, version=NULL)
+function(species, boot=NULL, path=NULL, version=NULL)
 {
     opts <- getOption("cure4insect")
     if (is.null(path))
         path <- opts$path
     if (is.null(version))
         version <- opts$version
+    if (is.null(boot))
+        boot <- as.logical(opts$boot)
     taxon <- as.character(.c4if$SP[species, "taxon"])
     model_north <- .c4if$SP[species, "model_north"]
     model_south <- .c4if$SP[species, "model_south"]
@@ -167,7 +169,7 @@ function(species, boot=TRUE, path=NULL, version=NULL)
         model_north=model_north, model_south=model_south)
 }
 .load_species_data <-
-function(species, boot=TRUE, path=NULL, version=NULL,
+function(species, boot=NULL, path=NULL, version=NULL,
 taxon, model_north, model_south)
 {
     opts <- getOption("cure4insect")
@@ -175,6 +177,8 @@ taxon, model_north, model_south)
         path <- opts$path
     if (is.null(version))
         version <- opts$version
+    if (is.null(boot))
+        boot <- as.logical(opts$boot)
     y <- new.env()
     assign("species", species, envir=y)
     assign("taxon", taxon, envir=y)

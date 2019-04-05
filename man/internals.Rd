@@ -28,11 +28,11 @@ used by users.
 app_read_csv(...)
 app_test(...)
 
-.load_species_data(species, boot=TRUE, path=NULL, version=NULL,
+.load_species_data(species, boot=NULL, path=NULL, version=NULL,
     taxon, model_north, model_south)
 .calculate_results(y, level=0.9, .c4is)
 .calculate_limit(y, limit=NULL)
-.report_all_by1(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
+.report_all_by1(boot=NULL, path=NULL, version=NULL, level=0.9, cores=NULL)
 .read_raster_template()
 .make_raster(value, rc, rt)
 .rasterize_multi(y, type=c("richness", "intactness"), rt)
@@ -67,7 +67,7 @@ p_bird(D, area=c("ha", "km"), pair_adj=2)
   \item{ipa, veg, soil}{calculates a weighted average of \code{veg}
     and \code{soil} based models based on probability of aspen (\code{ipa}).}
   \item{mregion, nr, nsr, luf}{regions.}
-  \item{D, area, pair_adj}{density, scale, and pair adjustment 
+  \item{D, area, pair_adj}{density, scale, and pair adjustment
     to turn bird densities into probability of observing non-zero count.}
   \item{\dots}{arguments passed to underlying functions.}
 }

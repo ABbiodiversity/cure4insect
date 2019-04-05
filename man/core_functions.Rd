@@ -50,17 +50,17 @@ clear_common_data()
 subset_common_data(id=NULL, species="all")
 clear_subset_data()
 
-load_species_data(species, boot=TRUE, path=NULL, version=NULL)
+load_species_data(species, boot=NULL, path=NULL, version=NULL)
 calculate_results(y, level=0.9)
 rasterize_results(y)
 
-report_all(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
+report_all(boot=NULL, path=NULL, version=NULL, level=0.9, cores=NULL)
 flatten(x, ...)
 \method{flatten}{c4iraw}(x, raw_boot=FALSE, limit=NULL, ...)
 
 custom_report(id=NULL, species="all",
     path=NULL, version=NULL, address=NULL,
-    boot=TRUE, level=0.9, cores=NULL,
+    boot=NULL, level=0.9, cores=NULL,
     raw_boot=FALSE, limit=NULL)
 custom_predict(species, xy, veg, soil,
     path=NULL, version=NULL, ...)
@@ -130,7 +130,8 @@ or one of the taxonomic (\code{"birds"}, \code{"lichens"}, \code{"mammals"},
 For a combination of filters, see \code{get_all_species}.
 }
   \item{boot}{
-logical, if confidence intervals for abundance and intactness are desired.
+logical or \code{NULL}, if confidence intervals for abundance and intactness are desired.
+Defaults to \code{getOption("cure4insect")$boot} when \code{NULL}.
 }
   \item{level}{
 numeric, level for confidence interval, defaults to 90\%.
@@ -315,7 +316,7 @@ depending on the \code{version} set through options or
 field \code{method}ology,
 base year and version of human footprint inventory (\code{hf}),
 version of the backfilled vegetation layer (\code{veg}),
-the type of model used (\code{model}),  and the number of 
+the type of model used (\code{model}),  and the number of
 \code{species} by taxon. \code{load_common_data} prints
 these info upon successfully loading common data objects.
 
