@@ -1,8 +1,8 @@
 Package: cure4insect
 Type: Package
 Title: Custom Reporting for Intactness and Sector Effects
-Version: 0.1-1
-Date: 2018-06-06
+Version: 0.1-2
+Date: 2019-04-05
 Author: Peter Solymos [cre, aut], ABMI [cph], BAM [cph]
 Maintainer: Peter Solymos <solymos@ualberta.ca>
 Description: Decision support tool
