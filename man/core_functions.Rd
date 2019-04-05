@@ -315,7 +315,9 @@ depending on the \code{version} set through options or
 field \code{method}ology,
 base year and version of human footprint inventory (\code{hf}),
 version of the backfilled vegetation layer (\code{veg}),
-the type of model used (\code{model}).
+the type of model used (\code{model}),  and the number of 
+\code{species} by taxon. \code{load_common_data} prints
+these info upon successfully loading common data objects.
 
 \code{get_levels} returns a list
 with elements 'veg' for vegetation and 'soil' for soil class levels
