@@ -8,3 +8,8 @@ addons:
     packages:
       - libgdal-dev
       - libproj-dev
+
+r:
+  - release
+  - devel
+  - oldrel
