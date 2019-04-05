@@ -57,6 +57,10 @@ function(path=NULL, version=NULL)
             load(con, envir=.c4if)
             close(con)
         }
+        if (.verbose()) {
+            print(get_version_info())
+            flush.console()
+        }
     }
     invisible(NULL)
 }
