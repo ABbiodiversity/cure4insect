@@ -120,6 +120,9 @@ function(id=NULL, species="all")
     id <- sort(id)
     if (!.validate_id(id, type="km"))
         stop("spatial id not valid")
+    if (!is.null(dim(id)) || !is.character(id))
+        stop("spatial id must be character vector")
+
     id10 <- sort(unique(as.character(.c4if$KT[id, "Row10_Col10"])))
     KT <- .c4if$KT
     ## South: >= 0; North: <= 0
@@ -602,10 +605,6 @@ qs2km <- function(qsid) {
 }
 
 .validate_id <- function(id, type=c("km", "qs")) {
-    if (!is.null(dim(id)))
-        stop("spatial ID needs to be a character vector")
-    if (!is.character(id))
-        stop("spatial ID needs to be a character vector")
     chr <- switch(match.arg(type),
         "km"="_",
         "qs"="-")
