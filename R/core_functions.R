@@ -282,8 +282,17 @@ function(y, level=0.9, .c4is)
     }
     Sector_Total <- (100 * (CS - RS) / NR)[-1]
     Sector_UnderHF <- (100 * (CS - RS) / RS)[-1]
-    KA <- if (y$taxon == "birds") # area in km^2
-        .c4is$A_2012 else .c4is$A_2014
+
+    ## HF area depends on version and taxa
+    if (getOption("cure4insect")$version == "2017") {
+        KA <- if (y$taxon == "birds") # area in km^2
+            .c4is$A_2012 else .c4is$A_2014
+    } else {
+        KA <- .c4is$A_2016
+    }
+
+
+
     Sector_Area <- (100 * KA / sum(KA))[names(Sector_Total)]
     Sector_Unit <- 100 * Sector_Total / Sector_Area
     out <- list(
