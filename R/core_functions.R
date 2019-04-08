@@ -101,8 +101,14 @@ function(id=NULL, species="all")
         id <- rownames(.c4if$KT)
     if (inherits(id, "SpatialPolygons"))
         id <- overlay_polygon(id)
-    if (!is.null(dim(id))) # if provided as table, use 1st col
+    ## if provided as table, use 1st col
+    if (!is.null(dim(id))) {
+        if (.verbose()) {
+            cat("1st column of spatial id table used\n")
+            flush.console()
+        }
         id <- as.character(id[,1L])
+    }
     if (!is.character(id))
         id <- as.character(id)
     if (length(id) <= 0)
@@ -120,8 +126,6 @@ function(id=NULL, species="all")
     id <- sort(id)
     if (!.validate_id(id, type="km"))
         stop("spatial id not valid")
-    if (!is.null(dim(id)) || !is.character(id))
-        stop("spatial id must be character vector")
 
     id10 <- sort(unique(as.character(.c4if$KT[id, "Row10_Col10"])))
     KT <- .c4if$KT
