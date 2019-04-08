@@ -593,6 +593,10 @@ qs2km <- function(qsid) {
 }
 
 .validate_id <- function(id, type=c("km", "qs")) {
+    if (!is.null(dim(id)))
+        stop("spatial ID needs to be a character vector")
+    if (!is.character(id))
+        stop("spatial ID needs to be a character vector")
     chr <- switch(match.arg(type),
         "km"="_",
         "qs"="-")
