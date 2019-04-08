@@ -118,7 +118,7 @@ function(boot=NULL, path=NULL, version=NULL, level=0.9, cores=NULL)
             cl <- makeCluster(cores)
             clusterEvalQ(cl, library(cure4insect))
             opts <- getOption("cure4insect")
-            clusterExport(cl, "opts")
+            clusterExport(cl, "opts", envir=parent.env())
             clusterEvalQ(cl, set_options(opts))
             on.exit(stopCluster(cl))
         } else {
