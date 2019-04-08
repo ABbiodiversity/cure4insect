@@ -133,7 +133,7 @@ function(id=NULL, species="all")
     clear_subset_data()
     assign("KTsub", KT[id,,drop=FALSE],
         envir=.c4is)
-    if (version == "2017") {
+    if (getOption("cure4insect")$version == "2017") {
         assign("A_2012", Matrix::colSums(.c4if$KA_2012[id,,drop=FALSE]),
             envir=.c4is)
         assign("A_2014", Matrix::colSums(.c4if$KA_2014[id,,drop=FALSE]),
