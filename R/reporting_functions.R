@@ -117,8 +117,9 @@ function(boot=NULL, path=NULL, version=NULL, level=0.9, cores=NULL)
         if (.Platform$OS.type == "windows") {
             cl <- makeCluster(cores)
             clusterEvalQ(cl, library(cure4insect))
-            opts <- getOption("cure4insect")
-            clusterExport(cl, "opts", envir=parent.env())
+            e <- new.env()
+            e$opts <- getOption("cure4insect")
+            clusterExport(cl, "opts", envir=e)
             clusterEvalQ(cl, set_options(opts))
             on.exit(stopCluster(cl))
         } else {
