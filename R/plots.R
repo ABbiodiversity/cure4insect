@@ -762,14 +762,9 @@ function(species, plot=TRUE, paspen=0, ylim, main, ylab, ...)
             lines(rep(x1[i],2), c(lci[i], y1[i]), col="grey90")
             lines(rep(x1[i],2), c(uci[i], y1[i]), col=col[i])
         }
-        #mtext(side=1, at=x1[1:4], line=1.4, c("Productive", "Clay", "Saline", "Rapid Drain"),
-        #    col=col[1:4], las=1)
-        #mtext(side=1, at=x1[5:8], line=0.7,
-        #    c("Crop", "Tame\nPasture", "Rough\nPasture", "Urban/Industry\nFootprint"),
-        #    col=col[5:8], las=2)
         mtext(side=1, at=x1, line=0.7,
             c("Productive", "Clay", "Saline", "Rapid Drain",
-            "Crop", "Tame\nPasture", "Rough\nPasture", "Urban/Industry\nFootprint"),
+            "Crop", "Tame Pasture", "Rough Pasture", "Urban/Industry"),
             col=col, las=2)
         mtext(side=3, at=0, adj=0, main, col="grey30")
     }
