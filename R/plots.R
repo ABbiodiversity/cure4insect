@@ -357,7 +357,183 @@ function(species, type, plot=TRUE, paspen=0, ...)
         "soil_lin"=.plot_abundance_lin(species, plot, veg=FALSE, ...))
 }
 
-.plot_abundance_veg <-
+.plot_abundance_veg <- function(...) {
+    if (getOption("cure4insect")$version == "2017")
+        .plot_abundance_veg_2017(...) else .plot_abundance_veg_2018(...)
+}
+
+.plot_abundance_veg_2018 <-
+function(species, plot=TRUE, ylim, main, ylab, bw=FALSE, ...)
+{
+    tab <- .c4if$CF$coef$veg
+    if (species %ni% rownames(tab))
+        stop(paste("coefficients were not found for", species))
+
+    labs <- c(
+        "WhiteSpruce_0-10", "WhiteSpruce_10-20", "WhiteSpruce_20-40",
+        "WhiteSpruce_40-60", "WhiteSpruce_60-80", "WhiteSpruce_80-100",
+        "WhiteSpruce_100-120", "WhiteSpruce_120-140", "WhiteSpruce_140+",
+
+        "Pine_0-10", "Pine_10-20", "Pine_20-40", "Pine_40-60", "Pine_60-80",
+        "Pine_80-100", "Pine_100-120", "Pine_120-140", "Pine_140+",
+
+        "Deciduous_0-10",
+        "Deciduous_10-20", "Deciduous_20-40", "Deciduous_40-60", "Deciduous_60-80",
+        "Deciduous_80-100", "Deciduous_100-120", "Deciduous_120-140", "Deciduous_140+",
+
+        "Mixedwood_0-10", "Mixedwood_10-20", "Mixedwood_20-40",
+        "Mixedwood_40-60", "Mixedwood_60-80", "Mixedwood_80-100", "Mixedwood_100-120",
+        "Mixedwood_120-140", "Mixedwood_140+",
+
+        "BlackSpruce_0-10", "BlackSpruce_10-20",
+        "BlackSpruce_20-40", "BlackSpruce_40-60", "BlackSpruce_60-80",
+        "BlackSpruce_80-100", "BlackSpruce_100-120", "BlackSpruce_120-140",
+        "BlackSpruce_140+",
+
+        "TreedFen",
+
+        "Grass", "Shrub", "TreeShrubSwamp", "NonTreeFenMarsh",
+        "Crop", "TameP", "RoughP", "UrbInd",
+
+        "CCWhiteSpruce_0-10", "CCWhiteSpruce_10-20",
+        "CCWhiteSpruce_20-40", "CCWhiteSpruce_40-60", "CCWhiteSpruce_60-80",
+        "CCPine_0-10", "CCPine_10-20", "CCPine_20-40", "CCPine_40-60",
+        "CCPine_60-80", "CCDeciduous_0-10", "CCDeciduous_10-20", "CCDeciduous_20-40",
+        "CCDeciduous_40-60", "CCDeciduous_60-80", "CCMixedwood_0-10",
+        "CCMixedwood_10-20", "CCMixedwood_20-40", "CCMixedwood_40-60",
+        "CCMixedwood_60-80")
+
+    out <- data.frame(Estimate=tab[species, labs],
+        LCL=.c4if$CF$lower$veg[species, labs],
+        UCL=.c4if$CF$higher$veg[species, labs])
+
+    if (plot) {
+
+        lci <- out$LCL
+        uci <- out$UCL
+        y1 <- out$Estimate
+        names(y1) <- rownames(out)
+
+        if (missing(main))
+            main <- species
+        if (missing(ylab))
+            ylab <- "Relative abundance"
+        if (missing(ylim)) {
+            ymax <- min(max(uci), 2 * max(y1))
+            ylim <- c(0, ymax)
+        } else {
+            ymax <- max(ylim)
+        }
+
+        x <- c(rep(1:9, 5) + rep(seq(0, 40, 10), each=9),
+            51, 53, 55, 57, 59,   62, 64, 66, 68)
+        space <- c(1,x[-1]-x[-length(x)])-0.99
+
+        op <- par(mai=c(1.5,1,0.2,0.3))
+        on.exit(par(op))
+
+        if (!bw) {
+            col.r <- c(rep(0,9), seq(0.3,0.6,length.out=9),
+                seq(0.5,1,length.out=9),
+                seq(0.8,0.9,length.out=9), rep(0,9), 0, #rep(0,9),
+                0.8,0.2,0,0, 0.14,0.29,0.6,0.4)
+            col.g <- c(seq(0.5,1,length.out=9), seq(0.4,0.8,length.out=9),
+                seq(0.1,0.2,length.out=9), seq(0.4,0.8,length.out=9),
+                seq(0.4,0.7,length.out=9), 0.5, #seq(0.15,0.5,length.out=9),
+                0.8,0.8,0,0, 0.14,0.29,0.6,0.4)
+            col.b <- c(rep(0,9),rep(0,9),rep(0,9),seq(0.2,0.4,length.out=9),
+                seq(0.2,0.6,length.out=9), 0.7, #seq(0.4,0.7,length.out=9),
+                0,0,1,1, 0,0,0,0.4)
+        } else {
+            col.r <- c(rep(seq(0.7,0.2,length.out=9), 5), rep(0.3,9))
+            col.b <- col.g <- col.r
+        }
+        idx <- 1:length(x)
+        x1 <- barplot(y1[idx],
+            space=space,
+            border="white",
+            col=rgb(col.r, col.g, col.b),
+            ylim=ylim,
+            xlim=c(-0.5,max(x)+1.5),
+            xaxs="i", yaxt="n",
+            ylab=ylab,
+            col.lab="grey50",
+            cex.lab=1.2, axisnames=FALSE)[,1]
+        ax <- axis(side=2, cex.axis=0.9, col.axis="grey50",
+            col.ticks="grey50", las=2)
+        abline(h=ax, col="grey80")
+        x1 <- barplot(y1[idx],
+            space=space,
+            border="white", col=rgb(col.r,col.g,col.b),
+            ylim=ylim, xaxs="i", yaxt="n",
+            col.lab="grey50",
+            cex.lab=1.2, axisnames=FALSE, add=TRUE)[,1]
+        box(bty="l", col="grey50")
+        for (i in 1:length(x1)) {
+            lines(rep(x1[i],2), c(lci[idx][i], y1[idx][i]),col="grey90")
+            lines(rep(x1[i],2), c(uci[idx][i], y1[idx][i]),col=rgb(col.r[i],col.g[i],col.b[i]))
+        }
+        mtext(side=1, at=x1[c(5,14,23,32,41)], line=1.4,
+            c("Upland Spruce","Pine","Deciduous","Mixedwood","Black Spruce"),
+            col=rgb(col.r[c(5,14,23,32,41)], col.g[c(5,14,23,32,41)],
+            col.b[c(5,14,23,32,41)]),las=1)
+        at1<-rep(seq(1,9,2),5) + rep(c(0,9,18,27,36), each=5)
+        mtext(side=1,at=x1[at1]-0.3,rep(c("0","20","60","100","140"),5),
+            line=0.2, adj=0.5, cex=0.8, col=rgb(col.r[at1],col.g[at1], col.b[at1]))
+        mtext(side=1, at=-0.25, adj=1, line=0.2, "Age:", col="grey40", cex=0.8)
+        mtext(side=3, at=0, adj=0, main, col="grey30")
+
+        ii <- match(c("TreedFen", "Grass", "Shrub", "TreeShrubSwamp", "NonTreeFenMarsh"), labs)
+        mtext(side=1, at=x1[ii],
+            c("Treed Fen", "Grass", "Shrub", "Swamp", "Wet Grass"),
+            col=rgb(col.r[ii], col.g[ii], col.b[ii]),
+            las=2, adj=1.1)
+        ii <- match(c("Crop", "TameP", "RoughP", "UrbInd"), labs)
+        mtext(side=1, at=x1[ii], c("Crop", "Tame Pasture", "Rough Pasture", "Urban/Industry"),
+            col=rgb(col.r[ii], col.g[ii], col.b[ii]), las=2, adj=1.1)
+
+        ## Add cutblock trajectories - upland conifer
+        i1 <- grep("CCWhiteSpruce", labs)
+        x2<-x1[1:5]+0.15*(x1[2]-x1[1])
+        for (j in 1:5)
+            lines(rep(x2[j],2),c(lci[i1[j]],uci[i1[j]]),col="grey60")
+        x3 <- which(names(y1)=="WhiteSpruce_80-100")
+        lines(c(x2[1:5], x1[x3]), y1[c(i1, x3)], col="grey30", lty=2)
+        points(x2[1:5], y1[i1], pch=18, cex=1, col="grey30")
+        points(x2[1:5], y1[i1], pch=5, cex=0.7, col="grey10")
+        ## Pine
+        i1 <- grep("CCPine", labs)
+        x2<-x1[10:15]+0.15*(x1[2]-x1[1])
+        for (j in 1:5)
+            lines(rep(x2[j],2),c(lci[i1[j]],uci[i1[j]]),col="grey60")
+        x3 <- which(names(y1)=="Pine_80-100")
+        lines(c(x2[1:5], x1[x3]),y1[c(i1, x3)],col="grey30", lty=2)
+        points(x2[1:5],y1[i1],pch=18,cex=1,col="grey30")
+        points(x2[1:5],y1[i1],pch=5,cex=0.7,col="grey10")
+        ## Deciduous
+        i1 <- grep("CCDeciduous", labs)
+        x2<-x1[19:24]+0.15*(x1[2]-x1[1])
+        for (j in 1:5)
+            lines(rep(x2[j],2),c(lci[i1[j]],uci[i1[j]]),col="grey60")
+        x3 <- which(names(y1)=="Deciduous_80-100")
+        lines(c(x2[1:5], x1[x3]),y1[c(i1, x3)],col="grey30", lty=2)
+        points(x2[1:5],y1[i1],pch=18,cex=1,col="grey30")
+        points(x2[1:5],y1[i1],pch=5,cex=0.7,col="grey10")
+        ## Mixed
+        i1 <- grep("CCMixedwood", labs)
+        x2<-x1[28:33]+0.15*(x1[2]-x1[1])
+        for (j in 1:5)
+            lines(rep(x2[j],2),c(lci[i1[j]],uci[i1[j]]),col="grey60")
+        x3 <- which(names(y1)=="Mixedwood_80-100")
+        lines(c(x2[1:5], x1[x3]),y1[c(i1, x3)],col="grey30", lty=2)
+        points(x2[1:5],y1[i1],pch=18,cex=1,col="grey30")
+        points(x2[1:5],y1[i1],pch=5,cex=0.7,col="grey10")
+    }
+    invisible(out)
+}
+
+
+.plot_abundance_veg_2017 <-
 function(species, plot=TRUE, ylim, main, ylab, bw=FALSE, ...)
 {
     tab <- .c4if$CF$coef$veg
@@ -521,7 +697,82 @@ function(species, plot=TRUE, ylim, main, ylab, bw=FALSE, ...)
     invisible(out)
 }
 
-.plot_abundance_soil <-
+.plot_abundance_soil <- function(...) {
+    if (getOption("cure4insect")$version == "2017")
+        .plot_abundance_soil_2017(...) else .plot_abundance_soil_2018(...)
+}
+
+.plot_abundance_soil_2018 <-
+function(species, plot=TRUE, paspen=0, ylim, main, ylab, ...)
+{
+    tab <- .c4if$CF$coef$soil
+    if (species %ni% rownames(tab))
+        stop(paste("coefficients were not found for", species))
+    #labs <- c("Productive", "Clay", "Saline", "RapidDrain", "Cult", "UrbInd")
+    labs <- c("Productive", "Clay", "Saline", "RapidDrain", "Crop", "TameP", "RoughP", "UrbInd")
+    out <- data.frame(Estimate=tab[species, labs],
+        LCL=.c4if$CF$lower$soil[species, labs],
+        UCL=.c4if$CF$higher$soil[species, labs])
+    if (.c4if$SP[species, "taxon"] == "birds") {
+        f <- poisson("log")$linkfun
+        fi <- poisson("log")$linkinv
+    } else {
+        f <- binomial("logit")$linkfun
+        fi <- binomial("logit")$linkinv
+    }
+    if (paspen %)(% c(0, 1))
+        stop("paspen must be in [0, 1]")
+    out[out < 10^-5] <- 10^-6
+    out <- data.frame(fi(paspen * .c4if$CF$coef$paspen[species, "pAspen"] +
+            f(data.matrix(out))))
+    if (plot) {
+        op <- par(mai=c(1.5, 1, 0.2, 0.3))
+        on.exit(par(op))
+
+        lci <- out$LCL
+        uci <- out$UCL
+        y1 <- out$Estimate
+        x <- 1:8
+
+        if (missing(main))
+            main <- species
+        if (missing(ylab))
+            ylab <- "Relative abundance"
+        if (missing(ylim)) {
+            ymax <- max(min(max(uci[x]), 2*max(y1)), y1*1.02)
+            ylim <- c(0, ymax)
+        } else {
+            ymax <- max(ylim)
+        }
+
+        space <- c(1, x[-1] -x[-length(x)]) - 0.9
+        col <- c("#00CC00", "#4D8080", "#800080", "#FF3333",
+            "#333300", "#666600", "#999900", "#555555")
+
+        x1 <- barplot(y1[x], space=space, border="white", col=col,
+            ylim=ylim, xlim=c(-0.5,max(x)+1.2), xaxs="i", yaxt="n", ylab=ylab,
+            col.lab="grey50", cex.lab=1.2,axisnames=FALSE)[,1]
+        ax <- axis(side=2, cex.axis=0.9, col.axis="grey50", col.ticks="grey50", las=2)
+        abline(h=ax, col="grey80")
+        x1 <- barplot(y1[x], space=space, border="white", col=col,
+            ylim=ylim, xlim=c(-0.5,7.2), xaxs="i", yaxt="n", ylab=ylab,
+            col.lab="grey50", cex.lab=1.2,axisnames=FALSE, add=TRUE)[,1]
+        box(bty="l", col="grey50")
+        for (i in 1:length(x1)) {
+            lines(rep(x1[i],2), c(lci[i], y1[i]), col="grey90")
+            lines(rep(x1[i],2), c(uci[i], y1[i]), col=col[i])
+        }
+        mtext(side=1, at=x1[1:4], line=1.4, c("Productive", "Clay", "Saline", "Rapid Drain"),
+            col=col[1:4], las=1)
+        mtext(side=1, at=x1[5:8], line=0.7,
+            c("Crop", "Tame\nPasture", "Rough\nPasture", "Urban/Industry\nFootprint"),
+            col=col[5:8], las=2)
+        mtext(side=3, at=0, adj=0, main, col="grey30")
+    }
+    invisible(out)
+}
+
+.plot_abundance_soil_2017 <-
 function(species, plot=TRUE, paspen=0, ylim, main, ylab, ...)
 {
     tab <- .c4if$CF$coef$soil
