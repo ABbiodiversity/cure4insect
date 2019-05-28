@@ -17,6 +17,13 @@ in collaboration with the
 * [Custom report](https://abbiodiversity.github.io/cure4insect/site/)
 * [Web app](http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/)
 
+## Feedback
+
+If you have problems with using the package or have ideas for new features and improvements, please do the following:
+
+1. check if the [issue](https://github.com/ABbiodiversity/cure4insect/issues) already exists,
+2. leave a comment if it exists, or open a [new issue](https://github.com/ABbiodiversity/cure4insect/issues/new) otherwise.
+
 ## License
 
 The estimates, predictions, and related documentation are &copy; ABMI and BAM (2014&ndash;2018) under a [CC BY-SA 4.0 license](http://creativecommons.org/licenses/by-sa/4.0/).
