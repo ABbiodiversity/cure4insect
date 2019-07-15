@@ -207,8 +207,8 @@ xx2 <- report_all()
 ```
 
 Spatial IDs of the 1km x 1km spatial pixel units are to be used for the custom summaries.
-The Row_Col field defines the IDs and links the raster cells in the [geodatabase](http://ftp.public.abmi.ca/species.abmi.ca/gis/Grid1km_working.gdb.zip)
-or [CSV](http://ftp.public.abmi.ca/species.abmi.ca/gis/Grid1km_working.csv.zip}) (with latitude/longitude in [NAD_1983_10TM_AEP_Forest](http://spatialreference.org/ref/epsg/3402/) projection).
+The Row_Col field defines the IDs and links the raster cells in the [geodatabase](http://sc-dev.abmi.ca/reports/2017/grids/Grid1km_working.gdb.zip)
+or [CSV](http://sc-dev.abmi.ca/reports/2017/grids/Grid1km_working.csv.zip}) (with latitude/longitude in [NAD_1983_10TM_AEP_Forest](http://spatialreference.org/ref/epsg/3402/) projection).
 
 For the web application, use your favourite GIS software, or in R use this:
 
@@ -329,7 +329,7 @@ file for a worked example of visualizations available in the package:
 file.show(system.file("doc/example-species-report.Rmd", package="cure4insect"))
 ```
 
-Habitat associations as shown on the [species.abmi.ca](http://species.abmi.ca/) website:
+Habitat associations as shown on the [sc-dev.abmi.ca](http://sc-dev.abmi.ca/) website:
 
 ```R
 load_common_data()

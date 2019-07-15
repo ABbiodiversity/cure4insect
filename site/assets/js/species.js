@@ -47,7 +47,7 @@ $(document).ready(function(){
     $("#message").text(data[0].Comments);
   }
 
-  $("#sppweb").attr("href", "http://species.abmi.ca/pages/species/" + data[0].Taxon + '/' + data[0].SpeciesID + '.html');
+  $("#sppweb").attr("href", "http://sc-dev.abmi.ca/" + data[0].Taxon + '/' + data[0].SpeciesID + '/');
 
   var spp = link.indexOf(data[0].SpeciesID);
   if (spp < 1) {
@@ -65,8 +65,5 @@ $(document).ready(function(){
       console.log("both enabled");
     }
   }
-
-
-  $("#sppweb").attr("href", "http://species.abmi.ca/pages/species/" + data[0].Taxon + '/' + data[0].SpeciesID + '.html');
 
 });
