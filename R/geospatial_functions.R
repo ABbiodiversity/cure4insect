@@ -107,7 +107,7 @@ function(species, path=NULL, version=NULL)
         if (spinfo$model_north) {
             cveg <- .c4if$CFbirds$joint$veg[species,] # log scale
             if (version == "2017")
-				cveg["SoftLin"] <- log(mean(exp(cveg[c("Shrub", "GrassHerb")])))
+                cveg["SoftLin"] <- log(mean(exp(cveg[c("Shrub", "GrassHerb")])))
             cveg["HardLin"] <- -10
         } else {
             cveg <- NULL
@@ -115,7 +115,7 @@ function(species, path=NULL, version=NULL)
         if (spinfo$model_south) {
             csoil <- .c4if$CFbirds$joint$soil[species,] # log scale
             if (version == "2017")
-				csoil["SoftLin"] <- log(mean(exp(csoil), na.rm=TRUE)) # SoftLin is NA
+                csoil["SoftLin"] <- log(mean(exp(csoil), na.rm=TRUE)) # SoftLin is NA
             csoil["HardLin"] <- -10
             caspen <- .c4if$CFbirds$joint$paspen[species,]
         } else {
