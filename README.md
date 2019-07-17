@@ -28,20 +28,36 @@ The estimates, predictions, and related documentation are © ABMI and BAM
 (2014–2018) under a [CC BY-SA 4.0
 license](http://creativecommons.org/licenses/by-sa/4.0/).
 
-The R package itself is licensed under [MIT
-license](https://github.com/ABbiodiversity/cure4insect/blob/master/LICENSE.md)
-© 2018 Peter Solymos, ABMI & BAM.
+The R package itself is licensed under [MIT license](LICENSE.md) © 2018
+Peter Solymos, Brandon Allen, ABMI & BAM.
+
+Getting help or reporting an issue
+----------------------------------
+
+To report bugs/issues/feature requests, please file an
+[issue](https://github.com/ABbiodiversity/cure4insect/issues).
+
+How to contribute
+-----------------
+
+If you would like to contribute to the package, please see our
+[CONTRIBUTING](CONTRIBUTING.md) guidelines.
+
+Please note that this project is released with a [Contributor Code of
+Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree
+to abide by its terms.
 
 Install
 -------
 
-Only GitHub version available now. If you have trouble installing the
-package, please file an
-[issue](https://github.com/ABbiodiversity/cure4insect/issues).
+Only GitHub version available now:
 
 ``` r
 remotes::install_github("ABbiodiversity/cure4insect")
 ```
+
+The [NEWS](NEWS.md) file lists user visible changes in the different
+versions.
 
 Usage
 -----
