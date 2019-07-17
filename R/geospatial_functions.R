@@ -382,7 +382,7 @@ path=NULL, version=NULL, clip=TRUE, limit=NULL)
         r0 <- mask(r0, rmask)
     if (!KEEP[i] && type == "intactness") {
         r0[!is.na(values(r0))] <- 0
-        MSG <- sprintf("--- DOPPED (%.3f%s)", 100*LIM$mean / LIM$max, "%")
+        MSG <- sprintf("--- DROPPED (%.3f%s)", 100*LIM$mean / LIM$max, "%")
     } else {
         MSG <- sprintf("(%.1f%s)", 100*LIM$mean / LIM$max, "%")
     }
@@ -401,7 +401,7 @@ path=NULL, version=NULL, clip=TRUE, limit=NULL)
         LIM <- .calculate_limit(y, limit=limit)
         KEEP[i] <- LIM$keep
         if (!KEEP[i] && type == "intactness") {
-            MSG <- sprintf("--- DOPPED (%.3f%s)", 100*LIM$mean / LIM$max, "%")
+            MSG <- sprintf("--- DROPPED (%.3f%s)", 100*LIM$mean / LIM$max, "%")
         } else {
             r <- .rasterize_multi(y, type, rt)
             if (clip)
