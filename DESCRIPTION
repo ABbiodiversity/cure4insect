@@ -3,7 +3,7 @@ Type: Package
 Title: Custom Reporting for Intactness and Sector Effects
 Version: 0.1-2
 Date: 2019-07-14
-Author: Peter Solymos [cre, aut], ABMI [cph], BAM [cph]
+Author: Peter Solymos [cre, aut], Brandon Allen [aut], ABMI [cph], BAM [cph]
 Maintainer: Peter Solymos <solymos@ualberta.ca>
 Description: Decision support tool
   that provides an interface to enable
