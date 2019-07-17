@@ -1,43 +1,74 @@
-# cure4insect
+cure4insect
+===========
 
 > Custom Reporting for Intactness and Sector Effects
 
-[![Linux build status](https://travis-ci.org/ABbiodiversity/cure4insect.svg?branch=master)](https://travis-ci.org/ABbiodiversity/cure4insect)
+[![Linux build
+status](https://travis-ci.org/ABbiodiversity/cure4insect.svg?branch=master)](https://travis-ci.org/ABbiodiversity/cure4insect)
 
 The [R](https://www.r-project.org/) package is a decision support tool
-that provides an interface to enable
-custom reporting for intactness and sector effects
-based on estimates and predictions created by the [Alberta
-Biodiversity Monitoring Institute (ABMI)](http://abmi.ca/)
-in collaboration with the
-[Boreal Avian Modelling (BAM) Project](http://www.borealbirds.ca/).
+that provides an interface to enable custom reporting for intactness and
+sector effects based on estimates and predictions created by the
+[Alberta Biodiversity Monitoring Institute (ABMI)](http://abmi.ca/) in
+collaboration with the [Boreal Avian Modelling (BAM)
+Project](http://www.borealbirds.ca/).
 
-* [Few slides about the motivations](https://abbiodiversity.github.io/cure4insect/intro/)
-* [Example species report](https://abbiodiversity.github.io/cure4insect/example/)
-* [Custom report](https://abbiodiversity.github.io/cure4insect/site/)
-* [Web app](http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/)
+-   [Few slides about the
+    motivations](https://abbiodiversity.github.io/cure4insect/intro/)
+-   [Example species
+    report](https://abbiodiversity.github.io/cure4insect/example/)
+-   [Custom report](https://abbiodiversity.github.io/cure4insect/site/)
+-   [Web
+    app](http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/)
 
-## License
+License
+-------
 
-The estimates, predictions, and related documentation are &copy; ABMI and BAM (2014&ndash;2018) under a [CC BY-SA 4.0 license](http://creativecommons.org/licenses/by-sa/4.0/).
+The estimates, predictions, and related documentation are © ABMI and BAM
+(2014–2018) under a [CC BY-SA 4.0
+license](http://creativecommons.org/licenses/by-sa/4.0/).
 
-The R package itself is licensed under [MIT license](https://github.com/ABbiodiversity/cure4insect/blob/master/LICENSE.md) &copy; 2018 Peter Solymos, ABMI & BAM.
+The R package itself is licensed under [MIT
+license](https://github.com/ABbiodiversity/cure4insect/blob/master/LICENSE.md)
+© 2018 Peter Solymos, ABMI & BAM.
 
-## Install
+Install
+-------
 
-Only GitHub version available now. If you have trouble installing the package,
-please file an [issue](https://github.com/ABbiodiversity/cure4insect/issues).
+Only GitHub version available now. If you have trouble installing the
+package, please file an
+[issue](https://github.com/ABbiodiversity/cure4insect/issues).
 
-```R
-devtools::install_github("ABbiodiversity/cure4insect")
+``` r
+remotes::install_github("ABbiodiversity/cure4insect")
 ```
 
-## Usage
+Usage
+-----
 
-Load the package:
+Load the package and the common data set:
 
-```R
+``` r
 library(cure4insect)
+## Loading required package: sp
+## Loading required package: raster
+## cure4insect 0.1-2     2019-07-14
+load_common_data()
+## loading common data
+##         version yr_first yr_last        method     hf  veg          model
+## mammals    2018     2001    2013 snow_tracking 2016v3 v6.1 binomial_logit
+## birds      2018     1997    2017   point_count 2016v3 v6.1    poisson_log
+## mites      2018     2007    2017     soil_core 2016v3 v6.1 binomial_logit
+## mosses     2018     2003    2016   centre_plot 2016v3 v6.1 binomial_logit
+## lichens    2018     2003    2017   centre_plot 2016v3 v6.1 binomial_logit
+## vplants    2018     2003    2017   centre_plot 2016v3 v6.1 binomial_logit
+##         species
+## mammals      12
+## birds       126
+## mites       114
+## mosses      125
+## lichens     155
+## vplants     442
 ```
 
 #### Workflow with 1 species
@@ -45,9 +76,7 @@ library(cure4insect)
 `id` is a vector of `Row_Col` type IDs of 1 km<sup>2</sup> pixels,
 `species` is a vector of species IDs:
 
-```R
-load_common_data()
-
+``` r
 ## define spatial and species IDs (subsets)
 Spp <- "Ovenbird"
 ID <- c("182_362", "182_363", "182_364", "182_365", "182_366", "182_367",
@@ -71,7 +100,7 @@ flatten(x)
 
 All the possible spatial IDs can be inspected as:
 
-```R
+``` r
 str(get_all_id())
 plot(xy <- get_id_locations(), pch=".")
 summary(xy)
@@ -79,7 +108,7 @@ summary(xy)
 
 Spatial IDs can be specified as planning/management regions:
 
-```R
+``` r
 ## Natural Regions
 ID <- get_all_id(nr=c("Boreal", "Foothills"))
 ## Natural Subregions
@@ -88,24 +117,24 @@ ID <- get_all_id(nsr="Lower Boreal Highlands")
 ID <- get_all_id(luf="North Saskatchewan")
 ```
 
-Alternatively, `id` can refer to quarter sections
-using the `MER-RGE-TWP-SEC-QS` format:
+Alternatively, `id` can refer to quarter sections using the
+`MER-RGE-TWP-SEC-QS` format:
 
-```R
+``` r
 Spp <- "Ovenbird"
 QSID <- c("4-12-1-2-SE", "4-12-1-2-SW", "4-12-1-3-SE", "4-12-1-3-SW")
 qs2km(QSID) # corresponding Row_Col IDs
 ```
 
 The `subset_common_data` function recognizes `MER-RGE-TWP-SEC-QS` type
-spatial IDs and onvert those to the `Row_Col` format using
-the nearest 1 km<sup>2</sup> pixels.
+spatial IDs and onvert those to the `Row_Col` format using the nearest 1
+km<sup>2</sup> pixels.
 
 #### Workflow with multiple species
 
 `id` and `species` can be defined using text files:
 
-```R
+``` r
 load_common_data()
 Spp <- read.table(system.file("extdata/species.txt", package="cure4insect"))
 str(Spp)
@@ -121,16 +150,15 @@ do.call(rbind, lapply(xx, flatten))
 
 Here is how to inspect all possible species IDs
 
-```R
+``` r
 str(get_all_species())
 str(get_species_table())
 ```
 
-Select one or more taxonomic groups
-(mammals, birds, mites, mosses, lichens, vpalnst),
-and fiter for habitat and status:
+Select one or more taxonomic groups (mammals, birds, mites, mosses,
+lichens, vpalnst), and fiter for habitat and status:
 
-```R
+``` r
 ## birds and mammals
 str(get_all_species(taxon=c("birds", "mammals")))
 ## all upland species
@@ -141,22 +169,23 @@ str(get_all_species(taxon="vplants", status="nonnative"))
 
 #### Wrapper functions
 
-* `species="all"` runs all species
-* `species="mites"` runs all mite species
-* `sender="you@example.org"` will send an email with the results attached
-* increase `cores` to allow parallel processing
+-   `species="all"` runs all species
+-   `species="mites"` runs all mite species
+-   `sender="you@example.org"` will send an email with the results
+    attached
+-   increase `cores` to allow parallel processing
 
-```R
+``` r
 z <- custom_report(id=ID,
     species=c("AlderFlycatcher", "Achillea.millefolium"),
     address=NULL, cores=1)
 z
 ```
 
-Working with a local copy of the results is much faster
-set path via function arguments or the options:
+Working with a local copy of the results is much faster set path via
+function arguments or the options:
 
-```R
+``` r
 ## making of the file raw_all.rda
 library(cure4insect)
 opar <- set_options(path = "w:/reports")
@@ -175,7 +204,7 @@ system.time(res <- report_all(cores=1))
 
 A few more words about options:
 
-```R
+``` r
 ## options
 getOption("cure4insect")
 ## change configs in this file to make it permanent for a given installation
@@ -185,7 +214,7 @@ as.list(drop(read.dcf(file=system.file("config/defaults.conf",
 
 #### Sector effects and intactness plots
 
-```R
+``` r
 ## *res*ults from calculate_results, all province, all species
 load(system.file("extdata/raw_all.rda", package="cure4insect"))
 
@@ -207,7 +236,7 @@ plot_intactness(z, "SI2", method="hist")
 
 `id` can also be a SpatialPolygons object based on GeoJSON for example:
 
-```R
+``` r
 library(rgdal)
 dsn <- system.file("extdata/polygon.geojson", package="cure4insect")
 cat(readLines(dsn), sep="\n")
@@ -217,16 +246,22 @@ plot(make_subset_map())
 xx2 <- report_all()
 ```
 
-Spatial IDs of the 1 km<sup>2</sup> spatial pixel units are to be
-used for the custom summaries.
-The `Row_Col` field defines the IDs and links the raster cells to the [geodatabase](http://sc-dev.abmi.ca/reports/2017/grids/Grid1km_working.gdb.zip)
-or [CSV](http://sc-dev.abmi.ca/reports/2017/grids/Grid1km_working.csv.zip}) (with latitude/longitude in [NAD_1983_10TM_AEP_Forest](http://spatialreference.org/ref/epsg/3402/) projection).
+Spatial IDs of the 1 km<sup>2</sup> spatial pixel units are to be used
+for the custom summaries. The `Row_Col` field defines the IDs and links
+the raster cells to the
+[geodatabase](http://sc-dev.abmi.ca/reports/2017/grids/Grid1km_working.gdb.zip)
+or
+[CSV](http://sc-dev.abmi.ca/reports/2017/grids/Grid1km_working.csv.zip%7D)
+(with latitude/longitude in
+[NAD\_1983\_10TM\_AEP\_Forest](http://spatialreference.org/ref/epsg/3402/)
+projection).
 
-For the [web application](http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/),
+For the [web
+application](http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/),
 use your favourite GIS software, or in R use this to get the spatial IDs
 written into a text file:
 
-```R
+``` r
 library(rgdal)
 load_common_data()
 dsn <- system.file("extdata/OSA_bound.geojson", package="cure4insect")
@@ -247,19 +282,19 @@ plot(AB, col="grey")
 plot(ply, col="red", add=TRUE)
 ```
 
-Use the `make_subset_map()` function to get a raster map of
-the spatial selection.
+Use the `make_subset_map()` function to get a raster map of the spatial
+selection.
 
 #### Raster objects and maps
 
 The result is a raster stack object with the following layers:
 
-* `NC`, `NR`: current and reference abundance,
-* `SI`, `SI2`: one- and two-sided intactness,
-* `SE`, `CV`: bootstrap based standard error and coefficient of variation
-estimates for current abundance.
+-   `NC`, `NR`: current and reference abundance,
+-   `SI`, `SI2`: one- and two-sided intactness,
+-   `SE`, `CV`: bootstrap based standard error and coefficient of
+    variation estimates for current abundance.
 
-```R
+``` r
 load_common_data()
 y <- load_species_data("Ovenbird")
 r <- rasterize_results(y)
@@ -268,10 +303,10 @@ col <- colorRampPalette(c("darkgreen","yellow","red"))(250)
 plot(r, "SE", col=col) # standadr errors for current abundance
 ```
 
-It is possible to make multi-species maps as well:
-average intactness and expected number of species.
+It is possible to make multi-species maps as well: average intactness
+and expected number of species.
 
-```R
+``` r
 subset_common_data(species=get_all_species(taxon="birds"))
 r1 <- make_multispecies_map("richness")
 r2 <- make_multispecies_map("intactness")
@@ -280,13 +315,13 @@ r2 <- make_multispecies_map("intactness")
 #### Spatially explicit (polygon level) predictions
 
 The 1 km<sup>2</sup> level predictions provide mean abundance per pixel.
-Sometimes we need finer detail, e.g. when making predictions as part of
+Sometimes we need finer detail, e.g. when making predictions as part of
 spatially explicit simulations.
 
 First we load the spatial/climate related component of the predictions
 (which is a raster object):
 
-```R
+``` r
 load_common_data()
 species <- "Achillea.millefolium"
 object <- load_spclim_data(species)
@@ -295,25 +330,26 @@ object <- load_spclim_data(species)
 The spatial component is then combined with the land cover component
 describing vegetation/disturbance/soil classes as a factor.
 
-```R
+``` r
 ## original levels
 levels(veg <- as.factor(get_levels()$veg))
 levels(soil <- as.factor(get_levels()$soil))
 ```
-Sometimes it is best to create a crosswalk table and
-reclassify using e.g. the `mefa4::reclass` function:
 
-```R
+Sometimes it is best to create a crosswalk table and reclassify using
+e.g. the `mefa4::reclass` function:
+
+``` r
 (rc <- data.frame(In=c("pine5", "decid15", "urban", "industrial"),
     Out=c("Pine0", "Deciduous10", "UrbInd", "UrbInd")))
 mefa4::reclass(c("pine5", "pine5", "decid15", "urban", "industrial"), rc)
 ```
 
-We need to have spatial locations for each land cover value
-(same value can be repeated, but but avoid duplicate rownames).
-We use the **sp** package to make a SpatialPoints object:
+We need to have spatial locations for each land cover value (same value
+can be repeated, but but avoid duplicate rownames). We use the **sp**
+package to make a SpatialPoints object:
 
-```R
+``` r
 XY <- get_id_locations()
 coords <- coordinates(XY)[10^5,,drop=FALSE]
 rownames(coords) <- NULL
@@ -324,33 +360,34 @@ proj4string(xy) <- proj4string(XY)
 
 Now we are ready to make the predictions:
 
-```R
+``` r
 pred <- predict(object, xy=xy, veg=veg)
 summary(pred)
 ```
 
-The `predict` function returns a data frame with columns `veg`, `soil`, and
-`comb` (combines `veg` and `soil` based on aspen probability of occurrence
-using `combine_veg_soil` as a weighted average based on
+The `predict` function returns a data frame with columns `veg`, `soil`,
+and `comb` (combines `veg` and `soil` based on aspen probability of
+occurrence using `combine_veg_soil` as a weighted average based on
 probability of aspen occurrence).
 
-For some species, either the `veg` or `soil` based estimates are unavailable:
-`predict` returns `NA` for these and the combined results will be `NA` as well.
+For some species, either the `veg` or `soil` based estimates are
+unavailable: `predict` returns `NA` for these and the combined results
+will be `NA` as well.
 
-The next line is a more succinct version that loads the species data as well,
-but we can't reuse the species data after:
+The next line is a more succinct version that loads the species data as
+well, but we can’t reuse the species data after:
 
-```R
+``` r
 pred <- custom_predict(species, xy=xy, veg=veg)
 ```
 
-Another was of making predictions is to define a spatial grid, and quantify
-land cover as proportion of the land cover types in each grid cell.
-This is how we can use multivariate input data in a spatial grid
-(totally unrealistic data set just for illustration,
-but user has to make sure the numbers are meaningful):
+Another was of making predictions is to define a spatial grid, and
+quantify land cover as proportion of the land cover types in each grid
+cell. This is how we can use multivariate input data in a spatial grid
+(totally unrealistic data set just for illustration, but user has to
+make sure the numbers are meaningful):
 
-```R
+``` r
 xy <- xy[1:10,]
 mveg <- matrix(0, 10, 8)
 colnames(mveg) <- veg[c(1:8 * 10)]
@@ -365,59 +402,60 @@ msoil[rowSums(msoil)==0,1] <- 1 # avoid 0 row sum
 msoil
 ```
 
-Because we used areas (not proportions) we get the output as
-two matrices containing abundances (density times area) corresdonding to the
+Because we used areas (not proportions) we get the output as two
+matrices containing abundances (density times area) corresdonding to the
 vegetation and soil matrices:
 
-```R
+``` r
 (prmat1 <- predict_mat(object, xy, mveg, msoil))
 ```
 
-Row sums give the total abundance at each location,
-column sums give the total abundance in a land cover type over all locations:
+Row sums give the total abundance at each location, column sums give the
+total abundance in a land cover type over all locations:
 
-```R
+``` r
 rowSums(prmat1$veg)
 colSums(prmat1$veg)
 ```
 
-Using proportions in the input matrices gives mean abundance per spatial unit
-as output:
+Using proportions in the input matrices gives mean abundance per spatial
+unit as output:
 
-```R
+``` r
 (prmat2 <- predict_mat(object, xy, mveg/rowSums(mveg), msoil/rowSums(msoil)))
 ```
 
 Combining vegetation and soil based predictions returns a vector,
-i.e. the aspen probability weighted average of the vegetation and soil
+i.e. the aspen probability weighted average of the vegetation and soil
 based total abundances:
 
-```R
+``` r
 combine_veg_soil(xy, rowSums(prmat2$veg), rowSums(prmat2$soil))
 ```
 
 #### Visualize land cover associations
 
-See the following [R markdown](http://rmarkdown.rstudio.com/)
-file for a worked example of visualizations available in the package:
+See the following [R markdown](http://rmarkdown.rstudio.com/) file for a
+worked example of visualizations available in the package:
 
-```R
+``` r
 file.show(system.file("doc/example-species-report.Rmd", package="cure4insect"))
 ```
 
 It is possible to render the R markdown file with a species ID argument,
 thus programmatically producing reports for multiple species:
 
-```R
+``` r
 library(rmarkdown)
 render(system.file("doc/example-species-report.Rmd",
     package="cure4insect"),
     params = list(species = "Ovenbird"))
 ```
 
-Habitat associations as shown on the [sc-dev.abmi.ca](http://sc-dev.abmi.ca/) website:
+Habitat associations as shown on the
+[sc-dev.abmi.ca](http://sc-dev.abmi.ca/) website:
 
-```R
+``` r
 load_common_data()
 plot_abundance("Achillea.millefolium", "veg_coef")
 plot_abundance("Achillea.millefolium", "soil_coef", paspen=1)
@@ -425,35 +463,38 @@ plot_abundance("Achillea.millefolium", "veg_lin")
 plot_abundance("Achillea.millefolium", "soil_lin")
 ```
 
-## Web API
+Web API
+-------
 
-The web app sits [here](http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/).
-To get more control over the results, use the [API](https://www.opencpu.org/api.html#api-formats).
+The web app sits
+[here](http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/).
+To get more control over the results, use the
+[API](https://www.opencpu.org/api.html#api-formats).
 
 Make a request using the `custom_report` function:
 
-```shell
+``` shell
 curl http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/R/custom_report/csv \
 -H "Content-Type: application/json" -d \
 '{"id":["182_362", "182_363"], "species":["AlderFlycatcher", "Achillea.millefolium"]}'
 ```
 
-Access spatially explicit and land cover specific prediction for a species
-using the `custom_predict` function:
+Access spatially explicit and land cover specific prediction for a
+species using the `custom_predict` function:
 
-```shell
+``` shell
 curl http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/R/custom_predict/json \
 -H "Content-Type: application/json" -d \
 '{"species":"AlderFlycatcher", "xy":[[-114.4493,58.4651]], "veg":"Mixedwood80"}'
 ```
 
-## Explore single and multi-species results
+Explore single and multi-species results
+----------------------------------------
 
 To get similar output to
-[this](https://abbiodiversity.github.io/cure4insect/site/),
-run script from this file:
+[this](https://abbiodiversity.github.io/cure4insect/site/), run script
+from this file:
 
-```R
+``` r
 file.show(system.file("doc/custom-report.R", package="cure4insect"))
 ```
-
