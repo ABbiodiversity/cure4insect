@@ -1,0 +1,91 @@
+v2017,v2018,description
+WhiteSpruce0,WhiteSpruce_0-10,"White Spruce dominated forest, 0-10 yrs post natural disturbance"
+WhiteSpruce10,WhiteSpruce_10-20,"White Spruce dominated forest, 10-20 yrs post natural disturbance"
+WhiteSpruce20,WhiteSpruce_20-40,"White Spruce dominated forest, 20-40 yrs post natural disturbance"
+WhiteSpruce40,WhiteSpruce_40-60,"White Spruce dominated forest, 40-60 yrs post natural disturbance"
+WhiteSpruce60,WhiteSpruce_60-80,"White Spruce dominated forest, 60-80 yrs post natural disturbance"
+WhiteSpruce80,WhiteSpruce_80-100,"White Spruce dominated forest, 80-100 yrs post natural disturbance"
+WhiteSpruce100,WhiteSpruce_100-120,"White Spruce dominated forest, 100-120 yrs post natural disturbance"
+WhiteSpruce120,WhiteSpruce_120-140,"White Spruce dominated forest, 120-140 yrs post natural disturbance"
+WhiteSpruce140,WhiteSpruce_140+,"White Spruce dominated forest, >140 yrs post natural disturbance"
+Pine0,Pine_0-10,"Pine dominated forest, 0-10 yrs post natural disturbance"
+Pine10,Pine_10-20,"Pine dominated forest, 10-20 yrs post natural disturbance"
+Pine20,Pine_20-40,"Pine dominated forest, 20-40 yrs post natural disturbance"
+Pine40,Pine_40-60,"Pine dominated forest, 40-60 yrs post natural disturbance"
+Pine60,Pine_60-80,"Pine dominated forest, 60-80 yrs post natural disturbance"
+Pine80,Pine_80-100,"Pine dominated forest, 80-100 yrs post natural disturbance"
+Pine100,Pine_100-120,"Pine dominated forest, 100-120 yrs post natural disturbance"
+Pine120,Pine_120-140,"Pine dominated forest, 120-140 yrs post natural disturbance"
+Pine140,Pine_140+,"Pine dominated forest, >140 yrs post natural disturbance"
+Deciduous0,Deciduous_0-10,"Deciduous dominated forest, 0-10 yrs post natural disturbance"
+Deciduous10,Deciduous_10-20,"Deciduous dominated forest, 10-20 yrs post natural disturbance"
+Deciduous20,Deciduous_20-40,"Deciduous dominated forest, 20-40 yrs post natural disturbance"
+Deciduous40,Deciduous_40-60,"Deciduous dominated forest, 40-60 yrs post natural disturbance"
+Deciduous60,Deciduous_60-80,"Deciduous dominated forest, 60-80 yrs post natural disturbance"
+Deciduous80,Deciduous_80-100,"Deciduous dominated forest, 80-100 yrs post natural disturbance"
+Deciduous100,Deciduous_100-120,"Deciduous dominated forest, 100-120 yrs post natural disturbance"
+Deciduous120,Deciduous_120-140,"Deciduous dominated forest, 120-140 yrs post natural disturbance"
+Deciduous140,Deciduous_140+,"Deciduous dominated forest, >140 yrs post natural disturbance"
+Mixedwood0,Mixedwood_0-10,"Mixedwood dominated forest, 0-10 yrs post natural disturbance"
+Mixedwood10,Mixedwood_10-20,"Mixedwood dominated forest, 10-20 yrs post natural disturbance"
+Mixedwood20,Mixedwood_20-40,"Mixedwood dominated forest, 20-40 yrs post natural disturbance"
+Mixedwood40,Mixedwood_40-60,"Mixedwood dominated forest, 40-60 yrs post natural disturbance"
+Mixedwood60,Mixedwood_60-80,"Mixedwood dominated forest, 60-80 yrs post natural disturbance"
+Mixedwood80,Mixedwood_80-100,"Mixedwood dominated forest, 80-100 yrs post natural disturbance"
+Mixedwood100,Mixedwood_100-120,"Mixedwood dominated forest, 100-120 yrs post natural disturbance"
+Mixedwood120,Mixedwood_120-140,"Mixedwood dominated forest, 120-140 yrs post natural disturbance"
+Mixedwood140,Mixedwood_140+,"Mixedwood dominated forest, >140 yrs post natural disturbance"
+BlackSpruce0,BlackSpruce_0-10,"Black Spruce dominated forest, 0-10 yrs post natural disturbance"
+BlackSpruce10,BlackSpruce_10-20,"Black Spruce dominated forest, 10-20 yrs post natural disturbance"
+BlackSpruce20,BlackSpruce_20-40,"Black Spruce dominated forest, 20-40 yrs post natural disturbance"
+BlackSpruce40,BlackSpruce_40-60,"Black Spruce dominated forest, 40-60 yrs post natural disturbance"
+BlackSpruce60,BlackSpruce_60-80,"Black Spruce dominated forest, 60-80 yrs post natural disturbance"
+BlackSpruce80,BlackSpruce_80-100,"Black Spruce dominated forest, 80-100 yrs post natural disturbance"
+BlackSpruce100,BlackSpruce_100-120,"Black Spruce dominated forest, 100-120 yrs post natural disturbance"
+BlackSpruce120,BlackSpruce_120-140,"Black Spruce dominated forest, 120-140 yrs post natural disturbance"
+BlackSpruce140,BlackSpruce_140+,"Black Spruce dominated forest, >140 yrs post natural disturbance"
+NA,Bare,Bare ground
+NA,Water,Open water
+GrassHerb,Grass,"Grass, herb in uplands"
+Shrub,Shrub,Shubby habitat in uplands
+Larch0,TreedFen,Treed fen (usually Larch dominated)
+Larch10,TreedFen,Treed fen (usually Larch dominated)
+Larch20,TreedFen,Treed fen (usually Larch dominated)
+Larch40,TreedFen,Treed fen (usually Larch dominated)
+Larch60,TreedFen,Treed fen (usually Larch dominated)
+Larch80,TreedFen,Treed fen (usually Larch dominated)
+Larch100,TreedFen,Treed fen (usually Larch dominated)
+Larch120,TreedFen,Treed fen (usually Larch dominated)
+Larch140,TreedFen,Treed fen (usually Larch dominated)
+Swamp,TreeShrubSwamp,Swamp
+WetShrub,BlackSpruce_0-10,"Black Spruce dominated forest, 0-10 yrs post natural disturbance"
+WetGrass,NonTreeFenMarsh,Non treed wetlands
+WhiteSpruceCC0,CCWhiteSpruce_0-10,"White Spruce dominated forest, 0-10 yrs post forest harvest"
+WhiteSpruceCC10,CCWhiteSpruce_10-20,"White Spruce dominated forest, 10-20 yrs post forest harvest"
+WhiteSpruceCC20,CCWhiteSpruce_20-40,"White Spruce dominated forest, 20-40 yrs post forest harvest"
+WhiteSpruceCC40,CCWhiteSpruce_40-60,"White Spruce dominated forest, 40-60 yrs post forest harvest"
+WhiteSpruceCC60,CCWhiteSpruce_60-80,"White Spruce dominated forest, 60-80 yrs post forest harvest"
+PineCC0,CCPine_0-10,"Pine dominated forest, 0-10 yrs post forest harvest"
+PineCC10,CCPine_10-20,"Pine dominated forest, 10-20 yrs post forest harvest"
+PineCC20,CCPine_20-40,"Pine dominated forest, 20-40 yrs post forest harvest"
+PineCC40,CCPine_40-60,"Pine dominated forest, 40-60 yrs post forest harvest"
+PineCC60,CCPine_60-80,"Pine dominated forest, 60-80 yrs post forest harvest"
+DeciduousCC0,CCDeciduous_0-10,"Deciduous dominated forest, 0-10 yrs post forest harvest"
+DeciduousCC10,CCDeciduous_10-20,"Deciduous dominated forest, 10-20 yrs post forest harvest"
+DeciduousCC20,CCDeciduous_20-40,"Deciduous dominated forest, 20-40 yrs post forest harvest"
+DeciduousCC40,CCDeciduous_40-60,"Deciduous dominated forest, 40-60 yrs post forest harvest"
+DeciduousCC60,CCDeciduous_60-80,"Deciduous dominated forest, 60-80 yrs post forest harvest"
+MixedwoodCC0,CCMixedwood_0-10,"Mixedwood dominated forest, 0-10 yrs post forest harvest"
+MixedwoodCC10,CCMixedwood_10-20,"Mixedwood dominated forest, 10-20 yrs post forest harvest"
+MixedwoodCC20,CCMixedwood_20-40,"Mixedwood dominated forest, 20-40 yrs post forest harvest"
+MixedwoodCC40,CCMixedwood_40-60,"Mixedwood dominated forest, 40-60 yrs post forest harvest"
+MixedwoodCC60,CCMixedwood_60-80,"Mixedwood dominated forest, 60-80 yrs post forest harvest"
+UrbInd,UrbInd,Urban/industrial
+Cult,Crop,Crop
+Cult,TameP,Tame pasture
+Cult,RoughP,Rough pasture
+AverageCoef,AverageCoef,Average relative abundance in northern undisturbed land cover classes
+SoftLin10,SoftLin10,Average relative abundance when 10% of the survey area is covered by soft linear features
+HardLin10,HardLin10,Average relative abundance when 10% of the survey area is covered by hard linear features
+SoftLin,SoftLin,Vegetated (soft) linear features
+HardLin,HardLin,Roads/rails

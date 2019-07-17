@@ -1,0 +1,15 @@
+v2017,v2018,description
+Productive,Productive,Productive soil
+Clay,Clay,Clay soil
+Saline,Saline,Saline soil
+RapidDrain,RapidDrain,Rapid drainage soil
+NA,Water,Open water
+Cult,Crop,Crop
+Cult,TameP,Tame pasture
+Cult,RoughP,Rough pasture
+UrbInd,UrbInd,Urban/industrial
+AverageCoef,AverageCoef,Average relative abundance in southern undisturbed land cover classes
+SoftLin10,SoftLin10,Average relative abundance when 10% of the survey area is covered by soft linear features
+HardLin10,HardLin10,Average relative abundance when 10% of the survey area is covered by hard linear features
+SoftLin,SoftLin,Vegetated (soft) linear features
+HardLin,HardLin,Roads/rails
