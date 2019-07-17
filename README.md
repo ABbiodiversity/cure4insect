@@ -29,7 +29,7 @@ The estimates, predictions, and related documentation are © ABMI and BAM
 license](http://creativecommons.org/licenses/by-sa/4.0/).
 
 The R package itself is licensed under [MIT license](LICENSE.md) © 2018
-Peter Solymos, Brandon Allen, ABMI & BAM.
+Peter Solymos, Brandon Allen, Shannon R. White, ABMI & BAM.
 
 Getting help or reporting an issue
 ----------------------------------
