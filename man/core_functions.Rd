@@ -86,7 +86,7 @@ get_levels()
     method="simple", ...)
 predict_mat(object, ...)
 \method{predict_mat}{c4ispclim}(object, xy, veg, soil,
-    method="simple"...)
+    method="simple",  ...)
 combine_veg_soil(xy, veg, soil, method="simple")
 make_multispecies_map(type=c("richness", "intactness"),
     path=NULL, version=NULL, clip=TRUE, limit=NULL)
