@@ -274,7 +274,7 @@ function(object, xy, veg, soil, method="simple", ...)
     if (missing(veg) && missing(soil))
         stop("veg or soil must be provided")
     xy <- spTransform(xy, proj4string(.read_raster_template()))
-    if (!missing(veg)) {
+    if (!missing(veg) && !is.null(veg)) {
         if (is.null(object$cveg)) {
             warning(sprintf("veg based estimates are unavailable for %s", object$species))
             Nveg <- NULL
@@ -294,7 +294,7 @@ function(object, xy, veg, soil, method="simple", ...)
     } else {
         Nveg <- NULL
     }
-    if (!missing(soil)) {
+    if (!missing(soil) && !is.null(soil)) {
         if (is.null(object$csoil)) {
             warning(sprintf("soil based estimates are unavailable for %s", object$species))
             Nsoil <- NULL
