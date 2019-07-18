@@ -174,6 +174,7 @@ with geographic coordinates corresponding to \code{veg} and \code{soil}
 }
   \item{veg, soil}{
 factor, vegetation/soil classes. One of the two or both must be provided.
+Can be \code{NULL} or missing.
 }
   \item{method}{
 character, the method argument for raster value \code{\link[raster]{extract}}ion.
