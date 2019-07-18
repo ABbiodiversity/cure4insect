@@ -82,10 +82,12 @@ get_subset_species()
 
 load_spclim_data(species, path=NULL, version=NULL)
 get_levels()
-\method{predict}{c4ispclim}(object, xy, veg, soil, ...)
+\method{predict}{c4ispclim}(object, xy, veg, soil,
+    method="simple", ...)
 predict_mat(object, ...)
-\method{predict_mat}{c4ispclim}(object, xy, veg, soil, ...)
-combine_veg_soil(xy, veg, soil)
+\method{predict_mat}{c4ispclim}(object, xy, veg, soil,
+    method="simple"...)
+combine_veg_soil(xy, veg, soil, method="simple")
 make_multispecies_map(type=c("richness", "intactness"),
     path=NULL, version=NULL, clip=TRUE, limit=NULL)
 }
@@ -172,6 +174,11 @@ with geographic coordinates corresponding to \code{veg} and \code{soil}
 }
   \item{veg, soil}{
 factor, vegetation/soil classes. One of the two or both must be provided.
+}
+  \item{method}{
+character, the method argument for raster value \code{\link[raster]{extract}}ion.
+\code{"simple"}: values for the cell a point falls in,
+\code{"bilinear"}: interpolated from the values of the four nearest raster cells.
 }
   \item{taxon}{
 character, return \code{"all"} species, or a subset

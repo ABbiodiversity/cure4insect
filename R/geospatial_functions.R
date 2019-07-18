@@ -171,12 +171,12 @@ get_levels <- function()
 }
 
 combine_veg_soil <-
-function(xy, veg, soil)
+function(xy, veg, soil, method="simple")
 {
     rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
     if (!identicalCRS(xy, rpa))
         xy <- spTransform(xy, proj4string(rpa))
-    ipa <- extract(rpa, xy)
+    ipa <- extract(rpa, xy, method)
     .combine_veg_soil(ipa, veg, soil)
 }
 .combine_veg_soil <-
@@ -202,7 +202,7 @@ function(ipa, veg, soil)
 ## handle soft lin aspect through an option for birds:
 ## coef approach does not require rf, early seral does ???
 predict.c4ispclim <-
-function(object, xy, veg, soil, ...)
+function(object, xy, veg, soil, method="simple", ...)
 {
 #    if (!inherits(xy, "SpatialPoints"))
 #        stop("xy must be of class SpatialPoints")
@@ -227,7 +227,7 @@ function(object, xy, veg, soil, ...)
             if (length(veg) != nrow(coordinates(xy)))
                 stop("length(veg) must equal number of points in xy")
             .check(veg, names(object$cveg))
-            iveg <- extract(object$rveg, xy)
+            iveg <- extract(object$rveg, xy, method)
             OUT$veg <- fi(object$cveg[match(veg, names(object$cveg))] + iveg)
             if (any(veg == "SoftLin") && object$taxon == "birds" && object$version == "2017") {
                 warning("veg contained SoftLin: check your assumptions")
@@ -243,9 +243,9 @@ function(object, xy, veg, soil, ...)
             if (length(soil) != nrow(coordinates(xy)))
                 stop("length(soil) must equal number of points in xy")
             .check(soil, names(object$csoil))
-            isoil <- extract(object$rsoil, xy)
+            isoil <- extract(object$rsoil, xy, method)
             rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
-            ipa <- extract(rpa, xy)
+            ipa <- extract(rpa, xy, method)
             OUT$soil <- fi(object$csoil[match(soil, names(object$csoil))] +
                 object$caspen * ipa + isoil)
             if (any(soil == "SoftLin") && object$taxon == "birds" && object$version == "2017") {
@@ -265,7 +265,7 @@ predict_mat <- function (object, ...)
     UseMethod("predict_mat")
 
 predict_mat.c4ispclim <-
-function(object, xy, veg, soil, ...)
+function(object, xy, veg, soil, method="simple", ...)
 {
     xy <- .tr_xy(xy)
     ## coefs in object are on log/logit scale, need linkinv
@@ -282,7 +282,7 @@ function(object, xy, veg, soil, ...)
             if (nrow(veg) != nrow(coordinates(xy)))
                 stop("nrow(veg) must equal number of points in xy")
             .check(as.factor(colnames(veg)), names(object$cveg))
-            iveg <- extract(object$rveg, xy)
+            iveg <- extract(object$rveg, xy, method)
             imatv <- t(array(iveg, dim(veg), dimnames(veg)))
             mveg <- object$cveg[match(colnames(veg), names(object$cveg))]
             Nveg <- fi(t(mveg + imatv)) * veg
@@ -302,9 +302,9 @@ function(object, xy, veg, soil, ...)
             if (nrow(soil) != nrow(coordinates(xy)))
                 stop("nrow(veg) must equal number of points in xy")
             .check(as.factor(colnames(soil)), names(object$csoil))
-            isoil <- extract(object$rsoil, xy)
+            isoil <- extract(object$rsoil, xy, method)
             rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
-            ipa <- extract(rpa, xy)
+            ipa <- extract(rpa, xy, method)
             imats <- t(array(object$caspen * ipa + isoil, dim(soil), dimnames(soil)))
             msoil <- object$csoil[match(colnames(soil), names(object$csoil))]
             Nsoil <- fi(t(msoil + imats)) * soil
