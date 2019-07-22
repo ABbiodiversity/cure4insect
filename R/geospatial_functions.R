@@ -382,9 +382,9 @@ path=NULL, version=NULL, clip=TRUE, limit=NULL)
         r0 <- mask(r0, rmask)
     if (!KEEP[i] && type == "intactness") {
         r0[!is.na(values(r0))] <- 0
-        MSG <- sprintf("--- DROPPED (%.3f%s)", 100*LIM$mean / LIM$max, "%")
+        MSG <- sprintf("--- DROPPED (%.3f%s)", 100*LIM$mean / LIM$max, "% of limit")
     } else {
-        MSG <- sprintf("(%.1f%s)", 100*LIM$mean / LIM$max, "%")
+        MSG <- sprintf("(%.1f%s)", 100*LIM$mean / LIM$max, "% of limit")
     }
     if (type == "richness" && as.character(.c4is$SPsub[SPP[1L], "taxon"]) == "birds")
             r0 <- p_bird(r0, area="ha", pair_adj=2)
@@ -401,7 +401,7 @@ path=NULL, version=NULL, clip=TRUE, limit=NULL)
         LIM <- .calculate_limit(y, limit=limit)
         KEEP[i] <- LIM$keep
         if (!KEEP[i] && type == "intactness") {
-            MSG <- sprintf("--- DROPPED (%.3f%s)", 100*LIM$mean / LIM$max, "%")
+            MSG <- sprintf("--- DROPPED (%.3f%s)", 100*LIM$mean / LIM$max, "% of limit")
         } else {
             r <- .rasterize_multi(y, type, rt)
             if (clip)
@@ -410,7 +410,7 @@ path=NULL, version=NULL, clip=TRUE, limit=NULL)
                 as.character(.c4is$SPsub[SPP[1L], "taxon"]) == "birds")
                     r <- p_bird(r, area="ha", pair_adj=2)
             r0 <- r + r0
-            MSG <- sprintf("(%.1f%s)", 100*LIM$mean / LIM$max, "%")
+            MSG <- sprintf("(%.1f%s)", 100*LIM$mean / LIM$max, "% of limit")
         }
         dt <- proc.time()[3] - t0
         cat(", elapsed:", getTimeAsString(dt), MSG, "\n")
