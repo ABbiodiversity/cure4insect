@@ -312,6 +312,7 @@ for (i in seq_along(species)) {
         }
     }
     ## finishing richness raster
+    ## change scale and pair adjustment here as needed
     if (is.null(r_ri)) {
         r_ri <- rreg[["NC"]]
         r_ri[is.na(r_ri)] <- 0
