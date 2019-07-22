@@ -215,7 +215,7 @@ character, the type of multi-species map to produce.
 \code{"richness"} is probability of >0 observation in a 1 ha plot
 summed across species (expected species richness).
 }
-  \item{}{
+  \item{area, pair_adj}{
 spatial scale (\code{"ha"} or \code("km"}) and pair adjustment factor
 to turn bird densities into probability of observing non-zero count
 before calculating richness (sum of these probabilities).
