@@ -216,7 +216,7 @@ character, the type of multi-species map to produce.
 summed across species (expected species richness).
 }
   \item{area, pair_adj}{
-spatial scale (\code{"ha"} or \code("km"}) and pair adjustment factor
+spatial scale (\code{"ha"} or \code{"km"}) and pair adjustment factor
 to turn bird densities into probability of observing non-zero count
 before calculating richness (sum of these probabilities).
 }
