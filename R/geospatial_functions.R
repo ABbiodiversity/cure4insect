@@ -179,10 +179,13 @@ function(xy, veg, soil, method="simple")
     ipa <- extract(rpa, xy, method)
     .combine_veg_soil(ipa, veg, soil)
 }
+
+## w: weight captures the weight for the NORTH models when in overlap
+## which needs pre processing (N only=1, S only=0, overlap=w)
 .combine_veg_soil <-
-function(ipa, veg, soil)
+function(w, veg, soil)
 {
-    ipa * veg + (1 - ipa) * soil
+    w * veg + (1 - w) * soil
 }
 
 .tr_xy <- function(xy) {
