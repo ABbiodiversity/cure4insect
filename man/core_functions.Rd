@@ -314,9 +314,8 @@ All these require to run \code{load_common_data()} first.
 \code{load_spclim_data} is used to load raster data for spatially
 explicit predictions by \code{predict.c4ispclim}.
 \code{predict.c4ispclim} returns a data frame with columns
-'veg', 'soil', and 'comb' (combines 'veg' and 'soil' based on
-aspen probability of occurrence using \code{combine_veg_soil}
-as a weighted average based on probability of aspen occurrence).
+'veg', 'soil', and 'comb' (combines 'veg' and 'soil' using
+\code{combine_veg_soil} as a weighted average).
 Note: for some species, either the 'veg' or 'soil' based estimates are
 unavailable. \code{predict.c4ispclim} returns \code{NA} for these
 and the combined results will be \code{NA} as well.

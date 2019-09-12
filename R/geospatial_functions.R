@@ -173,11 +173,12 @@ get_levels <- function()
 combine_veg_soil <-
 function(xy, veg, soil, method="simple")
 {
-    rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
-    if (!identicalCRS(xy, rpa))
-        xy <- spTransform(xy, proj4string(rpa))
-    ipa <- extract(rpa, xy, method)
-    .combine_veg_soil(ipa, veg, soil)
+    ## rw and iw are weights for the NORTH
+    rw <- raster(system.file("extdata/wNorth.tif", package="cure4insect"))
+    if (!identicalCRS(xy, rw))
+        xy <- spTransform(xy, proj4string(rw))
+    iw <- extract(rw, xy, method)
+    .combine_veg_soil(iw, veg, soil)
 }
 
 ## w: weight captures the weight for the NORTH models when in overlap
@@ -247,6 +248,7 @@ function(object, xy, veg, soil, method="simple", ...)
                 stop("length(soil) must equal number of points in xy")
             .check(soil, names(object$csoil))
             isoil <- extract(object$rsoil, xy, method)
+            ## pAspen here used as habitat covariate NOT as North weight
             rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
             ipa <- extract(rpa, xy, method)
             OUT$soil <- fi(object$csoil[match(soil, names(object$csoil))] +
@@ -258,7 +260,8 @@ function(object, xy, veg, soil, method="simple", ...)
         }
     }
     if (DO$comb) {
-        OUT$comb <- .combine_veg_soil(ipa, OUT$veg, OUT$soil)
+        #OUT$comb <- .combine_veg_soil(ipa, OUT$veg, OUT$soil)
+        OUT$comb <- combine_veg_soil(xy, OUT$veg, OUT$soil, method=method)
     }
     class(OUT) <- c("c4ippred", class(OUT))
     OUT
@@ -306,6 +309,7 @@ function(object, xy, veg, soil, method="simple", ...)
                 stop("nrow(veg) must equal number of points in xy")
             .check(as.factor(colnames(soil)), names(object$csoil))
             isoil <- extract(object$rsoil, xy, method)
+            ## pAspen here used as habitat covariate NOT as North weight
             rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
             ipa <- extract(rpa, xy, method)
             imats <- t(array(object$caspen * ipa + isoil, dim(soil), dimnames(soil)))
