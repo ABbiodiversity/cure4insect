@@ -1,6 +1,6 @@
 # User visible changes in the cure4insect R extension package
 
-## Version 0.1-2 - 2019-07-14
+## Version 0.1-2 - 2019-09-12
 
 * Updates for Version 2018.
 
