@@ -39,7 +39,7 @@ app_test(...)
 .verbose()
 .get_cores(cores=NULL)
 .check(x, ref)
-.combine_veg_soil(ipa, veg, soil)
+.combine_veg_soil(w, veg, soil)
 .validate_id(id, type=c("km", "qs"))
 .verbose()
 .select_id(mregion="both", nr=NULL, nsr=NULL, luf=NULL)
@@ -64,8 +64,8 @@ p_bird(D, area=c("ha", "km"), pair_adj=2)
   \item{limit}{abundance threshold for multi-species intactness reporting.}
   \item{x, ref}{checking the validity of land cover classes in \code{x}
     against the \code{ref}erence list of possible values.}
-  \item{ipa, veg, soil}{calculates a weighted average of \code{veg}
-    and \code{soil} based models based on probability of aspen (\code{ipa}).}
+  \item{w, veg, soil}{calculates a weighted average of \code{veg}
+    and \code{soil} based models based on weights for the vegetation models (\code{w}).}
   \item{mregion, nr, nsr, luf}{regions.}
   \item{D, area, pair_adj}{density, scale, and pair adjustment
     to turn bird densities into probability of observing non-zero count.}
