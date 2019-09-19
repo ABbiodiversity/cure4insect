@@ -12,4 +12,3 @@
 appveyor.yml
 ^.*\.Rproj$
 ^\.Rproj\.user$
-\.png
