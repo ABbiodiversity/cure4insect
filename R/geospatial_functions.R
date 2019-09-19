@@ -360,6 +360,8 @@ function(object, xy, veg, soil, method="simple", ...)
 ## multi-species intactness and richness maps
 ## clip: apply spatial IDs to crop & mask
 ## limit: threshold for intactness average
+##        NOTE: limit is applied on the whole region
+##        and not by LUF x NSR (as required by BMF)
 make_multispecies_map <-
 function(type=c("richness", "intactness"),
 path=NULL, version=NULL, clip=TRUE, limit=NULL,

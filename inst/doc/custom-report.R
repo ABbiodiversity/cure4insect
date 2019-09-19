@@ -32,7 +32,7 @@ id <- overlay_polygon(ply)
 ## specify species subset
 #species <- c("AlderFlycatcher", "Achillea.millefolium") # 2 species
 #species <- get_all_species("birds") # all birds
-#species <- get_all_species("mammals") # all birds
+#species <- get_all_species("mammals") # all mammals
 set.seed(234);species <- sample(get_all_species(), 10) # 10 random species
 ## 33 OF birds
 #species <- c("BaltimoreOriole", "BaybreastedWarbler", "BlackpollWarbler",
