@@ -232,9 +232,11 @@ Current options are:
 \code{path} (path to results),
 \code{version} (version of results),
 \code{verbose} (default is 1, value 0 suppresses the messages),
-\code{limit} (abundance threshold for regional intactness calculations),
 \code{cores} (number of cores to use in parallel calculations,
 uses forking on Linux/Unix/Mac and socket clusters on Windows, default is 1),
+\code{limit} (abundance threshold for regional intactness calculations),
+\code{boot} (bootstrap based uncertainties used or not),
+\code{trunc} (quantile for truncating rasterized maps to avoid outliers),
 \code{sender} (email of sender),
 \code{subject} (subject of the email),
 and \code{body} (body of the email).
