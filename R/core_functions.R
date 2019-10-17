@@ -226,7 +226,16 @@ function(y, level=0.9, .c4is)
 {
     cn <- c("Native", "Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")
     a <- c(0.5*(1-level), 1-0.5*(1-level))
-    MAX <- max(quantile(rowSums(y$SA.Curr), 0.99), quantile(rowSums(y$SA.Ref), 0.99))
+    ## handle non additivity of spclim component (sertor vs total)
+    if (getOption("cure4insect")$version != "2017" && y$taxon != "birds") {
+        MAX <- max(
+            quantile(y$Totals[,"Curr"], 0.99, na.rm=TRUE),
+            quantile(y$Totals[,"Ref"], 0.99, na.rm=TRUE))
+    } else {
+        MAX <- max(
+            quantile(rowSums(y$SA.Curr), 0.99, na.rm=TRUE),
+            quantile(rowSums(y$SA.Ref), 0.99, na.rm=TRUE))
+    }
     KTsub <- .c4is$KTsub
     ## Rockies for non-birds and unmodelled regions excluded
     if (y$taxon != "birds")
@@ -247,8 +256,15 @@ function(y, level=0.9, .c4is)
     ## this leads to mean(numeric(0))=NaN but should be 0
     ## the variable predicted has the info about this fact
     if (length(PIX) > 0) {
-        cr <- rowSums(SA.Curr)
-        rf <- rowSums(SA.Ref)
+        ## handle non additivity of spclim component (sertor vs total)
+        if (getOption("cure4insect")$version != "2017" && y$taxon != "birds") {
+            TOT <- y$Totals[PIX,,drop=FALSE]
+            cr <- TOT[,"Curr"]
+            rf <- TOT[,"Ref"]
+        } else {
+            cr <- rowSums(SA.Curr)
+            rf <- rowSums(SA.Ref)
+        }
         MEAN_cr <- mean(cr[cr <= quantile(cr, 0.99)])
         MEAN_rf <- mean(rf[rf <= quantile(rf, 0.99)])
         MEAN <- max(MEAN_cr, MEAN_rf)
@@ -298,8 +314,6 @@ function(y, level=0.9, .c4is)
         KA <- .c4is$A_2016
     }
 
-
-
     Sector_Area <- (100 * KA / sum(KA))[names(Sector_Total)]
     Sector_Unit <- 100 * Sector_Total / Sector_Area
     out <- list(
@@ -338,7 +352,16 @@ function(y, limit=NULL)
     if (limit %)(% c(0,1))
         stop("limit value must be between in [0, 1]")
     cn <- c("Native", "Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")
-    MAX <- max(quantile(rowSums(y$SA.Curr), 0.99), quantile(rowSums(y$SA.Ref), 0.99))
+    ## handle non additivity of spclim component (sertor vs total)
+    if (getOption("cure4insect")$version != "2017" && y$taxon != "birds") {
+        MAX <- max(
+            quantile(y$Totals[,"Curr"], 0.99, na.rm=TRUE),
+            quantile(y$Totals[,"Ref"], 0.99, na.rm=TRUE))
+    } else {
+        MAX <- max(
+            quantile(rowSums(y$SA.Curr), 0.99, na.rm=TRUE),
+            quantile(rowSums(y$SA.Ref), 0.99, na.rm=TRUE))
+    }
     KTsub <- .c4is$KTsub
     ## Rockies for non-birds and unmodelled regions excluded
     if (y$taxon != "birds")
@@ -359,8 +382,15 @@ function(y, limit=NULL)
     ## subset can have 0 rows when outside of modeled range:
     ## this leads to mean(numeric(0))=NaN but should be 0
     if (length(PIX) > 0) {
-        cr <- rowSums(SA.Curr)
-        rf <- rowSums(SA.Ref)
+        ## handle non additivity of spclim component (sertor vs total)
+        if (getOption("cure4insect")$version != "2017" && y$taxon != "birds") {
+            TOT <- y$Totals[PIX,,drop=FALSE]
+            cr <- TOT[,"Curr"]
+            rf <- TOT[,"Ref"]
+        } else {
+            cr <- rowSums(SA.Curr)
+            rf <- rowSums(SA.Ref)
+        }
         MEAN_cr <- mean(cr[cr <= quantile(cr, 0.99)])
         MEAN_rf <- mean(rf[rf <= quantile(rf, 0.99)])
         MEAN <- max(MEAN_cr, MEAN_rf)
@@ -377,114 +407,6 @@ function(y, limit=NULL)
         keep=MEAN >= MAX * limit)
 }
 
-## this calculates sector effects based on
-.calculate_sector <-
-function(y, limit=0)
-{
-    if (limit %)(% c(0,1))
-        stop("limit value must be between in [0, 1]")
-    cn <- c("Native", "Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")
-    level <- 0.9
-    a <- c(0.5*(1-level), 1-0.5*(1-level))
-    MAX <- max(quantile(rowSums(y$SA.Curr), 0.99), quantile(rowSums(y$SA.Ref), 0.99))
-    KTsub <- .c4is$KTsub
-    ## Rockies for non-birds and unmodelled regions excluded
-    if (y$taxon != "birds")
-        KTsub <- KTsub[KTsub$reg_nr %ni% "Rocky Mountain",,drop=FALSE]
-    ## South: >= 0; North: <= 0
-    if (!all(c(y$model_north, y$model_south))) {
-        KTsub <- if (y$model_north) {
-            KTsub[KTsub$mregion <= 0,,drop=FALSE]
-        } else {
-            KTsub[KTsub$mregion >= 0,,drop=FALSE]
-        }
-    }
-    PIX <- rownames(KTsub)
-    PIX <- PIX[PIX %in% rownames(y$SA.Curr)]
-    SA.Curr <- y$SA.Curr[PIX,cn,drop=FALSE]
-    SA.Ref <- y$SA.Ref[PIX,cn,drop=FALSE]
-
-    ## restrict to NSR where mean >= max * limit
-    KTsub <- KTsub[PIX,]
-    nsr_cr <- aggregate(rowSums(SA.Curr), list(nsr=KTsub$reg_nsr), mean)
-    nsr_rf <- aggregate(rowSums(SA.Ref), list(nsr=KTsub$reg_nsr), mean)
-    nsr_mean <- pmax(nsr_cr[,2], nsr_rf[,2])
-    names(nsr_mean) <- nsr_cr[,1]
-    nsr_keep <- nsr_mean >= MAX * limit
-    KTsub$keep <- nsr_keep[match(KTsub$reg_nsr, names(nsr_keep))]
-
-    KTsub <- KTsub[KTsub$keep,,drop=FALSE]
-    PIX <- rownames(KTsub)
-    SA.Curr <- y$SA.Curr[PIX,,drop=FALSE]
-    SA.Ref <- y$SA.Ref[PIX,,drop=FALSE]
-
-    ## subset can have 0 rows when outside of modeled range:
-    ## this leads to mean(numeric(0))=NaN but should be 0
-    ## the variable predicted has the info about this fact
-    if (length(PIX) > 0) {
-        cr <- rowSums(SA.Curr)
-        rf <- rowSums(SA.Ref)
-        MEAN_cr <- mean(cr[cr <= quantile(cr, 0.99)])
-        MEAN_rf <- mean(rf[rf <= quantile(rf, 0.99)])
-        MEAN <- max(MEAN_cr, MEAN_rf)
-        predicted <- TRUE
-    } else {
-        MEAN <- 0
-        predicted <- FALSE
-    }
-    CS <- colSums(SA.Curr)
-    RS <- colSums(SA.Ref)
-    NC <- sum(CS)
-    NR <- sum(RS)
-    SI <- 100 * min(NC, NR) / max(NC, NR)
-    SI2 <- if (NC <= NR) SI else 200 - SI
-    ## boot not used here
-    CB <- RB <- rep(NA, 100)
-    NC_CI <- c(NA, NA)
-    names(NC_CI) <- c("5%", "95%")
-    NR_CI <- SI_CI <- SI2_CI <- NC_CI
-
-    Sector_Total <- (100 * (CS - RS) / NR)[-1]
-    Sector_UnderHF <- (100 * (CS - RS) / RS)[-1]
-
-    ## sector area reflects model region and nsr based subset!
-    KA_version <- .get_KA(
-        version=getOption("cure4insect")$version,
-        taxon=y$taxon)
-    KA <- Matrix::colSums(.c4if[[KA_version]][PIX,,drop=FALSE])
-
-    Sector_Area <- (100 * KA / sum(KA))[names(Sector_Total)]
-    Sector_Unit <- 100 * Sector_Total / Sector_Area
-
-    out <- list(
-        taxon=y$taxon,
-        species=y$species,
-        max=MAX,
-        mean=MEAN,
-        level=level,
-        predicted=predicted,
-        model_north=y$model_north,
-        model_south=y$model_south,
-        boot=y$boot,
-        boot_current=CB,
-        boot_reference=RB,
-        intactness=rbind(
-            Current=c(Estimate=NC, NC_CI),
-            Reference=c(Estimate=NR, NR_CI),
-            Intactness=c(Estimate=SI, SI_CI),
-            Intactness2=c(Estimate=SI2, SI2_CI)),
-        sector=rbind(
-            Current=CS[-1],
-            Reference=RS[-1],
-            Area=Sector_Area,
-            #Area=KA,
-            Total=Sector_Total,
-            UnderHF=Sector_UnderHF,
-            Unit=Sector_Unit))
-    class(out) <- "c4iraw"
-    attr(out, "limit") <- limit
-    out
-}
 
 set_options <-
 function(...)

@@ -286,7 +286,11 @@ for (i in seq_along(species)) {
     KEEP[i] <- z$Keep
 
     ## use object regs to evaluate in/out by smaller regions
-    DAT <- cbind(NR=rowSums(y$SA.Ref), NC=rowSums(y$SA.Curr))
+    if (getOption("cure4insect")$version != "2017" && y$taxon != "birds") {
+        DAT <- cbind(NR=y$Totals[,"Ref"], NC=y$Totals[,"Curr"])
+    } else {
+        DAT <- cbind(NR=rowSums(y$SA.Ref), NC=rowSums(y$SA.Curr))
+    }
     DAT <- DAT[match(rownames(TAB), rownames(DAT)),]
     DAT[is.na(DAT)] <- 0
     MEAN <- apply(groupMeans(DAT, 1, regs), 1, max)

@@ -34,8 +34,15 @@ rasterize_results <- function(y)
     if (length(names(y)) < 1)
         stop("species data needed: use load_species_data")
     KT <- .c4if$KT
-    NC <- rowSums(y$SA.Curr)
-    NR <- rowSums(y$SA.Ref)
+    ## handle non additivity of spclim component (sertor vs total)
+    if (getOption("cure4insect")$version != "2017" && y$taxon != "birds") {
+        NC <- y$Totals[,"Curr"]
+        NR <- y$Totals[,"Ref"]
+    } else {
+        NC <- rowSums(y$SA.Curr)
+        NR <- rowSums(y$SA.Ref)
+    }
+
     SI <- 100 * pmin(NC, NR) / pmax(NC, NR)
     SI2 <- ifelse(NC <= NR, SI, 200 - SI)
     i <- match(rownames(KT), names(NC))
@@ -340,7 +347,13 @@ function(object, xy, veg, soil, method="simple", ...)
         "richness"="NC",
         "intactness"="SI")
     KT <- .c4if$KT
-    NC <- rowSums(y$SA.Curr)
+    ## handle non additivity of spclim component (sertor vs total)
+    if (getOption("cure4insect")$version != "2017" && y$taxon != "birds") {
+        NC <- y$Totals[,"Curr"]
+    } else {
+        NC <- rowSums(y$SA.Curr)
+    }
+
     i <- match(rownames(KT), names(NC))
     KT$NC <- NC[i]
     #KT$NC[is.na(KT$NC)] <- -1
