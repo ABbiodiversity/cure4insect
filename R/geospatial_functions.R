@@ -26,6 +26,21 @@ function(value, rc, rt)
     raster(x=r, template=rt)
 }
 
+.truncate <- function(x, trunc=NULL) {
+    if (is.null(trunc))
+        v <- as.numeric(getOption("cure4insect")$trunc)
+    if (inherits(x, "raster")) {
+        z <- values(x)
+        q <- quantile(z, v, na.rm=TRUE)
+        z[!is.na(z) & z > q] <- q
+        values(x) <- z
+    } else {
+        q <- quantile(x, v, na.rm=TRUE)
+        x[x > q] <- q
+    }
+    x
+}
+
 ## SD and CoV applies to current abudnance
 rasterize_results <- function(y)
 {
@@ -42,6 +57,8 @@ rasterize_results <- function(y)
         NC <- rowSums(y$SA.Curr)
         NR <- rowSums(y$SA.Ref)
     }
+    NC <- .truncate(NC)
+    NR <- .truncate(NR)
 
     SI <- 100 * pmin(NC, NR) / pmax(NC, NR)
     SI2 <- ifelse(NC <= NR, SI, 200 - SI)
@@ -353,6 +370,7 @@ function(object, xy, veg, soil, method="simple", ...)
     } else {
         NC <- rowSums(y$SA.Curr)
     }
+    NC <- .truncate(NC)
 
     i <- match(rownames(KT), names(NC))
     KT$NC <- NC[i]

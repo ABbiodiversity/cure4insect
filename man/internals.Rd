@@ -16,6 +16,7 @@
 \alias{.verbose}
 \alias{.select_id}
 \alias{p_bird}
+\alias{.truncate}
 \title{
 App Specific Functions and Internals
 }
@@ -44,6 +45,7 @@ app_test(...)
 .verbose()
 .select_id(mregion="both", nr=NULL, nsr=NULL, luf=NULL)
 p_bird(D, area=c("ha", "km"), pair_adj=2)
+.truncate(x, trunc=NULL)
 }
 \arguments{
   \item{species, boot, path, version}{arguments passed to
@@ -62,13 +64,15 @@ p_bird(D, area=c("ha", "km"), pair_adj=2)
   \item{type}{type of multi-species map (richness or intactness)
     or spatial ID (km or QS).}
   \item{limit}{abundance threshold for multi-species intactness reporting.}
-  \item{x, ref}{checking the validity of land cover classes in \code{x}
+  \item{x}{input object.}
+  \item{ref}{checking the validity of land cover classes in \code{x}
     against the \code{ref}erence list of possible values.}
   \item{w, veg, soil}{calculates a weighted average of \code{veg}
     and \code{soil} based models based on weights for the vegetation models (\code{w}).}
   \item{mregion, nr, nsr, luf}{regions.}
   \item{D, area, pair_adj}{density, scale, and pair adjustment
     to turn bird densities into probability of observing non-zero count.}
+  \item{trunc}{quantile for truncating values of \code{x}, usually a vector or a raster object.}
   \item{\dots}{arguments passed to underlying functions.}
 }
 \details{

@@ -229,12 +229,12 @@ function(y, level=0.9, .c4is)
     ## handle non additivity of spclim component (sertor vs total)
     if (getOption("cure4insect")$version != "2017" && y$taxon != "birds") {
         MAX <- max(
-            quantile(y$Totals[,"Curr"], 0.99, na.rm=TRUE),
-            quantile(y$Totals[,"Ref"], 0.99, na.rm=TRUE))
+            quantile(y$Totals[,"Curr"], as.numeric(getOption("cure4insect")$trunc), na.rm=TRUE),
+            quantile(y$Totals[,"Ref"], as.numeric(getOption("cure4insect")$trunc), na.rm=TRUE))
     } else {
         MAX <- max(
-            quantile(rowSums(y$SA.Curr), 0.99, na.rm=TRUE),
-            quantile(rowSums(y$SA.Ref), 0.99, na.rm=TRUE))
+            quantile(rowSums(y$SA.Curr), as.numeric(getOption("cure4insect")$trunc), na.rm=TRUE),
+            quantile(rowSums(y$SA.Ref), as.numeric(getOption("cure4insect")$trunc), na.rm=TRUE))
     }
     KTsub <- .c4is$KTsub
     ## Rockies for non-birds and unmodelled regions excluded
@@ -265,8 +265,8 @@ function(y, level=0.9, .c4is)
             cr <- rowSums(SA.Curr)
             rf <- rowSums(SA.Ref)
         }
-        MEAN_cr <- mean(cr[cr <= quantile(cr, 0.99)])
-        MEAN_rf <- mean(rf[rf <= quantile(rf, 0.99)])
+        MEAN_cr <- mean(cr[cr <= quantile(cr, as.numeric(getOption("cure4insect")$trunc))])
+        MEAN_rf <- mean(rf[rf <= quantile(rf, as.numeric(getOption("cure4insect")$trunc))])
         MEAN <- max(MEAN_cr, MEAN_rf)
         predicted <- TRUE
     } else {
@@ -355,12 +355,12 @@ function(y, limit=NULL)
     ## handle non additivity of spclim component (sertor vs total)
     if (getOption("cure4insect")$version != "2017" && y$taxon != "birds") {
         MAX <- max(
-            quantile(y$Totals[,"Curr"], 0.99, na.rm=TRUE),
-            quantile(y$Totals[,"Ref"], 0.99, na.rm=TRUE))
+            quantile(y$Totals[,"Curr"], as.numeric(getOption("cure4insect")$trunc), na.rm=TRUE),
+            quantile(y$Totals[,"Ref"], as.numeric(getOption("cure4insect")$trunc), na.rm=TRUE))
     } else {
         MAX <- max(
-            quantile(rowSums(y$SA.Curr), 0.99, na.rm=TRUE),
-            quantile(rowSums(y$SA.Ref), 0.99, na.rm=TRUE))
+            quantile(rowSums(y$SA.Curr), as.numeric(getOption("cure4insect")$trunc), na.rm=TRUE),
+            quantile(rowSums(y$SA.Ref), as.numeric(getOption("cure4insect")$trunc), na.rm=TRUE))
     }
     KTsub <- .c4is$KTsub
     ## Rockies for non-birds and unmodelled regions excluded
@@ -391,8 +391,8 @@ function(y, limit=NULL)
             cr <- rowSums(SA.Curr)
             rf <- rowSums(SA.Ref)
         }
-        MEAN_cr <- mean(cr[cr <= quantile(cr, 0.99)])
-        MEAN_rf <- mean(rf[rf <= quantile(rf, 0.99)])
+        MEAN_cr <- mean(cr[cr <= quantile(cr, as.numeric(getOption("cure4insect")$trunc))])
+        MEAN_rf <- mean(rf[rf <= quantile(rf, as.numeric(getOption("cure4insect")$trunc))])
         MEAN <- max(MEAN_cr, MEAN_rf)
         predicted <- TRUE
     } else {

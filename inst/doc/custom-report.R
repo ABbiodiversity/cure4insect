@@ -287,9 +287,13 @@ for (i in seq_along(species)) {
 
     ## use object regs to evaluate in/out by smaller regions
     if (getOption("cure4insect")$version != "2017" && y$taxon != "birds") {
-        DAT <- cbind(NR=y$Totals[,"Ref"], NC=y$Totals[,"Curr"])
+        DAT <- cbind(
+            NR=.truncate(y$Totals[,"Ref"]),
+            NC=.truncate(y$Totals[,"Curr"]))
     } else {
-        DAT <- cbind(NR=rowSums(y$SA.Ref), NC=rowSums(y$SA.Curr))
+        DAT <- cbind(
+            NR=.truncate(rowSums(y$SA.Ref)),
+            NC=.truncate(rowSums(y$SA.Curr)))
     }
     DAT <- DAT[match(rownames(TAB), rownames(DAT)),]
     DAT[is.na(DAT)] <- 0
