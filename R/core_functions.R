@@ -226,15 +226,16 @@ function(y, level=0.9, .c4is)
 {
     cn <- c("Native", "Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")
     a <- c(0.5*(1-level), 1-0.5*(1-level))
+    q <- as.numeric(getOption("cure4insect")$trunc)
     ## handle non additivity of spclim component (sertor vs total)
     if (getOption("cure4insect")$version != "2017" && y$taxon != "birds") {
         MAX <- max(
-            quantile(y$Totals[,"Curr"], as.numeric(getOption("cure4insect")$trunc), na.rm=TRUE),
-            quantile(y$Totals[,"Ref"], as.numeric(getOption("cure4insect")$trunc), na.rm=TRUE))
+            quantile(y$Totals[,"Curr"], q, na.rm=TRUE),
+            quantile(y$Totals[,"Ref"], q, na.rm=TRUE))
     } else {
         MAX <- max(
-            quantile(rowSums(y$SA.Curr), as.numeric(getOption("cure4insect")$trunc), na.rm=TRUE),
-            quantile(rowSums(y$SA.Ref), as.numeric(getOption("cure4insect")$trunc), na.rm=TRUE))
+            quantile(rowSums(y$SA.Curr), q, na.rm=TRUE),
+            quantile(rowSums(y$SA.Ref), q, na.rm=TRUE))
     }
     KTsub <- .c4is$KTsub
     ## Rockies for non-birds and unmodelled regions excluded
@@ -265,8 +266,8 @@ function(y, level=0.9, .c4is)
             cr <- rowSums(SA.Curr)
             rf <- rowSums(SA.Ref)
         }
-        MEAN_cr <- mean(cr[cr <= quantile(cr, as.numeric(getOption("cure4insect")$trunc))])
-        MEAN_rf <- mean(rf[rf <= quantile(rf, as.numeric(getOption("cure4insect")$trunc))])
+        MEAN_cr <- mean(cr[cr <= quantile(cr, q)])
+        MEAN_rf <- mean(rf[rf <= quantile(rf, q)])
         MEAN <- max(MEAN_cr, MEAN_rf)
         predicted <- TRUE
     } else {
@@ -352,15 +353,16 @@ function(y, limit=NULL)
     if (limit %)(% c(0,1))
         stop("limit value must be between in [0, 1]")
     cn <- c("Native", "Misc", "Agriculture", "Forestry", "RuralUrban", "Energy", "Transportation")
+    q <- as.numeric(getOption("cure4insect")$trunc)
     ## handle non additivity of spclim component (sertor vs total)
     if (getOption("cure4insect")$version != "2017" && y$taxon != "birds") {
         MAX <- max(
-            quantile(y$Totals[,"Curr"], as.numeric(getOption("cure4insect")$trunc), na.rm=TRUE),
-            quantile(y$Totals[,"Ref"], as.numeric(getOption("cure4insect")$trunc), na.rm=TRUE))
+            quantile(y$Totals[,"Curr"], q, na.rm=TRUE),
+            quantile(y$Totals[,"Ref"], q, na.rm=TRUE))
     } else {
         MAX <- max(
-            quantile(rowSums(y$SA.Curr), as.numeric(getOption("cure4insect")$trunc), na.rm=TRUE),
-            quantile(rowSums(y$SA.Ref), as.numeric(getOption("cure4insect")$trunc), na.rm=TRUE))
+            quantile(rowSums(y$SA.Curr), q, na.rm=TRUE),
+            quantile(rowSums(y$SA.Ref), q, na.rm=TRUE))
     }
     KTsub <- .c4is$KTsub
     ## Rockies for non-birds and unmodelled regions excluded
@@ -391,8 +393,8 @@ function(y, limit=NULL)
             cr <- rowSums(SA.Curr)
             rf <- rowSums(SA.Ref)
         }
-        MEAN_cr <- mean(cr[cr <= quantile(cr, as.numeric(getOption("cure4insect")$trunc))])
-        MEAN_rf <- mean(rf[rf <= quantile(rf, as.numeric(getOption("cure4insect")$trunc))])
+        MEAN_cr <- mean(cr[cr <= quantile(cr, q)])
+        MEAN_rf <- mean(rf[rf <= quantile(rf, q)])
         MEAN <- max(MEAN_cr, MEAN_rf)
         predicted <- TRUE
     } else {
