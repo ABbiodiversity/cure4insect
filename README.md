@@ -31,11 +31,14 @@ license](http://creativecommons.org/licenses/by-sa/4.0/).
 The R package itself is licensed under [MIT license](LICENSE.md) © 2018
 Peter Solymos, Brandon Allen, Ermias T. Azeria, Shannon R. White, ABMI & BAM.
 
-Getting help or reporting an issue
-----------------------------------
+Feedback
+--------
 
-To report bugs/issues/feature requests, please file an
-[issue](https://github.com/ABbiodiversity/cure4insect/issues).
+If you have problems with using the package or have ideas for new features and improvements, please do the following:
+
+1. check if the [issue](https://github.com/ABbiodiversity/cure4insect/issues) already exists,
+2. leave a comment if it exists, or open a [new issue](https://github.com/ABbiodiversity/cure4insect/issues/new) otherwise.
+
 
 How to contribute
 -----------------
