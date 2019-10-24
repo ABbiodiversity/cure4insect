@@ -68,6 +68,7 @@ importFrom("intrval", "%)(%", "%[]%", "%ni%")
 importFrom("KernSmooth", "bkde")
 importFrom("Matrix", "colSums")
 importFrom("mefa4", "Xtab")
+importFrom("methods", "as")
 importFrom("parallel", "detectCores", "makeCluster", "stopCluster",
     "clusterEvalQ", "clusterExport")
 importFrom("pbapply", "getTimeAsString", "pblapply", "pboptions")
@@ -75,7 +76,8 @@ importFrom("raster", "raster", "extract", "mask", "trim", "values", "values<-")
 importFrom("sendmailR", "sendmail", "mime_part")
 importFrom("sp", "identicalCRS", "over", "spTransform", "coordinates",
     "proj4string", "coordinates<-", "proj4string<-")
-importFrom("stats", "quantile", "density", "sd", "poisson", "binomial", "predict")
+importFrom("stats", "quantile", "density", "sd", "poisson", "binomial", 
+    "aggregate", "predict")
 importFrom("utils", "flush.console", "stack", "write.csv", "read.csv")
 
 importMethodsFrom("Matrix", "as.matrix")
