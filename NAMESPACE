@@ -71,7 +71,7 @@ importFrom("mefa4", "Xtab")
 importFrom("parallel", "detectCores", "makeCluster", "stopCluster",
     "clusterEvalQ", "clusterExport")
 importFrom("pbapply", "getTimeAsString", "pblapply", "pboptions")
-importFrom("raster", "raster", "extract", "mask", "trim", "values")
+importFrom("raster", "raster", "extract", "mask", "trim", "values", "values<-")
 importFrom("sendmailR", "sendmail", "mime_part")
 importFrom("sp", "identicalCRS", "over", "spTransform", "coordinates",
     "proj4string", "coordinates<-", "proj4string<-")
