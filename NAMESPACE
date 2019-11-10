@@ -73,11 +73,11 @@ importFrom("methods", "as")
 importFrom("parallel", "detectCores", "makeCluster", "stopCluster",
     "clusterEvalQ", "clusterExport")
 importFrom("pbapply", "getTimeAsString", "pblapply", "pboptions")
-importFrom("raster", "raster", "extract", "mask", "trim", "values")
+importFrom("raster", "raster", "extract", "mask", "trim", "values", "values<-")
 importFrom("sendmailR", "sendmail", "mime_part")
 importFrom("sp", "identicalCRS", "over", "spTransform", "coordinates",
     "proj4string", "coordinates<-", "proj4string<-")
-importFrom("stats", "quantile", "density", "sd", "poisson", "binomial",
+importFrom("stats", "quantile", "density", "sd", "poisson", "binomial", 
     "aggregate", "predict")
 importFrom("utils", "flush.console", "stack", "write.csv", "read.csv")
 

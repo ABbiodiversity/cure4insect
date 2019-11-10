@@ -17,7 +17,7 @@ BugReports: https://github.com/ABbiodiversity/cure4insect/issues
 License: MIT + file LICENSE
 LazyLoad: yes
 LazyData: true
-Depends: R (>= 3.5.0),sp, raster
+Depends: R (>= 3.5.0), sp, raster
 Imports: methods, Matrix, intrval, pbapply (>= 1.3-4), KernSmooth,
   base64enc, mefa4, sendmailR, parallel
 Suggests: knitr, jsonlite, rgdal
