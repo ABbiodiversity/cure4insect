@@ -26,6 +26,21 @@ function(value, rc, rt)
     raster(x=r, template=rt)
 }
 
+.truncate <- function(x, trunc=NULL) {
+    if (is.null(trunc))
+        v <- as.numeric(getOption("cure4insect")$trunc)
+    if (inherits(x, "raster")) {
+        z <- values(x)
+        q <- quantile(z, v, na.rm=TRUE)
+        z[!is.na(z) & z > q] <- q
+        values(x) <- z
+    } else {
+        q <- quantile(x, v, na.rm=TRUE)
+        x[x > q] <- q
+    }
+    x
+}
+
 ## SD and CoV applies to current abudnance
 rasterize_results <- function(y)
 {
@@ -34,8 +49,17 @@ rasterize_results <- function(y)
     if (length(names(y)) < 1)
         stop("species data needed: use load_species_data")
     KT <- .c4if$KT
-    NC <- rowSums(y$SA.Curr)
-    NR <- rowSums(y$SA.Ref)
+    ## handle non additivity of spclim component (sertor vs total)
+    if (getOption("cure4insect")$version != "2017" && y$taxon != "birds") {
+        NC <- y$Totals[,"Curr"]
+        NR <- y$Totals[,"Ref"]
+    } else {
+        NC <- rowSums(y$SA.Curr)
+        NR <- rowSums(y$SA.Ref)
+    }
+    NC <- .truncate(NC)
+    NR <- .truncate(NR)
+
     SI <- 100 * pmin(NC, NR) / pmax(NC, NR)
     SI2 <- ifelse(NC <= NR, SI, 200 - SI)
     i <- match(rownames(KT), names(NC))
@@ -106,14 +130,16 @@ function(species, path=NULL, version=NULL)
     if (taxon == "birds") {
         if (spinfo$model_north) {
             cveg <- .c4if$CFbirds$joint$veg[species,] # log scale
-            cveg["SoftLin"] <- log(mean(exp(cveg[c("Shrub", "GrassHerb")])))
+            if (version == "2017")
+                cveg["SoftLin"] <- log(mean(exp(cveg[c("Shrub", "GrassHerb")])))
             cveg["HardLin"] <- -10
         } else {
             cveg <- NULL
         }
         if (spinfo$model_south) {
             csoil <- .c4if$CFbirds$joint$soil[species,] # log scale
-            csoil["SoftLin"] <- log(mean(exp(csoil), na.rm=TRUE)) # SoftLin is NA
+            if (version == "2017")
+                csoil["SoftLin"] <- log(mean(exp(csoil), na.rm=TRUE)) # SoftLin is NA
             csoil["HardLin"] <- -10
             caspen <- .c4if$CFbirds$joint$paspen[species,]
         } else {
@@ -138,6 +164,7 @@ function(species, path=NULL, version=NULL)
     cveg <- cveg[get_levels()$veg]
     csoil <- csoil[get_levels()$soil]
     y <- new.env()
+    assign("version", version, envir=y)
     assign("species", species, envir=y)
     assign("taxon", taxon, envir=y)
     assign("cveg", cveg, envir=y)
@@ -168,18 +195,22 @@ get_levels <- function()
 }
 
 combine_veg_soil <-
-function(xy, veg, soil)
+function(xy, veg, soil, method="simple")
 {
-    rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
-    if (!identicalCRS(xy, rpa))
-        xy <- spTransform(xy, proj4string(rpa))
-    ipa <- extract(rpa, xy)
-    .combine_veg_soil(ipa, veg, soil)
+    ## rw and iw are weights for the NORTH
+    rw <- raster(system.file("extdata/wNorth.tif", package="cure4insect"))
+    if (!identicalCRS(xy, rw))
+        xy <- spTransform(xy, proj4string(rw))
+    iw <- extract(rw, xy, method)
+    .combine_veg_soil(iw, veg, soil)
 }
+
+## w: weight captures the weight for the NORTH models when in overlap
+## which needs pre processing (N only=1, S only=0, overlap=w)
 .combine_veg_soil <-
-function(ipa, veg, soil)
+function(w, veg, soil)
 {
-    ipa * veg + (1 - ipa) * soil
+    w * veg + (1 - w) * soil
 }
 
 .tr_xy <- function(xy) {
@@ -199,7 +230,7 @@ function(ipa, veg, soil)
 ## handle soft lin aspect through an option for birds:
 ## coef approach does not require rf, early seral does ???
 predict.c4ispclim <-
-function(object, xy, veg, soil, ...)
+function(object, xy, veg, soil, method="simple", ...)
 {
 #    if (!inherits(xy, "SpatialPoints"))
 #        stop("xy must be of class SpatialPoints")
@@ -224,9 +255,9 @@ function(object, xy, veg, soil, ...)
             if (length(veg) != nrow(coordinates(xy)))
                 stop("length(veg) must equal number of points in xy")
             .check(veg, names(object$cveg))
-            iveg <- extract(object$rveg, xy)
+            iveg <- extract(object$rveg, xy, method)
             OUT$veg <- fi(object$cveg[match(veg, names(object$cveg))] + iveg)
-            if (any(veg == "SoftLin") && object$taxon == "birds") {
+            if (any(veg == "SoftLin") && object$taxon == "birds" && object$version == "2017") {
                 warning("veg contained SoftLin: check your assumptions")
                 OUT$veg[veg == "SoftLin"] <- NA
             }
@@ -240,19 +271,21 @@ function(object, xy, veg, soil, ...)
             if (length(soil) != nrow(coordinates(xy)))
                 stop("length(soil) must equal number of points in xy")
             .check(soil, names(object$csoil))
-            isoil <- extract(object$rsoil, xy)
+            isoil <- extract(object$rsoil, xy, method)
+            ## pAspen here used as habitat covariate NOT as North weight
             rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
-            ipa <- extract(rpa, xy)
+            ipa <- extract(rpa, xy, method)
             OUT$soil <- fi(object$csoil[match(soil, names(object$csoil))] +
                 object$caspen * ipa + isoil)
-            if (any(soil == "SoftLin") && object$taxon == "birds") {
+            if (any(soil == "SoftLin") && object$taxon == "birds" && object$version == "2017") {
                 warning("soil contained SoftLin: check your assumptions")
                 OUT$soil[soil == "SoftLin"] <- NA
             }
         }
     }
     if (DO$comb) {
-        OUT$comb <- .combine_veg_soil(ipa, OUT$veg, OUT$soil)
+        #OUT$comb <- .combine_veg_soil(ipa, OUT$veg, OUT$soil)
+        OUT$comb <- combine_veg_soil(xy, OUT$veg, OUT$soil, method=method)
     }
     class(OUT) <- c("c4ippred", class(OUT))
     OUT
@@ -262,7 +295,7 @@ predict_mat <- function (object, ...)
     UseMethod("predict_mat")
 
 predict_mat.c4ispclim <-
-function(object, xy, veg, soil, ...)
+function(object, xy, veg, soil, method="simple", ...)
 {
     xy <- .tr_xy(xy)
     ## coefs in object are on log/logit scale, need linkinv
@@ -271,7 +304,7 @@ function(object, xy, veg, soil, ...)
     if (missing(veg) && missing(soil))
         stop("veg or soil must be provided")
     xy <- spTransform(xy, proj4string(.read_raster_template()))
-    if (!missing(veg)) {
+    if (!missing(veg) && !is.null(veg)) {
         if (is.null(object$cveg)) {
             warning(sprintf("veg based estimates are unavailable for %s", object$species))
             Nveg <- NULL
@@ -279,11 +312,11 @@ function(object, xy, veg, soil, ...)
             if (nrow(veg) != nrow(coordinates(xy)))
                 stop("nrow(veg) must equal number of points in xy")
             .check(as.factor(colnames(veg)), names(object$cveg))
-            iveg <- extract(object$rveg, xy)
+            iveg <- extract(object$rveg, xy, method)
             imatv <- t(array(iveg, dim(veg), dimnames(veg)))
             mveg <- object$cveg[match(colnames(veg), names(object$cveg))]
             Nveg <- fi(t(mveg + imatv)) * veg
-            if (any(colnames(veg) == "SoftLin") && object$taxon == "birds") {
+            if (any(colnames(veg) == "SoftLin") && object$taxon == "birds" && object$version == "2017") {
                 warning("veg contained SoftLin: check your assumptions")
                 Nveg[,colnames(veg) == "SoftLin"] <- NA
             }
@@ -291,7 +324,7 @@ function(object, xy, veg, soil, ...)
     } else {
         Nveg <- NULL
     }
-    if (!missing(soil)) {
+    if (!missing(soil) && !is.null(soil)) {
         if (is.null(object$csoil)) {
             warning(sprintf("soil based estimates are unavailable for %s", object$species))
             Nsoil <- NULL
@@ -299,13 +332,14 @@ function(object, xy, veg, soil, ...)
             if (nrow(soil) != nrow(coordinates(xy)))
                 stop("nrow(veg) must equal number of points in xy")
             .check(as.factor(colnames(soil)), names(object$csoil))
-            isoil <- extract(object$rsoil, xy)
+            isoil <- extract(object$rsoil, xy, method)
+            ## pAspen here used as habitat covariate NOT as North weight
             rpa <- raster(system.file("extdata/pAspen.tif", package="cure4insect"))
-            ipa <- extract(rpa, xy)
+            ipa <- extract(rpa, xy, method)
             imats <- t(array(object$caspen * ipa + isoil, dim(soil), dimnames(soil)))
             msoil <- object$csoil[match(colnames(soil), names(object$csoil))]
             Nsoil <- fi(t(msoil + imats)) * soil
-            if (any(colnames(soil) == "SoftLin") && object$taxon == "birds") {
+            if (any(colnames(soil) == "SoftLin") && object$taxon == "birds" && object$version == "2017") {
                 warning("soil contained SoftLin: check your assumptions")
                 Nsoil[,colnames(soil) == "SoftLin"] <- NA
             }
@@ -330,7 +364,14 @@ function(object, xy, veg, soil, ...)
         "richness"="NC",
         "intactness"="SI")
     KT <- .c4if$KT
-    NC <- rowSums(y$SA.Curr)
+    ## handle non additivity of spclim component (sertor vs total)
+    if (getOption("cure4insect")$version != "2017" && y$taxon != "birds") {
+        NC <- y$Totals[,"Curr"]
+    } else {
+        NC <- rowSums(y$SA.Curr)
+    }
+    NC <- .truncate(NC)
+
     i <- match(rownames(KT), names(NC))
     KT$NC <- NC[i]
     #KT$NC[is.na(KT$NC)] <- -1
@@ -350,9 +391,12 @@ function(object, xy, veg, soil, ...)
 ## multi-species intactness and richness maps
 ## clip: apply spatial IDs to crop & mask
 ## limit: threshold for intactness average
+##        NOTE: limit is applied on the whole region
+##        and not by LUF x NSR (as required by BMF)
 make_multispecies_map <-
 function(type=c("richness", "intactness"),
-path=NULL, version=NULL, clip=TRUE, limit=NULL)
+path=NULL, version=NULL, clip=TRUE, limit=NULL,
+area="ha", pair_adj=2)
 {
     type <- match.arg(type)
     SPP <- rownames(.c4is$SPsub)
@@ -379,12 +423,12 @@ path=NULL, version=NULL, clip=TRUE, limit=NULL)
         r0 <- mask(r0, rmask)
     if (!KEEP[i] && type == "intactness") {
         r0[!is.na(values(r0))] <- 0
-        MSG <- sprintf("--- DOPPED (%.3f%s)", 100*LIM$mean / LIM$max, "%")
+        MSG <- sprintf("--- DROPPED (%.3f%s)", 100*LIM$mean / LIM$max, "% of limit")
     } else {
-        MSG <- sprintf("(%.1f%s)", 100*LIM$mean / LIM$max, "%")
+        MSG <- sprintf("(%.1f%s)", 100*LIM$mean / LIM$max, "% of limit")
     }
     if (type == "richness" && as.character(.c4is$SPsub[SPP[1L], "taxon"]) == "birds")
-            r0 <- p_bird(r0, area="ha", pair_adj=2)
+            r0 <- p_bird(r0, area=area, pair_adj=pair_adj)
     dt <- proc.time()[3] - t0
     cat(", elapsed:", getTimeAsString(dt), MSG, "\n")
     ETA <- (n - i) * dt / i
@@ -398,16 +442,16 @@ path=NULL, version=NULL, clip=TRUE, limit=NULL)
         LIM <- .calculate_limit(y, limit=limit)
         KEEP[i] <- LIM$keep
         if (!KEEP[i] && type == "intactness") {
-            MSG <- sprintf("--- DOPPED (%.3f%s)", 100*LIM$mean / LIM$max, "%")
+            MSG <- sprintf("--- DROPPED (%.3f%s)", 100*LIM$mean / LIM$max, "% of limit")
         } else {
             r <- .rasterize_multi(y, type, rt)
             if (clip)
                 r <- mask(r, rmask)
             if (type == "richness" &&
                 as.character(.c4is$SPsub[SPP[1L], "taxon"]) == "birds")
-                    r <- p_bird(r, area="ha", pair_adj=2)
+                    r <- p_bird(r, area=area, pair_adj=pair_adj)
             r0 <- r + r0
-            MSG <- sprintf("(%.1f%s)", 100*LIM$mean / LIM$max, "%")
+            MSG <- sprintf("(%.1f%s)", 100*LIM$mean / LIM$max, "% of limit")
         }
         dt <- proc.time()[3] - t0
         cat(", elapsed:", getTimeAsString(dt), MSG, "\n")

@@ -16,6 +16,7 @@
 \alias{.verbose}
 \alias{.select_id}
 \alias{p_bird}
+\alias{.truncate}
 \title{
 App Specific Functions and Internals
 }
@@ -28,22 +29,23 @@ used by users.
 app_read_csv(...)
 app_test(...)
 
-.load_species_data(species, boot=TRUE, path=NULL, version=NULL,
+.load_species_data(species, boot=NULL, path=NULL, version=NULL,
     taxon, model_north, model_south)
 .calculate_results(y, level=0.9, .c4is)
 .calculate_limit(y, limit=NULL)
-.report_all_by1(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
+.report_all_by1(boot=NULL, path=NULL, version=NULL, level=0.9, cores=NULL)
 .read_raster_template()
 .make_raster(value, rc, rt)
 .rasterize_multi(y, type=c("richness", "intactness"), rt)
 .verbose()
 .get_cores(cores=NULL)
 .check(x, ref)
-.combine_veg_soil(ipa, veg, soil)
+.combine_veg_soil(w, veg, soil)
 .validate_id(id, type=c("km", "qs"))
 .verbose()
 .select_id(mregion="both", nr=NULL, nsr=NULL, luf=NULL)
 p_bird(D, area=c("ha", "km"), pair_adj=2)
+.truncate(x, trunc=NULL)
 }
 \arguments{
   \item{species, boot, path, version}{arguments passed to
@@ -62,13 +64,15 @@ p_bird(D, area=c("ha", "km"), pair_adj=2)
   \item{type}{type of multi-species map (richness or intactness)
     or spatial ID (km or QS).}
   \item{limit}{abundance threshold for multi-species intactness reporting.}
-  \item{x, ref}{checking the validity of land cover classes in \code{x}
+  \item{x}{input object.}
+  \item{ref}{checking the validity of land cover classes in \code{x}
     against the \code{ref}erence list of possible values.}
-  \item{ipa, veg, soil}{calculates a weighted average of \code{veg}
-    and \code{soil} based models based on probability of aspen (\code{ipa}).}
+  \item{w, veg, soil}{calculates a weighted average of \code{veg}
+    and \code{soil} based models based on weights for the vegetation models (\code{w}).}
   \item{mregion, nr, nsr, luf}{regions.}
-  \item{D, area, pair_adj}{density, scale, and pair adjustment 
+  \item{D, area, pair_adj}{density, scale, and pair adjustment
     to turn bird densities into probability of observing non-zero count.}
+  \item{trunc}{quantile for truncating values of \code{x}, usually a vector or a raster object.}
   \item{\dots}{arguments passed to underlying functions.}
 }
 \details{

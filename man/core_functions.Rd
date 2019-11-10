@@ -50,17 +50,17 @@ clear_common_data()
 subset_common_data(id=NULL, species="all")
 clear_subset_data()
 
-load_species_data(species, boot=TRUE, path=NULL, version=NULL)
+load_species_data(species, boot=NULL, path=NULL, version=NULL)
 calculate_results(y, level=0.9)
 rasterize_results(y)
 
-report_all(boot=TRUE, path=NULL, version=NULL, level=0.9, cores=NULL)
+report_all(boot=NULL, path=NULL, version=NULL, level=0.9, cores=NULL)
 flatten(x, ...)
 \method{flatten}{c4iraw}(x, raw_boot=FALSE, limit=NULL, ...)
 
 custom_report(id=NULL, species="all",
     path=NULL, version=NULL, address=NULL,
-    boot=TRUE, level=0.9, cores=NULL,
+    boot=NULL, level=0.9, cores=NULL,
     raw_boot=FALSE, limit=NULL)
 custom_predict(species, xy, veg, soil,
     path=NULL, version=NULL, ...)
@@ -82,12 +82,15 @@ get_subset_species()
 
 load_spclim_data(species, path=NULL, version=NULL)
 get_levels()
-\method{predict}{c4ispclim}(object, xy, veg, soil, ...)
+\method{predict}{c4ispclim}(object, xy, veg, soil,
+    method="simple", ...)
 predict_mat(object, ...)
-\method{predict_mat}{c4ispclim}(object, xy, veg, soil, ...)
-combine_veg_soil(xy, veg, soil)
+\method{predict_mat}{c4ispclim}(object, xy, veg, soil,
+    method="simple",  ...)
+combine_veg_soil(xy, veg, soil, method="simple")
 make_multispecies_map(type=c("richness", "intactness"),
-    path=NULL, version=NULL, clip=TRUE, limit=NULL)
+    path=NULL, version=NULL, clip=TRUE, limit=NULL,
+    area="ha", pair_adj=2)
 }
 \arguments{
   \item{path}{
@@ -101,9 +104,9 @@ value of \code{getOption("cure4insect")$version}).
   \item{id}{
 character, IDs of the 1km x 1km spatial pixel units to be used for the custom summaries.
 The Row_Col field defines the IDs and links the raster cells in the geodatabase
-(\url{http://ftp.public.abmi.ca/species.abmi.ca/gis/Grid1km_working.gdb.zip})
+(\url{http://sc-dev.abmi.ca/reports/2017/grids/Grid1km_working.gdb.zip})
 or CSV
-(\url{http://ftp.public.abmi.ca/species.abmi.ca/gis/Grid1km_working.csv.zip};
+(\url{http://sc-dev.abmi.ca/reports/2017/grids/Grid1km_working.csv.zip};
 with latitude/longitude in NAD_1983_10TM_AEP_Forest projection
 \url{http://spatialreference.org/ref/epsg/3402/}).
 If \code{id} is a matrix-like object, values of the 1st column are taken.
@@ -114,13 +117,13 @@ Use \code{get_all_id} to see all possible values.
   \item{qsid}{
 character, quarter section (QS) IDs in the
 \code{"MER-RGE-TWP-SEC-QS"} format, e.g. \code{"4-12-1-2-SE"}.
-The CSV file \url{http://ftp.public.abmi.ca/species.abmi.ca/gis/Grid1km_working.csv.zip}
+The CSV file \url{http://sc-dev.abmi.ca/reports/2017/grids/Grid1km_working.csv.zip}
 has the corresponding coordinates in NAD_1983_10TM_AEP_Forest projection
 \url{http://spatialreference.org/ref/epsg/3402/}).
 }
   \item{species}{
 A list of species defined by the field SpeciesID in the table
-\url{http://ftp.public.abmi.ca/species.abmi.ca/reports/2017/data/species-info.csv}.
+\url{http://sc-dev.abmi.ca/reports/2017/data/species-info.csv}.
 If \code{species} is a matrix-like object, values of the 1st column are taken.
 The following values are also accepted to define groups of species:
 \code{"all"} (all groups/species),
@@ -130,7 +133,8 @@ or one of the taxonomic (\code{"birds"}, \code{"lichens"}, \code{"mammals"},
 For a combination of filters, see \code{get_all_species}.
 }
   \item{boot}{
-logical, if confidence intervals for abundance and intactness are desired.
+logical or \code{NULL}, if confidence intervals for abundance and intactness are desired.
+Defaults to \code{getOption("cure4insect")$boot} when \code{NULL}.
 }
   \item{level}{
 numeric, level for confidence interval, defaults to 90\%.
@@ -171,6 +175,12 @@ with geographic coordinates corresponding to \code{veg} and \code{soil}
 }
   \item{veg, soil}{
 factor, vegetation/soil classes. One of the two or both must be provided.
+Can be \code{NULL} or missing.
+}
+  \item{method}{
+character, the method argument for raster value \code{\link[raster]{extract}}ion.
+\code{"simple"}: values for the cell a point falls in,
+\code{"bilinear"}: interpolated from the values of the four nearest raster cells.
 }
   \item{taxon}{
 character, return \code{"all"} species, or a subset
@@ -205,6 +215,11 @@ character, the type of multi-species map to produce.
 \code{"richness"} is probability of >0 observation in a 1 ha plot
 summed across species (expected species richness).
 }
+  \item{area, pair_adj}{
+spatial scale (\code{"ha"} or \code{"km"}) and pair adjustment factor
+to turn bird densities into probability of observing non-zero count
+before calculating richness (sum of these probabilities).
+}
   \item{\dots}{
 Arguments in \code{tag = value} form, or a list of tagged values.
 The tags are configuration settings as described below.
@@ -217,9 +232,11 @@ Current options are:
 \code{path} (path to results),
 \code{version} (version of results),
 \code{verbose} (default is 1, value 0 suppresses the messages),
-\code{limit} (abundance threshold for regional intactness calculations),
 \code{cores} (number of cores to use in parallel calculations,
 uses forking on Linux/Unix/Mac and socket clusters on Windows, default is 1),
+\code{limit} (abundance threshold for regional intactness calculations),
+\code{boot} (bootstrap based uncertainties used or not),
+\code{trunc} (quantile for truncating rasterized maps to avoid outliers),
 \code{sender} (email of sender),
 \code{subject} (subject of the email),
 and \code{body} (body of the email).
@@ -299,9 +316,8 @@ All these require to run \code{load_common_data()} first.
 \code{load_spclim_data} is used to load raster data for spatially
 explicit predictions by \code{predict.c4ispclim}.
 \code{predict.c4ispclim} returns a data frame with columns
-'veg', 'soil', and 'comb' (combines 'veg' and 'soil' based on
-aspen probability of occurrence using \code{combine_veg_soil}
-as a weighted average based on probability of aspen occurrence).
+'veg', 'soil', and 'comb' (combines 'veg' and 'soil' using
+\code{combine_veg_soil} as a weighted average).
 Note: for some species, either the 'veg' or 'soil' based estimates are
 unavailable. \code{predict.c4ispclim} returns \code{NA} for these
 and the combined results will be \code{NA} as well.
@@ -315,7 +331,9 @@ depending on the \code{version} set through options or
 field \code{method}ology,
 base year and version of human footprint inventory (\code{hf}),
 version of the backfilled vegetation layer (\code{veg}),
-the type of model used (\code{model}).
+the type of model used (\code{model}),  and the number of
+\code{species} by taxon. \code{load_common_data} prints
+these info upon successfully loading common data objects.
 
 \code{get_levels} returns a list
 with elements 'veg' for vegetation and 'soil' for soil class levels

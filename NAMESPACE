@@ -51,7 +51,8 @@ export(
     .combine_veg_soil,
     .validate_id,
     .verbose,
-    .select_id)
+    .select_id,
+    .truncate)
 
 S3method(flatten, c4iraw)
 S3method(plot_sector, c4iraw)

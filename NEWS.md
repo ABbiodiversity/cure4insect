@@ -1,9 +1,11 @@
-# User visible changes in the cure4insect R extension package
+# Version 0.2-0 - 2019-10-24
 
-## Version 0.1-1 - May 16, 2018
+* Updates for Version 2018.
+
+# Version 0.1-1 - 2018-05-16
 
 * `plot_intactness` function added (#27).
 
-## Version 0.1-0 - April 4, 2018
+# Version 0.1-0 - 2018-04-04
 
 * Beta testing begins.

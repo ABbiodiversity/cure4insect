@@ -1,11 +1,11 @@
 ## this is a full report skeleton to be used as template
-#devtools::install_github("ABbiodiversity/cure4insect")
+#remotes::install_github("ABbiodiversity/cure4insect")
 
 ## load libraries
 library(mefa4)
 library(jsonlite)
 library(cure4insect)
-#opar <- set_options(path = "w:/reports")
+#opar <- set_options(path = "s:/reports")
 
 ## load common data
 load_common_data()
@@ -27,10 +27,12 @@ ply <- SpatialPolygons(list(Polygons(list(Polygon(xy)), "x")), 1L)
 proj4string(ply) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 id <- overlay_polygon(ply)
 #id <- get_all_id(mregion="north")
+#id <- get_all_id() # all AB
 
 ## specify species subset
 #species <- c("AlderFlycatcher", "Achillea.millefolium") # 2 species
 #species <- get_all_species("birds") # all birds
+#species <- get_all_species("mammals") # all mammals
 set.seed(234);species <- sample(get_all_species(), 10) # 10 random species
 ## 33 OF birds
 #species <- c("BaltimoreOriole", "BaybreastedWarbler", "BlackpollWarbler",
@@ -284,7 +286,15 @@ for (i in seq_along(species)) {
     KEEP[i] <- z$Keep
 
     ## use object regs to evaluate in/out by smaller regions
-    DAT <- cbind(NR=rowSums(y$SA.Ref), NC=rowSums(y$SA.Curr))
+    if (getOption("cure4insect")$version != "2017" && y$taxon != "birds") {
+        DAT <- cbind(
+            NR=.truncate(y$Totals[,"Ref"]),
+            NC=.truncate(y$Totals[,"Curr"]))
+    } else {
+        DAT <- cbind(
+            NR=.truncate(rowSums(y$SA.Ref)),
+            NC=.truncate(rowSums(y$SA.Curr)))
+    }
     DAT <- DAT[match(rownames(TAB), rownames(DAT)),]
     DAT[is.na(DAT)] <- 0
     MEAN <- apply(groupMeans(DAT, 1, regs), 1, max)
@@ -312,6 +322,7 @@ for (i in seq_along(species)) {
         }
     }
     ## finishing richness raster
+    ## change scale and pair adjustment here as needed
     if (is.null(r_ri)) {
         r_ri <- rreg[["NC"]]
         r_ri[is.na(r_ri)] <- 0
