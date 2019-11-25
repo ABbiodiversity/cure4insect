@@ -120,6 +120,7 @@ function(species, path=NULL, version=NULL)
     if (!is_loaded())
         stop("common data needed: use load_common_data")
     opts <- getOption("cure4insect")
+    ROADCOEF <- (-Inf)
     if (is.null(path))
         path <- opts$path
     if (is.null(version))
@@ -132,7 +133,7 @@ function(species, path=NULL, version=NULL)
             cveg <- .c4if$CFbirds$joint$veg[species,] # log scale
             if (version == "2017")
                 cveg["SoftLin"] <- log(mean(exp(cveg[c("Shrub", "GrassHerb")])))
-            cveg["HardLin"] <- -10
+            cveg["HardLin"] <- ROADCOEF
         } else {
             cveg <- NULL
         }
@@ -140,7 +141,7 @@ function(species, path=NULL, version=NULL)
             csoil <- .c4if$CFbirds$joint$soil[species,] # log scale
             if (version == "2017")
                 csoil["SoftLin"] <- log(mean(exp(csoil), na.rm=TRUE)) # SoftLin is NA
-            csoil["HardLin"] <- -10
+            csoil["HardLin"] <- ROADCOEF
             caspen <- .c4if$CFbirds$joint$paspen[species,]
         } else {
             csoil <- NULL
