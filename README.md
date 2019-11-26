@@ -29,16 +29,14 @@ The estimates, predictions, and related documentation are © ABMI and BAM
 license](http://creativecommons.org/licenses/by-sa/4.0/).
 
 The R package itself is licensed under [MIT license](LICENSE.md) © 2018
-Peter Solymos, Brandon Allen, Ermias T. Azeria, Shannon R. White, ABMI & BAM.
+Peter Solymos, Brandon Allen, Ermias T. Azeria, Shannon R. White, ABMI &
+BAM.
 
-Feedback
---------
+Getting help or reporting an issue
+----------------------------------
 
-If you have problems with using the package or have ideas for new features and improvements, please do the following:
-
-1. check if the [issue](https://github.com/ABbiodiversity/cure4insect/issues) already exists,
-2. leave a comment if it exists, or open a [new issue](https://github.com/ABbiodiversity/cure4insect/issues/new) otherwise.
-
+To report bugs/issues/feature requests, please file an
+[issue](https://github.com/ABbiodiversity/cure4insect/issues).
 
 How to contribute
 -----------------
@@ -59,6 +57,13 @@ Only GitHub version available now:
 remotes::install_github("ABbiodiversity/cure4insect")
 ```
 
+If it fails for some reason, you can try:
+
+``` r
+drat::addRepo("ABbiodiversity")
+install.packages("cure4insect")
+```
+
 The [NEWS](NEWS.md) file lists user visible changes in the different
 versions.
 
@@ -69,9 +74,6 @@ Load the package and the common data set:
 
 ``` r
 library(cure4insect)
-## Loading required package: sp
-## Loading required package: raster
-## cure4insect 0.1-2     2019-07-14
 load_common_data()
 ## loading common data
 ##         version yr_first yr_last        method     hf  veg          model

@@ -7,7 +7,9 @@ output:
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  fig.path = "README-"
+  fig.path = "README-",
+  message = FALSE,
+  warning = FALSE
 )
 ```
 
@@ -55,6 +57,13 @@ Only GitHub version available now:
 
 ```{r eval=FALSE}
 remotes::install_github("ABbiodiversity/cure4insect")
+```
+
+If it fails for some reason, you can try:
+
+```{r eval=FALSE}
+drat::addRepo("ABbiodiversity")
+install.packages("cure4insect")
 ```
 
 The [NEWS](NEWS.md) file lists user visible changes in the different versions.
