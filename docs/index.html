@@ -248,20 +248,24 @@
 <h4 class="hasAnchor">
 <a href="#sector-effects-and-intactness-plots" class="anchor"></a>Sector effects and intactness plots</h4>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="co">## *res*ults from calculate_results, all province, all species</span></a>
-<a class="sourceLine" id="cb14-2" title="2"><span class="kw"><a href="https://rdrr.io/r/base/load.html">load</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/raw_all.rda"</span>, <span class="dt">package=</span><span class="st">"cure4insect"</span>))</a>
-<a class="sourceLine" id="cb14-3" title="3"></a>
-<a class="sourceLine" id="cb14-4" title="4"><span class="kw"><a href="reference/plots.html">plot_sector</a></span>(res[[<span class="st">"CanadaWarbler"</span>]], <span class="st">"unit"</span>)</a>
-<a class="sourceLine" id="cb14-5" title="5"><span class="kw"><a href="reference/plots.html">plot_sector</a></span>(res[[<span class="st">"CanadaWarbler"</span>]], <span class="st">"regional"</span>)</a>
-<a class="sourceLine" id="cb14-6" title="6"><span class="kw"><a href="reference/plots.html">plot_sector</a></span>(res[[<span class="st">"CanadaWarbler"</span>]], <span class="st">"underhf"</span>)</a>
+<a class="sourceLine" id="cb14-2" title="2">fn &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"http://sc-dev.abmi.ca/reports/"</span>,</a>
+<a class="sourceLine" id="cb14-3" title="3">    <span class="kw"><a href="https://rdrr.io/r/base/options.html">getOption</a></span>(<span class="st">"cure4insect"</span>)<span class="op">$</span>version, <span class="st">"/misc/raw_all.rda"</span>)</a>
+<a class="sourceLine" id="cb14-4" title="4">con &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/connections.html">url</a></span>(fn)</a>
+<a class="sourceLine" id="cb14-5" title="5"><span class="kw"><a href="https://rdrr.io/r/base/load.html">load</a></span>(con)</a>
+<a class="sourceLine" id="cb14-6" title="6"><span class="kw"><a href="https://rdrr.io/r/base/connections.html">close</a></span>(con)</a>
 <a class="sourceLine" id="cb14-7" title="7"></a>
-<a class="sourceLine" id="cb14-8" title="8">z &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(rbind, <span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(res, flatten))</a>
-<a class="sourceLine" id="cb14-9" title="9"><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(z) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"c4idf"</span>, <span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(z))</a>
-<a class="sourceLine" id="cb14-10" title="10"><span class="kw"><a href="reference/plots.html">plot_sector</a></span>(z, <span class="st">"unit"</span>) <span class="co"># all species</span></a>
-<a class="sourceLine" id="cb14-11" title="11"><span class="kw"><a href="reference/plots.html">plot_sector</a></span>(z[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>,], <span class="st">"regional"</span>) <span class="co"># use a subset</span></a>
-<a class="sourceLine" id="cb14-12" title="12"><span class="kw"><a href="reference/plots.html">plot_sector</a></span>(z, <span class="st">"underhf"</span>, <span class="dt">method=</span><span class="st">"hist"</span>) <span class="co"># binned version</span></a>
-<a class="sourceLine" id="cb14-13" title="13"></a>
-<a class="sourceLine" id="cb14-14" title="14"><span class="kw"><a href="reference/plots.html">plot_intactness</a></span>(z, <span class="st">"SI"</span>)</a>
-<a class="sourceLine" id="cb14-15" title="15"><span class="kw"><a href="reference/plots.html">plot_intactness</a></span>(z, <span class="st">"SI2"</span>, <span class="dt">method=</span><span class="st">"hist"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb14-8" title="8"><span class="kw"><a href="reference/plots.html">plot_sector</a></span>(res[[<span class="st">"CanadaWarbler"</span>]], <span class="st">"unit"</span>)</a>
+<a class="sourceLine" id="cb14-9" title="9"><span class="kw"><a href="reference/plots.html">plot_sector</a></span>(res[[<span class="st">"CanadaWarbler"</span>]], <span class="st">"regional"</span>)</a>
+<a class="sourceLine" id="cb14-10" title="10"><span class="kw"><a href="reference/plots.html">plot_sector</a></span>(res[[<span class="st">"CanadaWarbler"</span>]], <span class="st">"underhf"</span>)</a>
+<a class="sourceLine" id="cb14-11" title="11"></a>
+<a class="sourceLine" id="cb14-12" title="12">z &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(rbind, <span class="kw"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span>(res, flatten))</a>
+<a class="sourceLine" id="cb14-13" title="13"><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(z) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"c4idf"</span>, <span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(z))</a>
+<a class="sourceLine" id="cb14-14" title="14"><span class="kw"><a href="reference/plots.html">plot_sector</a></span>(z, <span class="st">"unit"</span>) <span class="co"># all species</span></a>
+<a class="sourceLine" id="cb14-15" title="15"><span class="kw"><a href="reference/plots.html">plot_sector</a></span>(z[<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>,], <span class="st">"regional"</span>) <span class="co"># use a subset</span></a>
+<a class="sourceLine" id="cb14-16" title="16"><span class="kw"><a href="reference/plots.html">plot_sector</a></span>(z, <span class="st">"underhf"</span>, <span class="dt">method=</span><span class="st">"hist"</span>) <span class="co"># binned version</span></a>
+<a class="sourceLine" id="cb14-17" title="17"></a>
+<a class="sourceLine" id="cb14-18" title="18"><span class="kw"><a href="reference/plots.html">plot_intactness</a></span>(z, <span class="st">"SI"</span>)</a>
+<a class="sourceLine" id="cb14-19" title="19"><span class="kw"><a href="reference/plots.html">plot_intactness</a></span>(z, <span class="st">"SI2"</span>, <span class="dt">method=</span><span class="st">"hist"</span>)</a></code></pre></div>
 </div>
 <div id="determining-spatial-ids-based-on-spatial-polygons" class="section level4">
 <h4 class="hasAnchor">
