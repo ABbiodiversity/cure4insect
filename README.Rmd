@@ -222,7 +222,11 @@ as.list(drop(read.dcf(file=system.file("config/defaults.conf",
 
 ```{r eval=FALSE}
 ## *res*ults from calculate_results, all province, all species
-load(system.file("extdata/raw_all.rda", package="cure4insect"))
+fn <- paste0("http://sc-dev.abmi.ca/reports/",
+    getOption("cure4insect")$version, "/misc/raw_all.rda")
+con <- url(fn)
+load(con)
+close(con)
 
 plot_sector(res[["CanadaWarbler"]], "unit")
 plot_sector(res[["CanadaWarbler"]], "regional")

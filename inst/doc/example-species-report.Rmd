@@ -109,7 +109,13 @@ y <- load_species_data(species)
 r <- rasterize_results(y)
 subset_common_data(id=NULL, species=species)
 x <- calculate_results(y)
-load(system.file("extdata/raw_all.rda", package="cure4insect"))
+
+fn <- paste0("http://sc-dev.abmi.ca/reports/",
+    getOption("cure4insect")$version, "/misc/raw_all.rda")
+con <- url(fn)
+load(con)
+close(con)
+
 z <- do.call(rbind, lapply(res, flatten))
 class(z) <- c("c4idf", class(z))
 ```
