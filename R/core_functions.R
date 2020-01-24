@@ -68,12 +68,7 @@ function(path=NULL, version=NULL)
 ## make a subset
 clear_subset_data <- function()
     rm(list=ls(envir=.c4is), envir=.c4is)
-subset_common_data <-
-function(id=NULL, species="all")
-{
-    if (!is_loaded())
-        stop("common data needed: use load_common_data")
-
+.species_set <- function(species) {
     if (!is.null(dim(species))) # if provided as table, use 1st col
         species <- as.character(species[,1L])
     vals <- c("all","birds","lichens","mammals","mites","mosses","vplants",
@@ -96,6 +91,16 @@ function(id=NULL, species="all")
     SPPfull <- rownames(x)[rownames(x) %in% SPPfull]
     if (length(SPPfull) <= 0)
         stop("no species selected")
+    SPPfull
+}
+subset_common_data <-
+function(id=NULL, species="all")
+{
+    if (!is_loaded())
+        stop("common data needed: use load_common_data")
+
+    x <- .c4if$SP
+    SPPfull <- .species_set(species)
 
     if (is.null(id))
         id <- rownames(.c4if$KT)
@@ -555,4 +560,53 @@ p_bird <- function(D, area=c("ha", "km"), pair_adj=2) {
         "km" = 100,
         "ha" = 1)
     1 - exp(-D * A * pair_adj)
+}
+
+## make a local copy of files
+## need common data 1st
+dowload_data <- function(dir, species="all", version=NULL, ...) {
+    ## note: this is hard coded!
+    path <- "http://sc-dev.abmi.ca/reports"
+    if (!is_loaded())
+        stop("common data needed: use load_common_data")
+    if (is.null(version))
+        version <- opts$version
+    spplist <- .species_set(species)
+    SP <- .c4if$SP[spplist,,drop=FALSE]
+    if (!dir.exists(file.path(dir)))
+        stop(sprintf("%s directory does not exist", dir))
+    if (!dir.exists(file.path(dir, version)))
+        dir.create(file.path(dir, version))
+    if (!dir.exists(file.path(dir, version, "data")))
+        dir.create(file.path(dir, version, "data"))
+    if (!dir.exists(file.path(dir, version, "results")))
+        dir.create(file.path(dir, version, "results"))
+    .get <- function(din, dou, fn, ...) {
+        if (!file.exists(file.path(dou, fn)))
+            download.file(
+                url=file.path(din, fn),
+                destfile=file.path(dou, fn), ...)
+        invisible(TRUE)
+    }
+    .getspp <- function(spp, ...) {
+        taxon <- as.character(SP[spp, "taxon"])
+        if (!dir.exists(file.path(dir, version, "results", taxon)))
+            dir.create(file.path(dir, version, "results", taxon))
+        for (i in c("boot", "sector", "spclim")) {
+        if (!dir.exists(file.path(dir, version, "results", taxon, i)))
+            dir.create(file.path(dir, version, "results", taxon, i))
+            .get(file.path(path, version, "results", taxon, i),
+                file.path(dir, version, "results", taxon, i),
+                paste0(spp, ".RData"), ...)
+        }
+        invisible(TRUE)
+    }
+    ## common data
+    out <- .get(file.path(path, version, "data"),
+        file.path(dir, version, "data"),
+        "kgrid_areas_by_sector.RData", ...)
+    for (spp in spplist) {
+        .getspp(spp, ...)
+    }
+    invisible(NULL)
 }
