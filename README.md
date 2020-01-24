@@ -92,6 +92,9 @@ load_common_data()
 ## vplants     442
 ```
 
+Note: it is possible to download the data the package is using to your
+hard drive using the `dowload_data` function.
+
 #### Workflow with 1 species
 
 `id` is a vector of `Row_Col` type IDs of 1 km<sup>2</sup> pixels,
