@@ -1,3 +1,7 @@
+# Version 0.2-1 - 2020-01-24
+
+* Added `dowload_data` function to make a local copy of data.
+
 # Version 0.2-0 - 2019-10-24
 
 * Updates for Version 2018.

@@ -35,6 +35,7 @@
 \alias{get_subset_id}
 \alias{get_subset_species}
 \alias{get_id_table}
+\alias{dowload_data}
 \title{
 Core Functions for Custom Reporting
 }
@@ -79,6 +80,8 @@ make_subset_map()
 get_subset_info()
 get_subset_id()
 get_subset_species()
+
+dowload_data(dir, species="all", version=NULL, ...)
 
 load_spclim_data(species, path=NULL, version=NULL)
 get_levels()
@@ -220,9 +223,14 @@ spatial scale (\code{"ha"} or \code{"km"}) and pair adjustment factor
 to turn bird densities into probability of observing non-zero count
 before calculating richness (sum of these probabilities).
 }
+  \item{dir}{
+Character, a directory name to download the data to.
+}
   \item{\dots}{
 Arguments in \code{tag = value} form, or a list of tagged values.
 The tags are configuration settings as described below.
+For the \code{dowload_data} function, these arguments are
+passed to \code{\link{download.file}}
 }
 }
 \details{
@@ -300,6 +308,10 @@ mean abundance in the subset region is at least 100 * \code{limit}
 percent of the provincial maximum abundance).
 
 \code{set_options} sets the options and return previous values invisibly.
+\code{dowload_data} downloads the data to the hard drive so that it can
+be used later. Set the path in the file
+\code{system.file("config/defaults.conf", package="cure4insect")}
+to have permanent effect, or in each session using \code{set_options}.
 
 \code{get_all_id} gets all possible spatial IDs.
 \code{get_all_species} gets \code{"all"} possible species IDs,
