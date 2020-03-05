@@ -9,6 +9,20 @@ addons:
       - libgdal-dev
       - libproj-dev
 
+r_packages:
+  - covr
+  - pkgdown
+  - rcmdcheck
+
 r:
   - release
   - devel
+
+before_script:
+  - chmod +x ./_build.sh
+
+script:
+  - ./_build.sh
+
+after_success:
+  - Rscript -e 'library(covr);codecov()'

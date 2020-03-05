@@ -17,3 +17,4 @@ appveyor.yml
 ^pkgdown$
 ^extras$
 ^abundance\.gif$
+^_build\.sh$
