@@ -33,9 +33,9 @@ dev.off()
 img1 <- image_read("_nr.png")
 img2 <- image_read("_nc.png")
 
-img3 <- image_animate(image_morph(c(img1, img2, img1), 10), 20)
+img3 <- image_animate(image_morph(c(img1, img2, img1), 15), 10)
 
-image_write_gif(img3, "abundance.gif")
+image_write(img3, "abundance.gif")
 unlink("_nr.png")
 unlink("_nc.png")
 
