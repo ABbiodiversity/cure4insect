@@ -322,7 +322,9 @@ gets the lookup table for species, or a group of species as defined by the
 \code{taxon} argument.
 \code{get_all_qsid} gets all possible quarter section (QS) IDs,
 \code{qs2km} finds the 1 square km units corresponding to the
-quarter section IDs.
+quarter section IDs. QS IDs are composed as \code{"MER-RGE-TWP-SEC-QS"}
+(Meridian [4-6], Range[1-30], Township[1-127], Section[1-36],
+and Quarter Section [NE, NW, SE, SW]), e.g. \code{"4-12-1-2-SE"}.
 All these require to run \code{load_common_data()} first.
 
 \code{load_spclim_data} is used to load raster data for spatially
