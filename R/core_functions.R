@@ -565,8 +565,10 @@ p_bird <- function(D, area=c("ha", "km"), pair_adj=2) {
 ## make a local copy of files
 ## need common data 1st
 dowload_data <- function(dir, species="all", version=NULL, ...) {
-    ## note: this is hard coded!
-    path <- "http://sc-dev.abmi.ca/reports"
+    opts <- getOption("cure4insect")
+    path <- as.list(drop(read.dcf(
+        file=system.file("config/defaults.conf",
+        package="cure4insect"))))$path
     if (!is_loaded())
         stop("common data needed: use load_common_data")
     if (is.null(version))
