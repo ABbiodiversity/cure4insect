@@ -1,3 +1,7 @@
+# Version 0.2-2 - 2020-11-03
+
+* Updated path to https://science.abmi.ca/results/reports.
+
 # Version 0.2-1 - 2020-01-24
 
 * Added `dowload_data` function to make a local copy of data.
