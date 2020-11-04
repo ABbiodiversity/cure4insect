@@ -50,7 +50,7 @@ function(path=NULL, version=NULL)
         if (is.null(version))
             version <- opts$version
         fn <- file.path(path, version, "data", "kgrid_areas_by_sector.RData")
-        if (!startsWith(path, "http://")) {
+        if (!startsWith(path, "https://")) {
             load(fn, envir=.c4if)
         } else {
             con <- url(fn)
@@ -199,7 +199,7 @@ taxon, model_north, model_south)
     assign("boot", boot, envir=y)
     fn1 <- file.path(path, version, "results", taxon, "sector", paste0(species, ".RData"))
     fn2 <- file.path(path, version, "results", taxon, "boot", paste0(species, ".RData"))
-    if (!startsWith(path, "http://")) {
+    if (!startsWith(path, "https://")) {
         load(fn1, envir=y)
         if (boot)
             load(fn2, envir=y)

@@ -172,7 +172,7 @@ function(species, path=NULL, version=NULL)
     assign("csoil", csoil, envir=y)
     assign("caspen", caspen, envir=y)
     fn <- file.path(path, version, "results", taxon, "spclim", paste0(species, ".RData"))
-    if (!startsWith(path, "http://")) {
+    if (!startsWith(path, "https://")) {
         load(fn, envir=y)
     } else {
         con <- url(fn)
