@@ -19,7 +19,7 @@ Project](http://www.borealbirds.ca/).
     report](https://abbiodiversity.github.io/cure4insect/example/)
 -   [Custom report](https://abbiodiversity.github.io/cure4insect/site/)
 -   [Web
-    app](http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/)
+    app](http://science.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/)
 
 License
 -------
@@ -240,7 +240,7 @@ as.list(drop(read.dcf(file=system.file("config/defaults.conf",
 
 ``` r
 ## *res*ults from calculate_results, all province, all species
-fn <- paste0("http://sc-dev.abmi.ca/reports/",
+fn <- paste0("http://science.abmi.ca/reports/",
     getOption("cure4insect")$version, "/misc/raw_all.rda")
 con <- url(fn)
 load(con)
@@ -277,15 +277,15 @@ xx2 <- report_all()
 Spatial IDs of the 1 km<sup>2</sup> spatial pixel units are to be used
 for the custom summaries. The `Row_Col` field defines the IDs and links
 the raster cells to the
-[geodatabase](http://sc-dev.abmi.ca/reports/2017/grids/Grid1km_working.gdb.zip)
+[geodatabase](http://science.abmi.ca/reports/2017/grids/Grid1km_working.gdb.zip)
 or
-[CSV](http://sc-dev.abmi.ca/reports/2017/grids/Grid1km_working.csv.zip%7D)
+[CSV](http://science.abmi.ca/reports/2017/grids/Grid1km_working.csv.zip%7D)
 (with latitude/longitude in
 [NAD\_1983\_10TM\_AEP\_Forest](http://spatialreference.org/ref/epsg/3402/)
 projection).
 
 For the [web
-application](http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/),
+application](http://science.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/),
 use your favourite GIS software, or in R use this to get the spatial IDs
 written into a text file:
 
@@ -481,7 +481,7 @@ render(system.file("doc/example-species-report.Rmd",
 ```
 
 Habitat associations as shown on the
-[sc-dev.abmi.ca](http://sc-dev.abmi.ca/) website:
+[science.abmi.ca](http://science.abmi.ca/) website:
 
 ``` r
 load_common_data()
@@ -495,14 +495,14 @@ Web API
 -------
 
 The web app sits
-[here](http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/).
+[here](http://science.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/www/).
 To get more control over the results, use the
 [API](https://www.opencpu.org/api.html#api-formats).
 
 Make a request using the `custom_report` function:
 
 ``` shell
-curl http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/R/custom_report/csv \
+curl http://science.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/R/custom_report/csv \
 -H "Content-Type: application/json" -d \
 '{"id":["182_362", "182_363"], "species":["AlderFlycatcher", "Achillea.millefolium"]}'
 ```
@@ -511,7 +511,7 @@ Access spatially explicit and land cover specific prediction for a
 species using the `custom_predict` function:
 
 ``` shell
-curl http://sc-dev.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/R/custom_predict/json \
+curl http://science.abmi.ca/ocpu/apps/ABbiodiversity/cure4insect/R/custom_predict/json \
 -H "Content-Type: application/json" -d \
 '{"species":"AlderFlycatcher", "xy":[[-114.4493,58.4651]], "veg":"Mixedwood80"}'
 ```

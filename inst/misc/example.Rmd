@@ -109,7 +109,7 @@ r <- rasterize_results(y)
 subset_common_data(id=NULL, species=species)
 x <- calculate_results(y)
 
-fn <- paste0("http://sc-dev.abmi.ca/reports/",
+fn <- paste0("http://science.abmi.ca/reports/",
     getOption("cure4insect")$version, "/misc/raw_all.rda")
 con <- url(fn)
 load(con)

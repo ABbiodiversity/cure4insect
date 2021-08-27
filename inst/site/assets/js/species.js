@@ -1,7 +1,6 @@
-$(document).ready(function(){
-
+$(document).ready(function () {
   // data based rendering
-  $("#title").html(data[0].display + ' &ndash; ' + data[0].tnice);
+  $("#title").html(data[0].display + " &ndash; " + data[0].tnice);
   if (data[0].Keep === true) {
     $("#tag-si").addClass("is-success");
     var SI = Math.round(data[0].SI_Est);
@@ -10,7 +9,7 @@ $(document).ready(function(){
     } else {
       var arrow = '<span class="icon"><i class="fa fa-arrow-down"></i></span>';
     }
-    $("#tag-si").html('<span>' + SI + '%</span> ' + arrow);
+    $("#tag-si").html("<span>" + SI + "%</span> " + arrow);
     if (SI > 90) {
       $("#tag-si").addClass("is-success");
     } else {
@@ -47,7 +46,10 @@ $(document).ready(function(){
     $("#message").text(data[0].Comments);
   }
 
-  $("#sppweb").attr("href", "http://sc-dev.abmi.ca/" + data[0].Taxon + '/' + data[0].SpeciesID + '/');
+  $("#sppweb").attr(
+    "href",
+    "http://science.abmi.ca/" + data[0].Taxon + "/" + data[0].SpeciesID + "/"
+  );
 
   var spp = link.indexOf(data[0].SpeciesID);
   if (spp < 1) {
@@ -55,7 +57,7 @@ $(document).ready(function(){
     $("#spp-next").attr("href", "../" + link[spp + 1] + "/index.html");
     console.log("prev disabled");
   } else {
-    if (spp > link.length-2) {
+    if (spp > link.length - 2) {
       $("#spp-previous").attr("href", "../" + link[spp - 1] + "/index.html");
       $("#spp-next").attr("disabled", true);
       console.log("next disabled");
@@ -65,5 +67,4 @@ $(document).ready(function(){
       console.log("both enabled");
     }
   }
-
 });

@@ -1,184 +1,289 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ABMI Custom Reporting: Documentation</title>
-  <link rel="stylesheet" type="text/css" href="../assets/css/fontawesome-all.min.css" />
-  <link rel="stylesheet" type="text/css" href="../assets/css/bulma.min.css" />
-  <link rel="stylesheet" type="text/css" href="../assets/css/custom.css" />
-  <link rel="shortcut icon" href="../favicon.ico">
-</head>
-<body>
-
-  <section class="hero is-primary is-bold is-small">
-    <div class="hero-head">
-      <nav class="navbar">
-        <div class="container">
-          <div class="navbar-brand">
-            <a class="navbar-item" href="http://abmi.ca" target=_blank>
-              <img src="../assets/images/abmi-logo-white.png" alt="ABMI">
-            </a>
-            <span class="navbar-burger burger" data-target="navMenu">
-              <span></span>
-              <span></span>
-              <span></span>
-            </span>
-          </div>
-          <div id="navMenu" class="navbar-menu">
-            <div class="navbar-end">
-              <a class="navbar-item" href="../index.html">
-                Home
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ABMI Custom Reporting: Documentation</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../assets/css/fontawesome-all.min.css"
+    />
+    <link rel="stylesheet" type="text/css" href="../assets/css/bulma.min.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/css/custom.css" />
+    <link rel="shortcut icon" href="../favicon.ico" />
+  </head>
+  <body>
+    <section class="hero is-primary is-bold is-small">
+      <div class="hero-head">
+        <nav class="navbar">
+          <div class="container">
+            <div class="navbar-brand">
+              <a class="navbar-item" href="http://abmi.ca" target="_blank">
+                <img src="../assets/images/abmi-logo-white.png" alt="ABMI" />
               </a>
-              <a class="navbar-item" href="../report/index.html">
-                Report
-              </a>
-              <a class="navbar-item" href="../species/index.html">
-                Species
-              </a>
-              <a class="navbar-item" href="../settings/index.html">
-                Settings
-              </a>
-              <a class="navbar-item is-active">
-                Docs
-              </a>
+              <span class="navbar-burger burger" data-target="navMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
+            </div>
+            <div id="navMenu" class="navbar-menu">
+              <div class="navbar-end">
+                <a class="navbar-item" href="../index.html"> Home </a>
+                <a class="navbar-item" href="../report/index.html"> Report </a>
+                <a class="navbar-item" href="../species/index.html">
+                  Species
+                </a>
+                <a class="navbar-item" href="../settings/index.html">
+                  Settings
+                </a>
+                <a class="navbar-item is-active"> Docs </a>
+              </div>
             </div>
           </div>
+        </nav>
+      </div>
+      <div class="hero-body">
+        <div class="container has-text-centered">
+          <h1 class="title">Documentation</h1>
         </div>
-      </nav>
-    </div>
-    <div class="hero-body">
-      <div class="container has-text-centered">
-        <h1 class="title">
-          Documentation
-        </h1>
       </div>
-    </div>
-  </section>
+    </section>
 
+    <div class="container">
+      <div class="columns">
+        <!-- START SIDEBAR -->
+        <div class="column is-3 is-offset-1">
+          <aside class="menu">
+            <p class="menu-label">Analyses</p>
+            <ul class="menu-list">
+              <li>
+                <a href="#data">Data</a>
+                <a href="#models">Models</a>
+                <ul>
+                  <li><a href="#models-landcover">Land cover</a></li>
+                  <li><a href="#models-spatial">Space & climate</a></li>
+                </ul>
+                <a href="#prediction">Prediction</a>
+              </li>
+            </ul>
+            <p class="menu-label">Summaries</p>
+            <ul class="menu-list">
+              <li>
+                <a href="#maps">Maps</a>
+                <ul>
+                  <li><a href="#maps-abundance">Relative abundance</a></li>
+                  <li><a href="#maps-intactness">Intactness</a></li>
+                  <li><a href="#maps-richness">Species richness</a></li>
+                  <li><a href="#maps-uncertainty">Uncertainty</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="#sector">Sector effects</a>
+                <ul>
+                  <li><a href="#sector-total">Regional effects</a></li>
+                  <li><a href="#sector-underhf">Under footprint</a></li>
+                  <li><a href="#sector-unit">Per unit area effects</a></li>
+                </ul>
+              </li>
+            </ul>
+          </aside>
+        </div>
+        <!-- END SIDEBAR -->
 
-  <div class="container">
-    <div class="columns">
+        <!-- START CONTENT -->
+        <div class="column is-7">
+          <section>
+            <h2 class="title" id="intro">Introduction</h2>
+            <p>
+              This custom report represents a summary based on user-defined
+              subsets of species and spatial prediction units, and the model
+              results presented at
+              <a href="http://science.abmi.ca" target="_blank"
+                >science.abmi.ca</a
+              >. The model outputs and predictions were summarized with
+              <a
+                href="https://github.com/ABbiodiversity/cure4insect#readme"
+                target="_blank"
+                >cure4insect</a
+              >
+              <a href="https://www.r-project.org/">R</a> package (see
+              <a href="../settings/index.html">Settings</a>).
+            </p>
+          </section>
 
-      <!-- START SIDEBAR -->
-      <div class="column is-3 is-offset-1">
-        <aside class="menu">
-          <p class="menu-label">Analyses</p>
-          <ul class="menu-list">
-            <li>
-              <a href="#data">Data</a>
-              <a href="#models">Models</a>
-              <ul>
-                <li><a href="#models-landcover">Land cover</a></li>
-                <li><a href="#models-spatial">Space & climate</a></li>
-              </ul>
-              <a href="#prediction">Prediction</a>
-            </li>
-          </ul>
-          <p class="menu-label">Summaries</p>
-          <ul class="menu-list">
-            <li>
-              <a href="#maps">Maps</a>
-              <ul>
-                <li><a href="#maps-abundance">Relative abundance</a></li>
-                <li><a href="#maps-intactness">Intactness</a></li>
-                <li><a href="#maps-richness">Species richness</a></li>
-                <li><a href="#maps-uncertainty">Uncertainty</a></li>
-              </ul>
-            </li>
-            <li>
-              <a href="#sector">Sector effects</a>
-              <ul>
-                <li><a href="#sector-total">Regional effects</a></li>
-                <li><a href="#sector-underhf">Under footprint</a></li>
-                <li><a href="#sector-unit">Per unit area effects</a></li>
-              </ul>
-            </li>
-          </ul>
+          <section>
+            <h2 class="title" id="data">Data</h2>
+            <p>
+              Field data collected by the ABMI were used alongside with data
+              collected and maintained by other organizations and individuals.
+            </p>
+          </section>
 
-        </aside>
-      </div>
-      <!-- END SIDEBAR -->
+          <section>
+            <h2 class="title" id="models">Models</h2>
+            <p>
+              A set of statistical models were used to relate the relative
+              abundance of each species to land cover and space/climate
+              variables. Analyses were done separately for two overlapping
+              regions: <em>North</em> (boreal, foothills, Canadian shield,
+              parkland), and <em>South</em> (grasslands, parkland, dry mixedwood
+              subregion of the boreal).
+            </p>
+            <h2 class="subtitle" id="models-landcover">Land cover</h2>
+            <p>
+              Land cover types in the <em>North</em> region included main forest
+              stand types (white spruce, pine, deciduous, mixedwood, black
+              spruce) by broad age classes (0-9 years, 10-19 years, then 20-year
+              classes to 140+ years) and categories of open vegetation (upland
+              grass, upland shrub, treed fens, other treed wetlands, and
+              non-treed wetlands). In the <em>South</em>, land cover types were
+              broad ecosite (soil) types, such as productive, clay, saline, and
+              rapid drained. The South models also included a term for the
+              probability that the site is or was naturally treed. The
+              <em>human footprint</em> classes used both in the North and South
+              included Alienating (cultivation, urban-industrial, and hard
+              (unvegetated) linear features) and Successional disturbances (soft
+              (vegetated) linear features, and forestry which is differentiated
+              by broad stand type and the same age classes as natural forest.
+            </p>
+            <h2 class="subtitle" id="models-spatial">Space and climate</h2>
+            <p>
+              The following climate variables were used in our modeling: Annual
+              heat-moisture index, Frost free period, Mean annual precipitation,
+              Mean annual temperature, Mean cold month (January) temperature,
+              Mean warm month (July) temperature, Potential evapotranspiration.
+              Besides climate variables, we also used public coordinates
+              (latitude, longitude) in modeling.
+            </p>
+          </section>
 
-      <!-- START CONTENT -->
-      <div class="column is-7">
-
-       <section>
-         <h2 class="title" id="intro">Introduction</h2>
-         <p>
-           This custom report represents a summary based on user-defined subsets of species and spatial prediction units, and the model results presented at <a href="http://sc-dev.abmi.ca" target=_blank>sc-dev.abmi.ca</a>.
-           The model outputs and predictions were summarized with <a href="https://github.com/ABbiodiversity/cure4insect#readme" target=_blank>cure4insect</a> <a href="https://www.r-project.org/">R</a> package
-           (see <a href="../settings/index.html">Settings</a>).
-         </p>
-       </section>
-
-       <section>
-         <h2 class="title" id="data">Data</h2>
-         <p>
-           Field data collected by the ABMI were used alongside with data collected and maintained by other organizations and individuals.
-         </p>
-        </section>
-
-        <section>
-          <h2 class="title" id="models">Models</h2>
-          <p>
-              A set of statistical models were used to relate the relative abundance of each species to land cover and space/climate variables. Analyses were done separately for two overlapping regions: <em>North</em> (boreal, foothills, Canadian shield, parkland), and <em>South</em> (grasslands, parkland, dry mixedwood subregion of the boreal).
-          </p>
-          <h2 class="subtitle" id="models-landcover">Land cover</h2>
-          <p>
-            Land cover types in the <em>North</em> region included main forest stand types (white spruce, pine, deciduous, mixedwood, black spruce) by broad age classes (0-9 years, 10-19 years, then 20-year classes to 140+ years) and categories of open vegetation (upland grass, upland shrub, treed fens, other treed wetlands, and non-treed wetlands). In the <em>South</em>, land cover types were broad ecosite (soil) types, such as productive, clay, saline, and rapid drained.
-The South models also included a term for the probability that the site is or was naturally treed. The <em>human footprint</em> classes used both in the North and South included Alienating (cultivation, urban-industrial, and hard (unvegetated) linear features) and Successional disturbances (soft (vegetated) linear features, and forestry which is differentiated by broad stand type and the same age classes as natural forest.
-          </p>
-          <h2 class="subtitle" id="models-spatial">Space and climate</h2>
-          <p>The following climate variables were used in our modeling: Annual heat-moisture index, Frost free period, Mean annual precipitation, Mean annual temperature, Mean cold month (January) temperature, Mean warm month (July) temperature, Potential evapotranspiration. Besides climate variables, we also used public coordinates (latitude, longitude) in modeling.</p>
-         </section>
-
-         <section>
-           <h2 class="title" id="prediction">Prediction</h2>
-           <p>Spatial and climate variables modify the land cover effects in our models introducing spatial variation into them. We used a grid system for spatial predictions with 1 km<sup>2</sup> pixels through the province of Alberta, summarized amount of native vegetation and human footprint types in each 1 km<sup>2</sup> pixel to be used in area weighted relative abundance predictions. Centroids of the pixels were intersected with the GIS layers described above to extract spatial information for prediction.
-           </p>
+          <section>
+            <h2 class="title" id="prediction">Prediction</h2>
+            <p>
+              Spatial and climate variables modify the land cover effects in our
+              models introducing spatial variation into them. We used a grid
+              system for spatial predictions with 1 km<sup>2</sup> pixels
+              through the province of Alberta, summarized amount of native
+              vegetation and human footprint types in each 1 km<sup>2</sup>
+              pixel to be used in area weighted relative abundance predictions.
+              Centroids of the pixels were intersected with the GIS layers
+              described above to extract spatial information for prediction.
+            </p>
           </section>
 
           <section>
             <h2 class="title" id="maps">Maps</h2>
             <h2 class="subtitle" id="maps-abundance">Relative abundance</h2>
-            <p>We combined information on the human footprint and vegetation types within 1 km<sup>2</sup> units throughout the province with the climate and location information for each 1 km<sup>2</sup> unit, and then predicted abundance of each species based on the habitat models and the effects of location and climate. This is the predicted <em>current relative abundance</em> of the species. To map <em>reference relative abundance</em> of each species, we used a map in which all human footprint has been back-filled by the vegetation type that was most likely to have occurred prior to footprint.  Back-filling in the North is based on the vegetation types immediately surrounding the human footprint, as well as rules about which footprint types are restricted to certain vegetation types. In the South, the ecosystem variables, and Aspen probability are mapped for all areas, including in human footprint, and therefore we do not need to back-fill human footprint to get reference conditions.  We simply ignore the effects of human footprint and predict all areas based only on the ecosite types and Aspen probability of occurrence.</p>
+            <p>
+              We combined information on the human footprint and vegetation
+              types within 1 km<sup>2</sup> units throughout the province with
+              the climate and location information for each 1 km<sup>2</sup>
+              unit, and then predicted abundance of each species based on the
+              habitat models and the effects of location and climate. This is
+              the predicted <em>current relative abundance</em> of the species.
+              To map <em>reference relative abundance</em> of each species, we
+              used a map in which all human footprint has been back-filled by
+              the vegetation type that was most likely to have occurred prior to
+              footprint. Back-filling in the North is based on the vegetation
+              types immediately surrounding the human footprint, as well as
+              rules about which footprint types are restricted to certain
+              vegetation types. In the South, the ecosystem variables, and Aspen
+              probability are mapped for all areas, including in human
+              footprint, and therefore we do not need to back-fill human
+              footprint to get reference conditions. We simply ignore the
+              effects of human footprint and predict all areas based only on the
+              ecosite types and Aspen probability of occurrence.
+            </p>
             <h2 class="subtitle" id="maps-intactness">Intactness</h2>
-            <p>Intactness for a <em>single species</em> is defined as <em>SI = 100 x min(Current, Reference) / min(Current, Reference)</em> and is in the range of 0&ndash;100% for each 1 km<sup>2</sup> mapping unit. The software uses the same calculation for all species irrespective of their native or non-native status. The 'two-sided' intactness differentiates between the relative abundance increase an decrease and is a trasformation of the 'one-sided' (0&ndash;100%) intactness (<em>200 &ndash; SI</em>) when <em>Current > Reference</em>, thus takes values in the 0&ndash;200% range. Intactness based on <em>multiple species</em> is a simple average of the species in each 1 km<sup>2</sup> mapping unit.
+            <p>
+              Intactness for a <em>single species</em> is defined as
+              <em
+                >SI = 100 x min(Current, Reference) / min(Current,
+                Reference)</em
+              >
+              and is in the range of 0&ndash;100% for each 1 km<sup>2</sup>
+              mapping unit. The software uses the same calculation for all
+              species irrespective of their native or non-native status. The
+              'two-sided' intactness differentiates between the relative
+              abundance increase an decrease and is a trasformation of the
+              'one-sided' (0&ndash;100%) intactness (<em>200 &ndash; SI</em>)
+              when <em>Current > Reference</em>, thus takes values in the
+              0&ndash;200% range. Intactness based on
+              <em>multiple species</em> is a simple average of the species in
+              each 1 km<sup>2</sup> mapping unit.
             </p>
             <h2 class="subtitle" id="maps-richness">Species richness</h2>
-            <p>Species richness is the sum of average occurrence probabilities of multiple species within each 1 km<sup>2</sup> mapping unit. Occurrence probabilities are calculated for 1 ha area.</p>
+            <p>
+              Species richness is the sum of average occurrence probabilities of
+              multiple species within each 1 km<sup>2</sup> mapping unit.
+              Occurrence probabilities are calculated for 1 ha area.
+            </p>
             <h2 class="subtitle" id="maps-uncertainty">Uncertainty</h2>
-            <p>Uncertainty in predicted current conditions was determined as the standard error of bootstrap based predictive distribution of current abundance aggregated at the 10 km x 10 km units.</p>
-           </section>
+            <p>
+              Uncertainty in predicted current conditions was determined as the
+              standard error of bootstrap based predictive distribution of
+              current abundance aggregated at the 10 km x 10 km units.
+            </p>
+          </section>
 
-           <section>
-             <h2 class="title" id="sector">Sector effects</h2>
-             <p>We use the species-habitat models to estimate the effects of individual industrial sectors on each species in a given region. We differentiate the following sectors: Agriculture, Forestry, Energy, Rural/Urban, and Transportation. We summarize current and relative abundance for each industrial sector in that region, besides relative abundance in native (undisturbed) land cover types (where current and reference abundances are equal).</p>
-             <h2 class="subtitle" id="sector-total">Effects on regional population</h2>
-             <p>Sector effects on regional population for a given sector are calculated as the difference between sector specific current and reference abundance, standardized by the total reference abundance in the entire region (including all sectors and native land cover types).</p>
-             <h2 class="subtitle" id="sector-underhf">Effects on population under footprint</h2>
-             <p>Sector effects on population under footprint for a given sector are calculated as the difference between sector specific current and reference abundance, standardized by the reference abundance in that sector.</p>
-             <h2 class="subtitle" id="sector-unit">Regional effects per unit area</h2>
-             <p>Per unit area effects are calculated from the regional population effects, but further divided by the proportion of the sector specific footprint in the region. The corresponding graphs show the area of the sector's footprint as the width of the bars, and the per unit area effect as the height of the bars. The area of the bar corresponds to the regional sector effect.</p>
-            </section>
-
+          <section>
+            <h2 class="title" id="sector">Sector effects</h2>
+            <p>
+              We use the species-habitat models to estimate the effects of
+              individual industrial sectors on each species in a given region.
+              We differentiate the following sectors: Agriculture, Forestry,
+              Energy, Rural/Urban, and Transportation. We summarize current and
+              relative abundance for each industrial sector in that region,
+              besides relative abundance in native (undisturbed) land cover
+              types (where current and reference abundances are equal).
+            </p>
+            <h2 class="subtitle" id="sector-total">
+              Effects on regional population
+            </h2>
+            <p>
+              Sector effects on regional population for a given sector are
+              calculated as the difference between sector specific current and
+              reference abundance, standardized by the total reference abundance
+              in the entire region (including all sectors and native land cover
+              types).
+            </p>
+            <h2 class="subtitle" id="sector-underhf">
+              Effects on population under footprint
+            </h2>
+            <p>
+              Sector effects on population under footprint for a given sector
+              are calculated as the difference between sector specific current
+              and reference abundance, standardized by the reference abundance
+              in that sector.
+            </p>
+            <h2 class="subtitle" id="sector-unit">
+              Regional effects per unit area
+            </h2>
+            <p>
+              Per unit area effects are calculated from the regional population
+              effects, but further divided by the proportion of the sector
+              specific footprint in the region. The corresponding graphs show
+              the area of the sector's footprint as the width of the bars, and
+              the per unit area effect as the height of the bars. The area of
+              the bar corresponds to the regional sector effect.
+            </p>
+          </section>
+        </div>
+        <!-- END CONTENT -->
       </div>
-      <!-- END CONTENT -->
-
     </div>
-  </div>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="content has-text-centered">
-        <p id="footer"></p>
+    <footer class="footer">
+      <div class="container">
+        <div class="content has-text-centered">
+          <p id="footer"></p>
+        </div>
       </div>
-    </div>
-  </footer>
-
-</body>
-<script type="text/javascript" src="../assets/js/jquery.min.js"></script>
-<script type="text/javascript" src="../assets/js/basic.js"></script>
+    </footer>
+  </body>
+  <script type="text/javascript" src="../assets/js/jquery.min.js"></script>
+  <script type="text/javascript" src="../assets/js/basic.js"></script>
 </html>

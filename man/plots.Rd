@@ -97,8 +97,9 @@ Peter Solymos <solymos@ualberta.ca>
 \code{\link{calculate_results}}
 }
 \examples{
+\dontrun{
 ## *res*ults from calculate_results, all province, all species
-fn <- paste0("http://sc-dev.abmi.ca/reports/",
+fn <- paste0("http://science.abmi.ca/reports/",
     getOption("cure4insect")$version, "/misc/raw_all.rda")
 con <- url(fn)
 load(con)
@@ -117,7 +118,6 @@ plot_sector(z, "underhf", method="hist") # binned version
 plot_intactness(z, "SI")
 plot_intactness(z, "SI2", method="hist")
 
-\dontrun{
 ## land cover associations
 load_common_data()
 plot_abundance("Achillea.millefolium", "veg_coef")
