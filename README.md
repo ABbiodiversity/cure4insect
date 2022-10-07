@@ -1,3 +1,5 @@
+**This repo is not actively maintained, please visit [ABbiodiversity/allinone](https://github.com/ABbiodiversity/allinone#allinone) instead**
+
 cure4insect <img src="https://raw.githubusercontent.com/ABbiodiversity/cure4insect/master/abundance.gif" align="right" style="padding-left:10px;background-color:white;" />
 ===========================================================================================================================================================================
 
